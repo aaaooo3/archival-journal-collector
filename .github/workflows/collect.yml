@@ -1,0 +1,39 @@
+name: collect-journals
+
+# Automation option: check both journals on a schedule and commit any new
+# issue digests + updated state.json back to the repository.
+on:
+  schedule:
+    - cron: "0 0 * * *"   # daily at 00:00 UTC (09:00 KST). Adjust as needed.
+  workflow_dispatch: {}    # allow manual runs from the Actions tab
+
+permissions:
+  contents: write          # needed to push generated output + state.json
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run collector (once)
+        run: python watcher.py --once --journal all
+
+      - name: Commit new output if any
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain output state.json)" ]; then
+            git add output state.json
+            git commit -m "chore: new journal issue(s) $(date -u +%Y-%m-%d)"
+            git push
+          else
+            echo "No new issues; nothing to commit."
+          fi
