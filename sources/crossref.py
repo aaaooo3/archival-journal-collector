@@ -112,7 +112,19 @@ class CrossrefSource:
 
     @staticmethod
     def _issue_id(vol: str, iss: str) -> str:
-        return f"{vol}-{iss}" if iss else (vol or "0")
+        if vol and iss:
+            return f"{vol}-{iss}"
+        return vol or iss or "0"   # journals like Archivaria number by issue only
+
+    @staticmethod
+    def _issue_label(vol: str, iss: str) -> str:
+        if vol and iss:
+            return f"Vol. {vol}, No. {iss}"
+        if vol:
+            return f"Vol. {vol}"
+        if iss:
+            return f"No. {iss}"
+        return "(latest)"
 
     # --- fetching ---------------------------------------------------------
     def _recent_items(self, session, logger: logging.Logger, rows: int = 80) -> list[dict]:
@@ -128,13 +140,14 @@ class CrossrefSource:
         if not articles:
             raise ExtractionError(f"{self.KEY}: no parseable articles for vol {vol!r} issue {iss!r}")
         year, month = _year_month(items[0])
-        label = f"Vol. {vol}" + (f", No. {iss}" if iss else "") if vol else "(latest)"
         published = f"{year:04d}-{month:02d}" if year and month else (f"{year:04d}" if year else "")
-        skey = (int(vol) if vol.isdigit() else 0, int(iss) if iss.isdigit() else 0)
+        issue_id = self._issue_id(vol, iss)
+        label = self._issue_label(vol, iss)
+        skey = self.sort_key(issue_id)   # keep consistent with sort_key(issue_id)
         logger.info("%s: issue %s with %d articles", self.KEY, label, len(articles))
         return Issue(
             journal_key=self.KEY, journal_name=self.NAME,
-            issue_id=self._issue_id(vol, iss), issue_label=label,
+            issue_id=issue_id, issue_label=label,
             sort_key=skey, source_url=self.URL, articles=articles, published=published,
         )
 
