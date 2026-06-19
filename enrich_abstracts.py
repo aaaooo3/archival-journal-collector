@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
-"""수집된 논문 중 초록이 비어 있는 것을, 논문 페이지에서 긁어와 보강(best-effort).
+"""수집된 논문 중 초록이 비어 있는 것을 무료 학술 API/논문 페이지에서 보강.
 
-Crossref에 초록이 없던 해외 논문에 대해 각 논문의 공개 페이지(DOI 링크가 향하는
-출판사/저널 페이지)에서 표준 메타태그(``citation_abstract`` 등)나 본문 초록 영역을
-찾아 채웁니다.
+각 논문에 대해 두 경로를 순서대로 시도합니다:
+  1) OpenAlex API(무료·키 불필요)에서 DOI로 초록 조회 — 출판사 사이트가 봇을
+     차단(JSTOR·Taylor & Francis 등)해도 우회 가능. 초록은 역색인으로 저장돼 있어
+     원문장으로 복원합니다.
+  2) (1)이 없으면 논문 공개 페이지에서 표준 메타태그(citation_abstract 등)/본문
+     초록 영역을 긁기 — Archivaria 같은 OJS 공개 사이트용.
 
-- Archivaria(OJS) 등 공개 사이트는 잘 채워집니다.
-- JSTOR·Taylor & Francis 등 봇 차단이 강한 곳은 막혀서 건너뜁니다(정상, 빠르게 skip).
-- 이미 초록이 있는 논문(국내 등)은 건드리지 않습니다.
+- 이미 초록이 있는 논문(국내 등)은 건드리지 않습니다(--force 로 강제 재시도).
+- 어느 경로로도 못 찾으면 조용히 건너뜁니다(예: 초록 자체가 없는 리뷰글).
 
 사용:
     python enrich_abstracts.py                  # 초록 없는 모든 논문 시도
-    python enrich_abstracts.py --journal archivaria
+    python enrich_abstracts.py --journal archrec
     python enrich_abstracts.py --force          # 이미 채워진 것도 다시 시도
+
+OpenAlex 정중 사용을 위해 환경변수 OPENALEX_MAILTO 에 이메일을 넣으면 좋습니다(선택).
 """
 
 from __future__ import annotations
@@ -20,6 +24,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import re
 import sys
 import time
@@ -38,6 +43,9 @@ LOG_DIR = ROOT / "logs"
 
 REQUEST_TIMEOUT = 15          # 빠르게 실패하도록 짧게 (차단 사이트에서 오래 안 매달림)
 REQUEST_DELAY_SECONDS = 1.5
+
+OPENALEX = "https://api.openalex.org"
+OPENALEX_MAILTO = os.environ.get("OPENALEX_MAILTO", "")
 
 # 본문 초록 영역 후보 (OJS 등). 메타태그가 우선.
 _ABSTRACT_SELECTORS = [
@@ -93,6 +101,38 @@ def extract_abstract(html: str) -> str:
     return ""
 
 
+def _reconstruct_inverted(inv: dict | None) -> str:
+    """OpenAlex stores abstracts as {word: [positions]}; rebuild the text."""
+    if not inv:
+        return ""
+    positions: list[tuple[int, str]] = []
+    for word, idxs in inv.items():
+        for i in idxs:
+            positions.append((i, word))
+    positions.sort()
+    return clean_text(" ".join(w for _, w in positions))
+
+
+def openalex_abstract(session: requests.Session, doi: str, logger: logging.Logger) -> str:
+    """Fetch an abstract from OpenAlex by DOI (free, no key, not bot-blocked)."""
+    if not doi:
+        return ""
+    url = (f"{OPENALEX}/works?filter=doi:{doi.lower()}"
+           f"&per-page=1&select=abstract_inverted_index")
+    if OPENALEX_MAILTO:
+        url += f"&mailto={OPENALEX_MAILTO}"
+    try:
+        resp = session.get(url, timeout=REQUEST_TIMEOUT)
+        resp.raise_for_status()
+        results = resp.json().get("results", [])
+    except requests.RequestException as exc:
+        logger.info("    OpenAlex 조회 실패 (%s)", type(exc).__name__)
+        return ""
+    if not results:
+        return ""
+    return _reconstruct_inverted(results[0].get("abstract_inverted_index"))
+
+
 def _landing_url(art: dict) -> str:
     url = art.get("url", "")
     if url:
@@ -107,19 +147,26 @@ def enrich_file(path: Path, session, force: bool, logger: logging.Logger) -> int
     for art in data.get("articles", []):
         if art.get("abstract") and not force:
             continue
-        url = _landing_url(art)
-        if not url:
-            continue
         logger.info("  · %s", art.get("title", "")[:50])
-        html = _fetch(session, url, logger)
+
+        # 1) OpenAlex (DOI 조회) — 차단 사이트도 우회.
+        abstract = openalex_abstract(session, art.get("doi", ""), logger)
+        source = "OpenAlex"
+
+        # 2) 없으면 논문 페이지 긁기 (OJS 공개 사이트용).
+        if not abstract:
+            url = _landing_url(art)
+            if url:
+                html = _fetch(session, url, logger)
+                if html:
+                    abstract = extract_abstract(html)
+                    source = "페이지"
         time.sleep(REQUEST_DELAY_SECONDS)
-        if not html:
-            continue
-        abstract = extract_abstract(html)
+
         if abstract:
             art["abstract"] = abstract
             filled += 1
-            logger.info("    → 초록 채움 (%d자)", len(abstract))
+            logger.info("    → 초록 채움 (%s, %d자)", source, len(abstract))
     if filled:
         path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return filled

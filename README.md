@@ -17,14 +17,18 @@
 > (메타데이터는 안정적). 다른 저널을 추가하려면 `sources/__init__.py` 의 `_CROSSREF_SOURCES`
 > 에 `CrossrefSource("키", "이름", "ISSN")` 한 줄만 더하면 됩니다.
 
-**초록 보강(선택)** — Crossref에 초록이 없는 논문은 논문 페이지에서 한 번 더 긁어와
-채울 수 있습니다:
+**초록 보강(선택)** — Crossref에 초록이 없는 논문을 보강합니다:
 ```bash
 python3 enrich_abstracts.py                 # 초록 없는 모든 논문 시도
-python3 enrich_abstracts.py --journal archivaria
+python3 enrich_abstracts.py --journal archrec
 ```
-- Archivaria(OJS 공개)처럼 열린 사이트는 잘 채워지고, JSTOR·Taylor & Francis 등
-  봇 차단이 강한 곳은 빠르게 건너뜁니다(정상). 채운 뒤 사이트를 자동 재생성합니다.
+두 경로를 순서대로 시도합니다:
+1. **OpenAlex API**(무료·키 불필요)에서 DOI로 초록 조회 — 출판사 사이트가 봇을
+   차단(JSTOR·T&F 등)해도 우회됩니다. (초록 보유 여부는 논문마다 다름)
+2. 없으면 논문 공개 페이지에서 표준 메타태그/본문 초록 긁기(OJS 등).
+
+채운 뒤 사이트를 자동 재생성합니다. 정중한 사용을 위해 `OPENALEX_MAILTO` 환경변수에
+이메일을 넣어도 됩니다(선택).
 
 ---
 
