@@ -17,6 +17,15 @@
 > (메타데이터는 안정적). 다른 저널을 추가하려면 `sources/__init__.py` 의 `_CROSSREF_SOURCES`
 > 에 `CrossrefSource("키", "이름", "ISSN")` 한 줄만 더하면 됩니다.
 
+**초록 보강(선택)** — Crossref에 초록이 없는 논문은 논문 페이지에서 한 번 더 긁어와
+채울 수 있습니다:
+```bash
+python3 enrich_abstracts.py                 # 초록 없는 모든 논문 시도
+python3 enrich_abstracts.py --journal archivaria
+```
+- Archivaria(OJS 공개)처럼 열린 사이트는 잘 채워지고, JSTOR·Taylor & Francis 등
+  봇 차단이 강한 곳은 빠르게 건너뜁니다(정상). 채운 뒤 사이트를 자동 재생성합니다.
+
 ---
 
 ## ⚡ 빠른 시작 (자주 쓰는 명령)
