@@ -46,6 +46,7 @@ REQUEST_DELAY_SECONDS = 1.5
 
 OPENALEX = "https://api.openalex.org"
 OPENALEX_MAILTO = os.environ.get("OPENALEX_MAILTO", "")
+SEMANTIC_SCHOLAR = "https://api.semanticscholar.org/graph/v1"
 
 # 본문 초록 영역 후보 (OJS 등). 메타태그가 우선.
 _ABSTRACT_SELECTORS = [
@@ -133,6 +134,22 @@ def openalex_abstract(session: requests.Session, doi: str, logger: logging.Logge
     return _reconstruct_inverted(results[0].get("abstract_inverted_index"))
 
 
+def semanticscholar_abstract(session: requests.Session, doi: str, logger: logging.Logger) -> str:
+    """Fetch an abstract from Semantic Scholar by DOI (free, no key)."""
+    if not doi:
+        return ""
+    url = f"{SEMANTIC_SCHOLAR}/paper/DOI:{doi}?fields=abstract"
+    try:
+        resp = session.get(url, timeout=REQUEST_TIMEOUT)
+        if resp.status_code == 404:
+            return ""
+        resp.raise_for_status()
+        return clean_text(resp.json().get("abstract") or "")
+    except requests.RequestException as exc:
+        logger.info("    Semantic Scholar 조회 실패 (%s)", type(exc).__name__)
+        return ""
+
+
 def _landing_url(art: dict) -> str:
     url = art.get("url", "")
     if url:
@@ -149,11 +166,17 @@ def enrich_file(path: Path, session, force: bool, logger: logging.Logger) -> int
             continue
         logger.info("  · %s", art.get("title", "")[:50])
 
+        doi = art.get("doi", "")
         # 1) OpenAlex (DOI 조회) — 차단 사이트도 우회.
-        abstract = openalex_abstract(session, art.get("doi", ""), logger)
+        abstract = openalex_abstract(session, doi, logger)
         source = "OpenAlex"
 
-        # 2) 없으면 논문 페이지 긁기 (OJS 공개 사이트용).
+        # 2) 없으면 Semantic Scholar (다른 커버리지).
+        if not abstract:
+            abstract = semanticscholar_abstract(session, doi, logger)
+            source = "S2"
+
+        # 3) 그래도 없으면 논문 페이지 긁기 (OJS 공개 사이트용).
         if not abstract:
             url = _landing_url(art)
             if url:
