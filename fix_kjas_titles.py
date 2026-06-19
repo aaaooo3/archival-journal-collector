@@ -22,7 +22,6 @@ import glob
 import json
 import logging
 import re
-import sys
 import time
 
 from bs4 import BeautifulSoup
@@ -30,19 +29,10 @@ from bs4 import BeautifulSoup
 import build_site
 import sources.kjas as kjas
 from sources.base import clean_text, make_session
+from tooling import setup_logging
 
 REQUEST_TIMEOUT = 20
 RETRY = 2
-
-
-def setup_logging() -> logging.Logger:
-    logger = logging.getLogger("fix_titles")
-    logger.setLevel(logging.INFO)
-    if not logger.handlers:
-        h = logging.StreamHandler(sys.stdout)
-        h.setFormatter(logging.Formatter("%(message)s"))
-        logger.addHandler(h)
-    return logger
 
 
 def _detail_url(art: dict) -> str:
@@ -75,7 +65,7 @@ def main(argv=None) -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--force", action="store_true", help="이미 국문인 제목도 다시 받아 교체")
     args = p.parse_args(argv)
-    logger = setup_logging()
+    logger = setup_logging("fix_titles", logfile=False, simple=True)
 
     session = make_session()
     updated = kept = 0

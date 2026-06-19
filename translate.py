@@ -27,11 +27,13 @@ import glob
 import json
 import logging
 import re
-import sys
+
+import requests
 
 import build_site
 from summarize import (DEFAULT_OLLAMA_HOST, DEFAULT_OLLAMA_MODEL,
                        ollama_available, ollama_generate)
+from tooling import setup_logging
 
 # 번역 대상 해외 저널 키.
 INTL_KEYS = ["amarch", "archivaria", "archrec"]
@@ -41,8 +43,11 @@ _SYSTEM = ("당신은 영어 학술 텍스트를 한국어로 번역하는 전�
            "절대 섞지 마세요(인명·약어 등 꼭 필요한 고유명사만 로마자 허용). "
            "번역 결과만 출력하고, 원문·설명·따옴표·머리말을 덧붙이지 마세요.")
 
-# 한국어 출력에는 거의 안 쓰이는 CJK 한자(중국어) 범위 — 섞이면 잘못된 번역으로 간주.
-_CJK = re.compile(r"[㐀-鿿぀-ヿ]")
+# 한국어 번역 결과에 나오면 안 되는 다른 문자 스크립트(한자·가나·아랍·키릴·히브리
+# ·태국·데바나가리). 섞이면 모델 오류로 보고 재시도한다(라틴 문자는 고유명사용으로 허용).
+_CJK = re.compile(
+    r"[぀-ヿ㐀-鿿؀-ۿЀ-ӿ֐-׿฀-๿ऀ-ॿ]"
+)
 _TITLE_PROMPT = (
     "다음 영어 학술 논문 제목을 자연스럽고 간결한 한국어 제목으로 번역하세요. "
     "영어 단어를 그대로 남기지 말고 모두 한국어로 옮기되, 사람 이름·기관명 같은 "
@@ -52,18 +57,18 @@ _ABSTRACT_PROMPT = ("다음 영어 논문 초록을 한국어로 번역하세요
                     "보존하세요:\n\n{text}")
 
 
-def setup_logging() -> logging.Logger:
-    logger = logging.getLogger("translate")
-    logger.setLevel(logging.INFO)
-    if not logger.handlers:
-        h = logging.StreamHandler(sys.stdout)
-        h.setFormatter(logging.Formatter("%(message)s"))
-        logger.addHandler(h)
-    return logger
-
-
 def _has_hangul(s: str) -> bool:
     return bool(re.search(r"[가-힣]", s or ""))
+
+
+def _model_installed(host: str, model: str) -> bool:
+    """Ollama에 해당 모델이 받아져 있는지(/api/tags) 확인. 확인 불가 시 True(차단 안 함)."""
+    try:
+        tags = requests.get(f"{host.rstrip('/')}/api/tags", timeout=5).json().get("models", [])
+    except Exception:  # noqa: BLE001
+        return True
+    names = [m.get("name", "") for m in tags]
+    return model in names or f"{model}:latest" in names or any(n.startswith(model + ":") for n in names)
 
 
 def _translate(host, model, prompt_tmpl, text, num_predict, logger) -> str:
@@ -90,7 +95,7 @@ def main(argv=None) -> int:
     p.add_argument("--titles-only", action="store_true",
                    help="제목만 (다시) 번역하고 초록은 건드리지 않음 (제목 품질 개선용, 빠름)")
     args = p.parse_args(argv)
-    logger = setup_logging()
+    logger = setup_logging("translate", logfile=False, simple=True)
 
     keys = INTL_KEYS if args.journal == "all" else [args.journal]
     files: list[str] = []
@@ -104,6 +109,11 @@ def main(argv=None) -> int:
         logger.error("Ollama 서버에 연결할 수 없습니다 (%s).\n"
                      "  터미널에서 'ollama serve' 실행 후 다시 시도하세요.", args.ollama_host)
         return 2
+    if not _model_installed(args.ollama_host, args.model):
+        logger.error("모델 '%s' 이(가) 설치돼 있지 않습니다.\n"
+                     "  먼저 받으세요:  ollama pull %s\n"
+                     "  (받은 뒤 같은 명령을 다시 실행하면 됩니다.)", args.model, args.model)
+        return 3
 
     n_title = n_abstract = 0
     for path in files:

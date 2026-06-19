@@ -26,21 +26,14 @@ import json
 import logging
 import os
 import re
-import sys
 import time
-from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
 
 from build_site import build_site, load_issues
 from sources.base import ExtractionError, fetch_html, make_session
-
-ROOT = Path(__file__).resolve().parent
-OUTPUT_DIR = ROOT / "output"
-SUMMARY_DIR = OUTPUT_DIR / "summaries"
-SITE_DIR = ROOT / "site"
-LOG_DIR = ROOT / "logs"
+from tooling import OUTPUT_DIR, SITE_DIR, SUMMARY_DIR, setup_logging
 
 DEFAULT_SENTENCES = 5   # max key sentences per chapter (extractive engine)
 DEFAULT_OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
@@ -65,24 +58,6 @@ _OLLAMA_PROMPT = """다음은 한국어 학술 논문의 한 장(章)입니다. 
 [내용]
 {body}
 """
-
-
-def setup_logging() -> logging.Logger:
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
-    logger = logging.getLogger("summarize")
-    logger.setLevel(logging.DEBUG)
-    if logger.handlers:
-        return logger
-    fmt = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
-    fh = logging.FileHandler(LOG_DIR / "watcher.log", encoding="utf-8")
-    fh.setLevel(logging.DEBUG)
-    fh.setFormatter(fmt)
-    ch = logging.StreamHandler(sys.stdout)
-    ch.setLevel(logging.INFO)
-    ch.setFormatter(fmt)
-    logger.addHandler(fh)
-    logger.addHandler(ch)
-    return logger
 
 
 def _flatten(issues: list[dict]) -> list[dict]:
@@ -297,7 +272,7 @@ def parse_args(argv=None) -> argparse.Namespace:
 
 def main(argv=None) -> int:
     args = parse_args(argv)
-    logger = setup_logging()
+    logger = setup_logging("summarize")
     issues = load_issues(OUTPUT_DIR, logger)
     rows = _flatten(issues)
 
