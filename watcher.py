@@ -27,6 +27,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+from build_site import build_site
 from render import write_issue
 from sources import SOURCES
 from sources.base import ExtractionError, make_session
@@ -34,6 +35,7 @@ from sources.base import ExtractionError, make_session
 ROOT = Path(__file__).resolve().parent
 STATE_PATH = ROOT / "state.json"
 OUTPUT_DIR = ROOT / "output"
+SITE_DIR = ROOT / "site"
 LOG_DIR = ROOT / "logs"
 DEFAULT_INTERVAL_SECONDS = 6 * 60 * 60  # 6 hours
 
@@ -131,6 +133,13 @@ def run_once(journals: list[str], logger: logging.Logger) -> int:
         if process_source(key, state, logger):
             new_count += 1
     logger.info("Run complete: %d new issue(s) across %s", new_count, journals)
+
+    # Rebuild the static site so it always reflects the current output/.
+    try:
+        build_site(OUTPUT_DIR, SITE_DIR, logger)
+    except Exception as exc:  # noqa: BLE001 - site build must not fail the run
+        logger.exception("site build failed: %s", exc)
+
     return new_count
 
 

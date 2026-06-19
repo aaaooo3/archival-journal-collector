@@ -30,10 +30,14 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if [ -n "$(git status --porcelain output state.json)" ]; then
-            git add output state.json
+          if [ -n "$(git status --porcelain output state.json site)" ]; then
+            git add output state.json site
             git commit -m "chore: new journal issue(s) $(date -u +%Y-%m-%d)"
             git push
           else
             echo "No new issues; nothing to commit."
           fi
+
+      # To publish the page on the web later, enable GitHub Pages for this repo
+      # (Settings → Pages → "Deploy from a branch", folder /site) — no further
+      # changes are needed; site/index.html is regenerated on every run.

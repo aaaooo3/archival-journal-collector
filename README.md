@@ -22,14 +22,35 @@ sources/
   base.py             HTTP 세션·재시도·지연, 데이터 모델(Article/Issue), ExtractionError
   jksarm.py           한국기록관리학회지 파서 (셀렉터 상수 SEL_*/RE_*)
   kjas.py             기록학연구 파서 (citation_* meta + 목록 셀렉터)
-render.py             Issue -> 마크다운 변환 및 output/ 저장
+render.py             Issue -> 마크다운(.md) + 구조화 JSON(.json) 저장
+build_site.py         output/ 데이터 -> 단일 페이지 정적 사이트(site/index.html)
 state.json            학회지별 마지막 처리 호 기록
-output/               생성된 마크다운 (예: kjas_83.md, jksarm_27-2.md)
+output/               생성된 마크다운·JSON (예: kjas_88.md/.json, jksarm_26-2.md/.json)
+site/                 생성된 정적 웹페이지 (index.html, 서버 불필요)
 logs/                 watcher.log
 tests/                네트워크 없이 픽스처로 파서/상태/렌더 검증
 requirements.txt
 .github/workflows/collect.yml   GitHub Actions 자동화 옵션
 ```
+
+## 웹페이지(프론트)
+
+수집한 데이터를 검색·필터가 되는 **단일 HTML 페이지**로 봅니다. 외부 라이브러리·
+서버 없이 동작하는 자체 완결형 파일이라 그냥 브라우저로 열면 됩니다.
+
+```bash
+python build_site.py        # output/ 의 .json(없으면 .md)을 읽어 site/index.html 생성
+# 브라우저로 site/index.html 열기
+```
+
+- `watcher.py` 실행이 끝날 때마다 `site/index.html`이 자동으로 다시 생성됩니다.
+- 두 학회지의 모든 호·논문을 한 페이지에 모으고, **학회지 필터**와
+  **제목·저자·초록 검색**을 제공합니다.
+- 데이터 원본은 `render.py`가 쓰는 `output/<키>_<호>.json`(구조화 데이터)이며,
+  사람이 읽는 `.md`와 함께 저장됩니다.
+
+> 웹에 공개(URL)하고 싶으면 나중에 저장소 **Settings → Pages**에서
+> "Deploy from a branch"의 폴더를 `/site`로 지정하면 됩니다. 코드 수정은 필요 없습니다.
 
 ## 설치
 
