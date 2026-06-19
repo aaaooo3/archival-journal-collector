@@ -46,10 +46,20 @@ DEFAULT_SENTENCES = 5   # max key sentences per chapter (extractive engine)
 DEFAULT_OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 DEFAULT_OLLAMA_MODEL = "qwen2.5:7b"   # strong Korean; override with --model
 
-# Prompt for the generative (Ollama) engine — one chapter at a time.
+# Generative (Ollama) engine — one chapter at a time.
+# 일부 모델(qwen 등)이 기술적 내용에서 중국어/영어로 빠지는 경향이 있어, 한국어
+# 사용을 시스템 메시지와 프롬프트 양쪽에서 강하게 지시한다.
+_OLLAMA_SYSTEM = (
+    "당신은 한국어 학술 요약 도우미입니다. 어떤 경우에도 반드시 한국어(한글)로만 "
+    "답하세요. 영어·중국어 등 다른 언어로는 절대 쓰지 마세요."
+)
 _OLLAMA_PROMPT = """다음은 한국어 학술 논문의 한 장(章)입니다. 이 장의 핵심 내용을 \
-한국어 3~4문장으로 충실하게 요약하세요. 아래 제공된 내용에만 근거하고, 없는 내용을 \
-지어내지 마세요. 머리말이나 목록 기호 없이 요약문만 출력하세요.
+**한국어**로 3~4문장 충실하게 요약하세요.
+
+규칙:
+- 반드시 한국어(한글)로만 작성합니다. 영어·중국어 등 다른 언어 사용 금지.
+- 아래 제공된 내용에만 근거하고, 없는 내용을 지어내지 않습니다.
+- 머리말이나 목록 기호 없이 요약문만 출력합니다.
 
 [장 제목] {heading}
 [내용]
@@ -148,14 +158,13 @@ def ollama_available(host: str, logger: logging.Logger) -> bool:
         return False
 
 
-def ollama_generate(host: str, model: str, prompt: str, timeout: int = 240) -> str:
+def ollama_generate(host: str, model: str, prompt: str, system: str | None = None, timeout: int = 240) -> str:
     """Call Ollama's /api/generate and return the model's text response."""
-    resp = requests.post(
-        f"{host.rstrip('/')}/api/generate",
-        json={"model": model, "prompt": prompt, "stream": False,
-              "options": {"temperature": 0.2, "num_predict": 400}},
-        timeout=timeout,
-    )
+    payload = {"model": model, "prompt": prompt, "stream": False,
+               "options": {"temperature": 0.2, "num_predict": 400}}
+    if system:
+        payload["system"] = system
+    resp = requests.post(f"{host.rstrip('/')}/api/generate", json=payload, timeout=timeout)
     resp.raise_for_status()
     return (resp.json().get("response") or "").strip()
 
@@ -176,7 +185,7 @@ def summarize_sections_ollama(text: str, host: str, model: str, logger: logging.
     for heading, body in bodies:
         prompt = _OLLAMA_PROMPT.format(heading=heading, body=body[:6000])
         try:
-            out = ollama_generate(host, model, prompt)
+            out = ollama_generate(host, model, prompt, system=_OLLAMA_SYSTEM)
         except requests.RequestException as exc:
             logger.error("  Ollama 생성 실패 (%s): %s", heading, exc)
             return None
