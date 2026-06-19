@@ -29,6 +29,8 @@ import logging
 import re
 import sys
 
+import requests
+
 import build_site
 from summarize import (DEFAULT_OLLAMA_HOST, DEFAULT_OLLAMA_MODEL,
                        ollama_available, ollama_generate)
@@ -64,6 +66,16 @@ def setup_logging() -> logging.Logger:
 
 def _has_hangul(s: str) -> bool:
     return bool(re.search(r"[가-힣]", s or ""))
+
+
+def _model_installed(host: str, model: str) -> bool:
+    """Ollama에 해당 모델이 받아져 있는지(/api/tags) 확인. 확인 불가 시 True(차단 안 함)."""
+    try:
+        tags = requests.get(f"{host.rstrip('/')}/api/tags", timeout=5).json().get("models", [])
+    except Exception:  # noqa: BLE001
+        return True
+    names = [m.get("name", "") for m in tags]
+    return model in names or f"{model}:latest" in names or any(n.startswith(model + ":") for n in names)
 
 
 def _translate(host, model, prompt_tmpl, text, num_predict, logger) -> str:
@@ -104,6 +116,11 @@ def main(argv=None) -> int:
         logger.error("Ollama 서버에 연결할 수 없습니다 (%s).\n"
                      "  터미널에서 'ollama serve' 실행 후 다시 시도하세요.", args.ollama_host)
         return 2
+    if not _model_installed(args.ollama_host, args.model):
+        logger.error("모델 '%s' 이(가) 설치돼 있지 않습니다.\n"
+                     "  먼저 받으세요:  ollama pull %s\n"
+                     "  (받은 뒤 같은 명령을 다시 실행하면 됩니다.)", args.model, args.model)
+        return 3
 
     n_title = n_abstract = 0
     for path in files:
