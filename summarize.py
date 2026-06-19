@@ -24,11 +24,13 @@ import argparse
 import io
 import json
 import logging
+import os
 import re
 import sys
 import time
 from pathlib import Path
 
+import requests
 from bs4 import BeautifulSoup
 
 from build_site import build_site, load_issues
@@ -40,7 +42,19 @@ SUMMARY_DIR = OUTPUT_DIR / "summaries"
 SITE_DIR = ROOT / "site"
 LOG_DIR = ROOT / "logs"
 
-DEFAULT_SENTENCES = 5   # max key sentences per chapter
+DEFAULT_SENTENCES = 5   # max key sentences per chapter (extractive engine)
+DEFAULT_OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+DEFAULT_OLLAMA_MODEL = "qwen2.5:7b"   # strong Korean; override with --model
+
+# Prompt for the generative (Ollama) engine — one chapter at a time.
+_OLLAMA_PROMPT = """다음은 한국어 학술 논문의 한 장(章)입니다. 이 장의 핵심 내용을 \
+한국어 3~4문장으로 충실하게 요약하세요. 아래 제공된 내용에만 근거하고, 없는 내용을 \
+지어내지 마세요. 머리말이나 목록 기호 없이 요약문만 출력하세요.
+
+[장 제목] {heading}
+[내용]
+{body}
+"""
 
 
 def setup_logging() -> logging.Logger:
@@ -123,10 +137,60 @@ def extract_pdf_text(data: bytes) -> str:
     return extract_text(io.BytesIO(data)) or ""
 
 
-def summarize_row(session, row: dict, per_section: int, logger: logging.Logger) -> dict | None:
+# --- Generative engine (local Ollama, free) ---------------------------------
+
+
+def ollama_available(host: str, logger: logging.Logger) -> bool:
+    """True if an Ollama server answers at ``host``."""
+    try:
+        return requests.get(f"{host.rstrip('/')}/api/tags", timeout=5).ok
+    except requests.RequestException:
+        return False
+
+
+def ollama_generate(host: str, model: str, prompt: str, timeout: int = 240) -> str:
+    """Call Ollama's /api/generate and return the model's text response."""
+    resp = requests.post(
+        f"{host.rstrip('/')}/api/generate",
+        json={"model": model, "prompt": prompt, "stream": False,
+              "options": {"temperature": 0.2, "num_predict": 400}},
+        timeout=timeout,
+    )
+    resp.raise_for_status()
+    return (resp.json().get("response") or "").strip()
+
+
+def summarize_sections_ollama(text: str, host: str, model: str, logger: logging.Logger) -> list[dict] | None:
+    """Generative chapter-by-chapter summary via a local Ollama model.
+
+    Returns [{"heading", "summary"}], or None if no chapters were detected or a
+    generation call failed (caller then falls back to the extractive engine).
+    """
+    from summarizer import section_bodies
+
+    bodies = section_bodies(text)
+    if not bodies:
+        return None
+
+    sections: list[dict] = []
+    for heading, body in bodies:
+        prompt = _OLLAMA_PROMPT.format(heading=heading, body=body[:6000])
+        try:
+            out = ollama_generate(host, model, prompt)
+        except requests.RequestException as exc:
+            logger.error("  Ollama 생성 실패 (%s): %s", heading, exc)
+            return None
+        if out:
+            sections.append({"heading": heading, "summary": out})
+            logger.info("   · %s → %d자", heading, len(out))
+    return sections or None
+
+
+def summarize_row(session, row: dict, opts: argparse.Namespace, logger: logging.Logger) -> dict | None:
     """Download, extract and summarise one article. Returns a summary dict or None."""
     from summarizer import summarize, summarize_by_section
 
+    per_section = opts.sentences
     title = row["title"][:50]
     logger.info("summarising %r (%s)", title, row.get("doi") or "no-doi")
     try:
@@ -162,6 +226,16 @@ def summarize_row(session, row: dict, per_section: int, logger: logging.Logger) 
         "source_chars": len(text),
     }
 
+    # Generative engine (local Ollama) — falls through to extractive on failure.
+    if opts.engine == "ollama":
+        gen = summarize_sections_ollama(text, opts.ollama_host, opts.model, logger)
+        if gen:
+            logger.info("  → %d개 장 생성 요약 (모델 %s, 원문 %d자)", len(gen), opts.model, len(text))
+            result["method"] = f"ollama-{opts.model}"
+            result["sections"] = gen
+            return result
+        logger.warning("  Ollama 요약 실패/장 미검출 — 추출 요약으로 대체합니다")
+
     sections = summarize_by_section(text, per_section=per_section)
     if sections:
         total = sum(len(s["sentences"]) for s in sections)
@@ -194,8 +268,14 @@ def parse_args(argv=None) -> argparse.Namespace:
     p.add_argument("selectors", nargs="*", help="article DOIs to summarise")
     p.add_argument("--num", type=int, nargs="*", default=[], help="select by --list numbers")
     p.add_argument("--list", action="store_true", help="print a numbered list of all articles and exit")
+    p.add_argument("--engine", choices=["extractive", "ollama"], default="extractive",
+                   help="요약 방식: extractive(무료·로컬 추출, 기본) 또는 ollama(무료·로컬 생성형)")
+    p.add_argument("--model", default=DEFAULT_OLLAMA_MODEL,
+                   help=f"Ollama 모델명 (default {DEFAULT_OLLAMA_MODEL})")
+    p.add_argument("--ollama-host", default=DEFAULT_OLLAMA_HOST,
+                   help=f"Ollama 서버 주소 (default {DEFAULT_OLLAMA_HOST})")
     p.add_argument("--sentences", type=int, default=DEFAULT_SENTENCES,
-                   help=f"장별 최대 문장 수 (default {DEFAULT_SENTENCES}; 장이 길수록 이 한도까지 늘어남)")
+                   help=f"[extractive] 장별 최대 문장 수 (default {DEFAULT_SENTENCES}; 장이 길수록 이 한도까지 늘어남)")
     p.add_argument("--force", action="store_true", help="re-summarise even if a summary already exists")
     return p.parse_args(argv)
 
@@ -233,6 +313,17 @@ def main(argv=None) -> int:
         logger.error("선택된 논문이 없습니다. --list 로 번호를 확인하세요.")
         return 1
 
+    if args.engine == "ollama" and not ollama_available(args.ollama_host, logger):
+        logger.error(
+            "Ollama 서버에 연결할 수 없습니다 (%s).\n"
+            "  1) https://ollama.com 에서 설치 후  `ollama serve` 실행\n"
+            "  2) 모델 받기:  ollama pull %s\n"
+            "  3) 다시 실행:  python summarize.py --engine ollama --num ...\n"
+            "  (또는 --engine extractive 로 무료 추출 요약 사용)",
+            args.ollama_host, args.model,
+        )
+        return 2
+
     session = make_session()
     done = 0
     for row in selected:
@@ -240,7 +331,7 @@ def main(argv=None) -> int:
         if out_path.exists() and not args.force:
             logger.info("이미 요약됨, 건너뜀: %s (--force 로 재생성)", row["title"][:40])
             continue
-        summary = summarize_row(session, row, args.sentences, logger)
+        summary = summarize_row(session, row, args, logger)
         if summary:
             save_summary(summary, row, logger)
             done += 1
