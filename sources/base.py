@@ -71,6 +71,7 @@ class Issue:
     sort_key: tuple           # used to compare which issue is newer
     source_url: str
     articles: list[Article] = field(default_factory=list)
+    published: str = ""       # "YYYY-MM"/"YYYY" if known; used for site ordering
 
 
 # --- HTTP helpers -----------------------------------------------------------

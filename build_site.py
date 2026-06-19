@@ -212,6 +212,10 @@ _KJAS_MONTHS = [1, 4, 7, 10]                 # 기록학연구: Jan/Apr/Jul/Oct 
 
 
 def _pub_year(issue: dict) -> int:
+    # Prefer an explicit published date when the source provides one (Crossref).
+    m = re.match(r"(\d{4})", issue.get("published", "") or "")
+    if m:
+        return int(m.group(1))
     for art in issue.get("articles", []):
         m = _RE_DOI_YEAR.search(art.get("doi", ""))
         if m:
@@ -221,6 +225,9 @@ def _pub_year(issue: dict) -> int:
 
 
 def _pub_month(issue: dict) -> int:
+    m = re.match(r"\d{4}-(\d{2})", issue.get("published", "") or "")
+    if m:
+        return int(m.group(1))
     key = issue.get("journal_key", "")
     if key == "jksarm":
         parts = issue.get("issue_id", "").split("-")

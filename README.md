@@ -4,10 +4,18 @@
 나오면 논문 목록(제목·저자·페이지·DOI·초록·원문링크)을 모아 **검색되는 웹페이지**로
 정리하고, 원하는 논문은 **무료·로컬로 요약**까지 해주는 개인용 도구입니다.
 
-| 키 | 학회지 | 페이지 |
-|----|--------|--------|
-| `jksarm` | 한국기록관리학회지 | <https://accesson.kr/jksarm/> |
-| `kjas` | 기록학연구 | <https://www.koreascience.kr/journal/HGKRBZ.page?lang=ko> |
+| 키 | 학회지 | 수집 방식 |
+|----|--------|-----------|
+| `jksarm` | 한국기록관리학회지 | 사이트 스크레이핑 (초록·PDF 공개) |
+| `kjas` | 기록학연구 | 사이트 스크레이핑 (초록·PDF 공개) |
+| `amarch` | The American Archivist | Crossref API |
+| `archivaria` | Archivaria | Crossref API |
+| `archrec` | Archives and Records | Crossref API |
+
+> 해외 저널은 **Crossref(무료 공개 API)** 로 메타데이터(제목·저자·DOI·호·발행일·링크)를
+> 가져옵니다. 다만 페이월 저널이 많아 **초록이 비어 있거나 PDF 요약이 안 될 수 있습니다**
+> (메타데이터는 안정적). 다른 저널을 추가하려면 `sources/__init__.py` 의 `_CROSSREF_SOURCES`
+> 에 `CrossrefSource("키", "이름", "ISSN")` 한 줄만 더하면 됩니다.
 
 ---
 
