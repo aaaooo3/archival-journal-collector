@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import logging
 import re
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
@@ -28,12 +29,19 @@ from .base import Article, ExtractionError, Issue, clean_text, fetch_html
 KEY = "jksarm"
 NAME = "한국기록관리학회지"
 URL = "https://accesson.kr/jksarm/"
+BASE = "https://accesson.kr"  # for resolving relative detail links
 
 # --- Selectors / patterns (edit here when markup changes) -------------------
+#
+# Confirmed against the live AccessON markup (제26권 제2호). The platform renders
+# the latest issue's table of contents — including each abstract — directly on
+# the landing page, so a single fetch is enough. The legacy generic selectors
+# are kept as trailing fallbacks in case AccessON tweaks its template again.
 
 # Candidate containers that wrap a single article in the latest-issue list.
 # Tried in order; the first selector that returns elements wins.
 SEL_ARTICLE_ITEMS = [
+    "div.issue_article",          # live AccessON layout
     "div.article-list li",
     "ul.article-list > li",
     "div.articleList li",
@@ -42,20 +50,42 @@ SEL_ARTICLE_ITEMS = [
 ]
 
 # Within one article item, candidate selectors per field.
-SEL_TITLE = ["a.title", ".article-title a", ".tit a", "a.tit", ".title"]
+SEL_TITLE = ["a.ia_title", "a.title", ".article-title a", ".tit a", "a.tit", ".title"]
 SEL_AUTHORS = [".author", ".authors", ".article-author", ".writer"]
 SEL_PAGES = [".page", ".pages", ".pp", ".article-page"]
-SEL_ABSTRACT = [".abstract", ".article-abstract", ".abs", "p.abstract"]
-SEL_LINK = ["a.title", ".article-title a", "a.tit", "a[href]"]
-SEL_DOI = ["a[href*='doi.org']", ".doi", "a.doi"]
+# Authors and pages share one unclassed <span> in ``div.il_bottom`` on AccessON,
+# e.g. "유샛별 ; 이성숙 pp.19-46"; parsed via SEL_META_SPAN + RE_PAGES_LABEL below.
+SEL_META_SPAN = ["div.il_bottom > span", ".il_bottom span"]
+# First paragraph of ``.list_abstract`` is the Korean 초록 (an English Abstract
+# follows in a second <p>); we copy the Korean abstract verbatim.
+SEL_ABSTRACT = [
+    ".list_abstract p.mgb_20",
+    ".list_abstract p",
+    ".list_abstract",
+    ".abstract",
+    ".article-abstract",
+    ".abs",
+    "p.abstract",
+]
+SEL_LINK = ["a.ia_title", "a.title", ".article-title a", "a.tit", "a[href]"]
+SEL_DOI = ["a.doi_link", "a[href*='doi.org']", ".doi", "a.doi"]
 
 # Issue header (권/호) — searched across the whole page.
-SEL_ISSUE_HEADER = [".current-issue .issue-info", ".issue-title", ".vol-info", "h2", "h3"]
+SEL_ISSUE_HEADER = [
+    "div.issue_title",            # live AccessON layout ("26권 2호 …")
+    ".current-issue .issue-info",
+    ".issue-title",
+    ".vol-info",
+    "h2",
+    "h3",
+]
 
 # Regex helpers.
 RE_VOL_NO = re.compile(r"제?\s*(\d+)\s*권\s*제?\s*(\d+)\s*호")
 RE_DOI = re.compile(r"10\.\d{4,9}/[-._;()/:A-Za-z0-9]+")
 RE_PAGES = re.compile(r"(\d+)\s*[-~–]\s*(\d+)")
+# Matches the "pp.19-46" page label so it can be stripped to leave author names.
+RE_PAGES_LABEL = re.compile(r"pp\.?\s*\d+\s*[-~–]\s*\d+", re.IGNORECASE)
 
 
 def sort_key(issue_id: str) -> tuple[int, int]:
@@ -112,6 +142,25 @@ def _parse_issue_label(soup: BeautifulSoup, logger: logging.Logger) -> tuple[str
     )
 
 
+def _extract_abstract(item) -> str:
+    """Return the article abstract from the AccessON ``.list_abstract`` block.
+
+    The block holds the Korean 초록 then the English Abstract, each in its own
+    <p>. Some records leave the Korean <p> empty and put the (still Korean) text
+    under the "Abstract" heading instead, so we take the first *non-empty*
+    paragraph rather than a fixed position, then fall back to SEL_ABSTRACT.
+    """
+    box = item.select_one(".list_abstract") or item.select_one(".abstract_box")
+    if box is not None:
+        for para in box.find_all("p"):
+            text = clean_text(para.get_text(" "))
+            if text:
+                return text
+
+    abstract_el = _first(item, SEL_ABSTRACT)
+    return clean_text(abstract_el.get_text(" ")) if abstract_el else ""
+
+
 def _parse_article(item, logger: logging.Logger) -> Article | None:
     title_el = _first(item, SEL_TITLE)
     title = clean_text(title_el.get_text()) if title_el else ""
@@ -119,21 +168,35 @@ def _parse_article(item, logger: logging.Logger) -> Article | None:
         logger.warning("jksarm: skipping an item with no title (selectors %s)", SEL_TITLE)
         return None
 
-    # Link (prefer the title anchor, then any link).
+    # Link (prefer the title anchor, then any link). Resolve to an absolute URL.
     link = ""
     link_el = title_el if (title_el and title_el.name == "a") else _first(item, SEL_LINK)
     if link_el is not None and link_el.has_attr("href"):
-        link = link_el["href"]
+        link = urljoin(BASE, link_el["href"])
 
+    # Authors and pages: prefer dedicated elements; otherwise fall back to the
+    # combined "<authors> pp.<first>-<last>" span used by AccessON.
     authors_el = _first(item, SEL_AUTHORS)
-    authors_raw = clean_text(authors_el.get_text()) if authors_el else ""
-    authors = [a.strip() for a in re.split(r"[,;·]", authors_raw) if a.strip()]
-
     pages_el = _first(item, SEL_PAGES)
+    meta_text = ""
+    if authors_el is None or pages_el is None:
+        meta_el = _first(item, SEL_META_SPAN)
+        meta_text = clean_text(meta_el.get_text()) if meta_el else ""
+
     pages = ""
     if pages_el is not None:
         pm = RE_PAGES.search(clean_text(pages_el.get_text()))
         pages = f"{pm.group(1)}-{pm.group(2)}" if pm else clean_text(pages_el.get_text())
+    elif meta_text:
+        pm = RE_PAGES.search(meta_text)
+        pages = f"{pm.group(1)}-{pm.group(2)}" if pm else ""
+
+    if authors_el is not None:
+        authors_raw = clean_text(authors_el.get_text())
+    else:
+        # Drop the trailing "pp.19-46" label, leaving just the author names.
+        authors_raw = clean_text(RE_PAGES_LABEL.sub("", meta_text))
+    authors = [a.strip() for a in re.split(r"[,;·]", authors_raw) if a.strip()]
 
     # DOI: explicit element/link first, else scan the item text.
     doi = ""
@@ -146,8 +209,7 @@ def _parse_article(item, logger: logging.Logger) -> Article | None:
         dm = RE_DOI.search(item.get_text(" ", strip=True))
         doi = dm.group(0) if dm else ""
 
-    abstract_el = _first(item, SEL_ABSTRACT)
-    abstract = clean_text(abstract_el.get_text()) if abstract_el else ""
+    abstract = _extract_abstract(item)
 
     if not abstract:
         logger.warning("jksarm: no abstract for %r (selectors %s)", title[:40], SEL_ABSTRACT)

@@ -35,7 +35,10 @@ BASE = "https://www.koreascience.kr"
 # --- List-page selectors / patterns (edit here when markup changes) ---------
 
 # The block that wraps the latest issue's table of contents. Tried in order.
+# ``ol.num-pad`` is the live KoreaScience TOC list; scoping to it keeps us from
+# picking up navbar / "이번 주" links elsewhere on the page.
 SEL_LATEST_ISSUE_BLOCK = [
+    "ol.num-pad",
     "div.issue.latest",
     "div.latestIssue",
     "div.current-issue",
@@ -44,7 +47,10 @@ SEL_LATEST_ISSUE_BLOCK = [
 ]
 
 # Anchors to individual article detail pages within the issue block / page.
+# Real KoreaScience articles use the "/article/JAKO…" pattern; the bare
+# "/article/" match would also catch the navbar "article-week-view" link.
 SEL_ARTICLE_LINKS = [
+    "a[href*='/article/JAKO']",
     "a[href*='/article/']",
     "a.articleTitle[href]",
     ".articleList a[href*='article']",
@@ -70,7 +76,12 @@ META_HTML_URL = "citation_abstract_html_url"
 META_FULLTEXT_URL = "citation_fulltext_html_url"
 
 # Fallback abstract container on the detail page if the meta tag is absent.
+# KoreaScience currently omits ``citation_abstract`` and renders the 초록 in a
+# <p> right after a heading (h3/h4/h5) whose text is "초록"/"Abstract"; that
+# heading-based lookup (see ``_extract_abstract``) is tried before these.
 SEL_ABSTRACT_BODY = ["#abstractCont", ".abstractCont", ".abstract", "#abstract", ".articleAbstract"]
+# Heading labels that introduce the abstract paragraph.
+ABSTRACT_HEADINGS = {"초록", "국문초록", "abstract", "영문초록"}
 
 
 def sort_key(issue_id: str) -> tuple[int]:
@@ -94,6 +105,49 @@ def _meta_all(soup: BeautifulSoup, name: str) -> list[str]:
         for el in soup.find_all("meta", attrs={"name": name})
         if el.get("content")
     ]
+
+
+def _authors(soup: BeautifulSoup) -> list[str]:
+    """Authors from ``citation_author``.
+
+    The Highwire standard repeats the tag once per author, but KoreaScience
+    packs them all into a single tag joined by ';' (with a trailing ';'), e.g.
+    "유샛별 ; 이성숙 ;". Handle both by splitting every tag's content on ';'.
+    """
+    authors: list[str] = []
+    for content in _meta_all(soup, META_AUTHOR):
+        for name in content.split(";"):
+            name = name.strip()
+            if name:
+                authors.append(name)
+    return authors
+
+
+def _extract_abstract(soup: BeautifulSoup) -> str:
+    """Find the abstract text, preferring the ``citation_abstract`` meta tag.
+
+    Falls back to the paragraph following an abstract heading (초록/Abstract),
+    then to the legacy ``SEL_ABSTRACT_BODY`` containers.
+    """
+    abstract = _meta(soup, META_ABSTRACT)
+    if abstract:
+        return abstract
+
+    for heading in soup.find_all(["h3", "h4", "h5"]):
+        if clean_text(heading.get_text()).lower() in ABSTRACT_HEADINGS:
+            para = heading.find_next("p")
+            if para is not None:
+                text = clean_text(para.get_text(" "))
+                if text:
+                    return text
+
+    for sel in SEL_ABSTRACT_BODY:
+        el = soup.select_one(sel)
+        if el:
+            text = clean_text(el.get_text(" "))
+            if text:
+                return text
+    return ""
 
 
 def _detect_serial(soup: BeautifulSoup, logger: logging.Logger) -> tuple[str, str, tuple]:
@@ -161,7 +215,7 @@ def _parse_detail(session, url: str, logger: logging.Logger) -> Article | None:
         logger.warning("kjas: no citation_title meta on %s — skipping", url)
         return None
 
-    authors = _meta_all(soup, META_AUTHOR)
+    authors = _authors(soup)
 
     first = _meta(soup, META_FIRSTPAGE)
     last = _meta(soup, META_LASTPAGE)
@@ -175,13 +229,7 @@ def _parse_detail(session, url: str, logger: logging.Logger) -> Article | None:
         dm = RE_DOI.search(html)
         doi = dm.group(0) if dm else ""
 
-    abstract = _meta(soup, META_ABSTRACT)
-    if not abstract:
-        for sel in SEL_ABSTRACT_BODY:
-            el = soup.select_one(sel)
-            if el:
-                abstract = clean_text(el.get_text(" "))
-                break
+    abstract = _extract_abstract(soup)
     if not abstract:
         logger.warning("kjas: no abstract found on %s", url)
 
