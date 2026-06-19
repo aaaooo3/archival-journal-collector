@@ -75,6 +75,10 @@ META_PDF_URL = "citation_pdf_url"
 META_HTML_URL = "citation_abstract_html_url"
 META_FULLTEXT_URL = "citation_fulltext_html_url"
 
+# Korean title on the detail page. ``citation_title`` holds the *English* title,
+# but this is a Korean journal — the 국문 제목 is in the visible article heading.
+SEL_TITLE_KO = ["h1.article-title", ".article-title", "h2.article-title"]
+
 # Fallback abstract container on the detail page if the meta tag is absent.
 # KoreaScience currently omits ``citation_abstract`` and renders the 초록 in a
 # <p> right after a heading (h3/h4/h5) whose text is "초록"/"Abstract"; that
@@ -210,9 +214,18 @@ def _parse_detail(session, url: str, logger: logging.Logger) -> Article | None:
     html = fetch_html(session, url, logger)
     soup = BeautifulSoup(html, "lxml")
 
-    title = _meta(soup, META_TITLE)
+    # Prefer the Korean title from the visible heading; citation_title is English.
+    title = ""
+    for sel in SEL_TITLE_KO:
+        el = soup.select_one(sel)
+        if el:
+            title = clean_text(el.get_text(" "))
+            if title:
+                break
     if not title:
-        logger.warning("kjas: no citation_title meta on %s — skipping", url)
+        title = _meta(soup, META_TITLE)   # fall back to (English) meta
+    if not title:
+        logger.warning("kjas: no title found on %s — skipping", url)
         return None
 
     authors = _authors(soup)
