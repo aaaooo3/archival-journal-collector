@@ -263,10 +263,15 @@ def save_summary(summary: dict, row: dict, logger: logging.Logger) -> Path:
     return path
 
 
+def _list_number(value: str) -> int:
+    """Parse a --list number, tolerating a leading '#' (e.g. '#7')."""
+    return int(value.lstrip("#").strip())
+
+
 def parse_args(argv=None) -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("selectors", nargs="*", help="article DOIs to summarise")
-    p.add_argument("--num", type=int, nargs="*", default=[], help="select by --list numbers")
+    p.add_argument("selectors", nargs="*", help="article DOIs, or --list numbers")
+    p.add_argument("--num", type=_list_number, nargs="*", default=[], help="select by --list numbers (e.g. 2 5)")
     p.add_argument("--list", action="store_true", help="print a numbered list of all articles and exit")
     p.add_argument("--engine", choices=["extractive", "ollama"], default="extractive",
                    help="요약 방식: extractive(무료·로컬 추출, 기본) 또는 ollama(무료·로컬 생성형)")
@@ -303,11 +308,18 @@ def main(argv=None) -> int:
         else:
             logger.warning("번호 %d 는 범위를 벗어남 (1..%d)", n, len(rows))
     by_doi = {r["doi"]: r for r in rows if r["doi"]}
-    for doi in args.selectors:
-        if doi in by_doi:
-            selected.append(by_doi[doi])
+    for sel in args.selectors:
+        token = sel.lstrip("#").strip()
+        if token.isdigit():                       # a bare list number works too
+            n = int(token)
+            if 1 <= n <= len(rows):
+                selected.append(rows[n - 1])
+            else:
+                logger.warning("번호 %d 는 범위를 벗어남 (1..%d)", n, len(rows))
+        elif sel in by_doi:
+            selected.append(by_doi[sel])
         else:
-            logger.warning("DOI를 목록에서 찾지 못함: %s", doi)
+            logger.warning("목록에서 찾지 못함(번호 또는 DOI): %s", sel)
 
     if not selected:
         logger.error("선택된 논문이 없습니다. --list 로 번호를 확인하세요.")
