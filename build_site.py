@@ -173,16 +173,54 @@ def load_issues(output_dir: Path, logger: logging.Logger | None = None) -> list[
         elif logger:
             logger.warning("build_site: could not parse %s", path)
 
-    def _sort_key(iss: dict) -> tuple:
-        # Group by journal order, then newest issue first.
-        try:
-            ji = JOURNAL_ORDER.index(iss["journal_key"])
-        except ValueError:
-            ji = len(JOURNAL_ORDER)
-        nums = tuple(int(n) for n in re.findall(r"\d+", iss["issue_id"]))
-        return (ji, tuple(-n for n in nums))
+    # Sort by publication date (newest first), interleaving the two journals,
+    # rather than grouping by journal.
+    return sorted(issues, key=_pub_sort_key, reverse=True)
 
-    return sorted(issues, key=_sort_key)
+
+# --- Publication date (for chronological ordering) --------------------------
+#
+# The collected JSON has no explicit publication date, but it can be derived
+# from data we do store, and the result is verified against real anchors:
+#   • Year: taken from the DOI (e.g. 10.20923/kjas.2026.88.005 -> 2026), which
+#     both journals embed reliably.
+#   • Month: both journals publish quarterly, confirmed by live publication
+#     dates — jksarm v26/1 = 2026-02-28 (No.1 = Feb) and kjas n88 = 2026-04-30.
+# This yields an accurate (year, quarter-month) ordering without re-scraping.
+
+_RE_DOI_YEAR = re.compile(r"\.((?:19|20)\d\d)\.")
+_JKSARM_MONTH = {1: 2, 2: 5, 3: 8, 4: 11}   # 한국기록관리학회지: Feb/May/Aug/Nov
+_KJAS_MONTHS = [1, 4, 7, 10]                 # 기록학연구: Jan/Apr/Jul/Oct (quarterly)
+
+
+def _pub_year(issue: dict) -> int:
+    for art in issue.get("articles", []):
+        m = _RE_DOI_YEAR.search(art.get("doi", ""))
+        if m:
+            return int(m.group(1))
+    m = re.search(r"/((?:19|20)\d\d)\b", issue.get("source_url", ""))
+    return int(m.group(1)) if m else 0
+
+
+def _pub_month(issue: dict) -> int:
+    key = issue.get("journal_key", "")
+    if key == "jksarm":
+        parts = issue.get("issue_id", "").split("-")
+        no = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 0
+        return _JKSARM_MONTH.get(no, 6)
+    if key == "kjas":
+        sid = issue.get("issue_id", "")
+        serial = int(sid) if sid.isdigit() else 0
+        # Anchor: serial 88 -> April. Each serial step is one quarter.
+        return _KJAS_MONTHS[(serial - 87) % 4]
+    return 6
+
+
+def _pub_sort_key(issue: dict) -> tuple:
+    # (year, month, then issue recency as a tiebreak) — all ascending; the
+    # caller sorts reverse=True for newest first.
+    nums = tuple(int(n) for n in re.findall(r"\d+", issue.get("issue_id", "")))
+    return (_pub_year(issue), _pub_month(issue), nums)
 
 
 # --- HTML rendering ---------------------------------------------------------
@@ -384,10 +422,12 @@ def _render_issue(issue: dict) -> str:
         f' · <a href="{_attr(issue["source_url"])}" target="_blank" rel="noopener">출처</a>'
         if issue.get("source_url") else ""
     )
+    year = _pub_year(issue)
+    year_txt = f"{year}년 · " if year else ""
     return (
         f'<section class="issue" data-journal="{_attr(issue.get("journal_key", ""))}">'
         f'<h2>{_esc(issue.get("journal_name", ""))} — {_esc(issue.get("issue_label", ""))}</h2>'
-        f'<p class="meta">논문 {len(issue.get("articles", []))}편 · '
+        f'<p class="meta">{year_txt}논문 {len(issue.get("articles", []))}편 · '
         f'수집일 {_esc(issue.get("collected", ""))}{src}</p>'
         f"{cards}</section>"
     )
