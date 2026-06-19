@@ -1,0 +1,206 @@
+{
+  "journal_key": "amarch",
+  "journal_name": "The American Archivist",
+  "issue_id": "88-2",
+  "issue_label": "Vol. 88, No. 2",
+  "source_url": "https://portal.issn.org/resource/ISSN/0360-9081",
+  "articles": [
+    {
+      "title": "The Handbook of Archival Practice",
+      "authors": [
+        "Audie Robinson"
+      ],
+      "pages": "501-502",
+      "doi": "10.17723/2327-9702-88.2.501",
+      "abstract": "",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.501"
+    },
+    {
+      "title": "Instilling Primary-Source Research Confidence in Undergraduate History Majors: Insight into Instructional Impact and Student Preferences",
+      "authors": [
+        "Matthew Gorzalski"
+      ],
+      "pages": "364-390",
+      "doi": "10.17723/2327-9702-88.2.364",
+      "abstract": "ABSTRACT Information literacy and critical thinking are arguably the most important and transferable skills undergraduate history majors develop in the course of their studies. A primary-source-based research paper is often an undergraduate history major's capstone assignment toward graduation. Yet they often face these assignments having little or no prior experience with archival research and lack confidence in finding and using primary sources. This article reports on a study conducted during the 2022 and 2023 spring semesters at Southern Illinois University Carbondale (SIUC) involving archival literacy instruction for undergraduate history majors enrolled in HIST 392 Historical Research and Writing. It examined the extent to which the instruction topics, delivered via a “one-shot” session, enhanced students’ research skills and instilled confidence for completing their primary-source-based research paper. The questions guiding the study included: What archival literacy topics are most relevant and useful for students for completing their assignment? What research competencies should be prioritized in future lectures to craft the most impactful instruction in the limited time of one or two classes? How can the instruction be improved for future students? The author found that the instruction topics presumed to be most useful to students were indeed valued and positively impacted knowledge and confidence for completing the research paper. The areas for improvement regarded instruction delivery.",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.364",
+      "title_ko": "대학생 역사 전공자들의 원문 연구 자신감 제고: 교육 영향과 학생 선호도에 대한 통찰"
+    },
+    {
+      "title": "From Local to Global: Variety in the Archival Literature",
+      "authors": [
+        "Rose Buchanan",
+        "Stephanie Luke"
+      ],
+      "pages": "474-476",
+      "doi": "10.17723/2327-9702-88.2.474",
+      "abstract": "",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.474",
+      "title_ko": "지방에서 전 세계까지: 아카이브 문헌의 다양성"
+    },
+    {
+      "title": "Records and Information Management",
+      "authors": [
+        "Brady Kal Cox"
+      ],
+      "pages": "497-500",
+      "doi": "10.17723/2327-9702-88.2.497",
+      "abstract": "",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.497",
+      "title_ko": "기록물 및 정보 관리"
+    },
+    {
+      "title": "What Can AI Do for Special Collections?",
+      "authors": [
+        "Sonia Yaco",
+        "Bala Desinghu",
+        "Claire Warwick",
+        "Richard Anderson"
+      ],
+      "pages": "441-473",
+      "doi": "10.17723/2327-9702-88.2.441",
+      "abstract": "ABSTRACT This research project investigates the question, what can AI do for special collections by testing thirty-three software tools on a manuscript collection. The authors provide an in-depth analysis of their experiences with specific AI tools applied to untranscribed documents (handwritten and type-written) and photographs in the William Elliot Griffis Collection at Rutgers University Libraries. The evaluated tools range from end-user generative AI to APIs requiring Python programming and include software that is commercial and open-source; fee-based and free; web browser-based and standalone; and run in desktop, mobile device, and high performance computing clusters environments. Application scenarios extract text from images, perform complex pattern matching, and generate metadata. Each scenario discusses audiences, ethical considerations, tool evaluations, and implementation suggestions. Collaboration among cultural heritage professionals, humanities scholars, and computer scientists addressed challenges of resources, communication, and policy. The project successfully demonstrates the potential of AI to improve accessibility and discoverability in manuscript collections.",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.441",
+      "title_ko": "AI가 특수 수집품에 어떤 도움을 줄 수 있는지"
+    },
+    {
+      "title": "Charting a Profession: A Comparative Analysis of Seven Regional Archival Journals and American Archivist, 2013–2023",
+      "authors": [
+        "J. Gordon Daines",
+        "Coulter Gill",
+        "Ryan K. Lee",
+        "Cory L. Nimer"
+      ],
+      "pages": "295-330",
+      "doi": "10.17723/2327-9702-88.2.295",
+      "abstract": "ABSTRACT This article compares seven journals published by regional archival associations with American Archivist . It presents the results of a study to better understand how these regional archival journals compare to American Archivist . The study uses corpus analysis to compare the contents of the journals, author analysis to understand who is publishing in regional archival journals versus American Archivist , and citation analysis to examine the impact of the regional archival journals versus American Archivist .",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.295",
+      "title_ko": "직업의 맵 그리기: 2013~2023년 지역 아카이브 저널들과 미국 아카이브스트의 비교 분석"
+    },
+    {
+      "title": "“I Despise It, But It Works”: Social Media Outreach in Special Collections",
+      "authors": [
+        "Nikki Lynn Thomas",
+        "Colleen Theisen",
+        "Juli McLoone",
+        "Sean Heyliger"
+      ],
+      "pages": "404-440",
+      "doi": "10.17723/2327-9702-88.2.404",
+      "abstract": "ABSTRACT Primary source repositories’ use of social media has gone from an exciting experiment to an ordinary part of staff workloads. This article discusses the results of a survey of social media adoption, content, and labor conducted in 2023. It discusses institutional goals for social media, positive and negative experiences shared by survey respondents, and the impact of the COVID-19 pandemic and burnout. The survey was conducted as a follow-up to, but not an exact replication of, a 2012 survey by the same authors. Institutional goals, audiences, and content remained constant between 2012 and 2023. However, there were some dramatic changes, including the reduced importance of long-form content in the form of blogs and the emergence of Instagram as a popular social media platform, along with the rise in popularity and algorithmic support for photo and video content. At the same time, behind the scenes, there were shifts in who creates content and posts to social media, including increased involvement from communications and marketing departments. Additionally, free text responses to the 2023 survey revealed concerns with stress and burnout from social media and articulated anxiety about whether the impact was worth the effort. Respondents also shared negative interactions on social media and expressed concerns about the impact on their wellbeing.",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.404",
+      "title_ko": "사회 미디어를 활용한 특수 소장품의 대외 홍보: 반발하면서도 효과를 보다"
+    },
+    {
+      "title": "“Putting It into Practice Is the Best Way to Really Learn Something”: Evaluating the North American Graduate Archival Education Curriculum1",
+      "authors": [
+        "Alex H. Poole",
+        "Ashley Todd-Diaz"
+      ],
+      "pages": "247-294",
+      "doi": "10.17723/2327-9702-88.2.247",
+      "abstract": "ABSTRACT Despite the vital role graduate archival education plays in preparing aspiring archivists for practice, we lack empirical evidence concerning its efficacy. This study is based on a survey of 406 students and new professionals (SNPs) (five or fewer years in the field). It addresses the following research question: based on their graduate education, how well prepared for practice are SNPs in North America? To address this question, the authors explore the topics SNPs suggested were most useful, the assignments they found most fruitful, their perceptions of topics lacking adequate coverage, their overall rating of their professional preparation's effectiveness, and the ways in which they thought professional preparation might be improved. Notably, SNPs lauded the payoff of experiential learning. They also foregrounded topics related to the 2016 “Guidelines for a Graduate Program in Archival Studies” (GPAS) clusters Arrangement and Description and Digital Materials Management. SNPs suggested that improved professional preparation could come from augmented course offerings, enriched course content, and most important, more hands-on/practical experience. SNPs were vocationally preoccupied; they showed only modest interest in “archival thinking.” The authors juxtapose their findings with both GPAS and A*CENSUS II and suggest that communities of archival practice (COAPs) are a profitable direction for future archival pedagogy.",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.247"
+    },
+    {
+      "title": "Scattered and Fugitive Things: How Black Collectors Created Archives and Remade History",
+      "authors": [
+        "Gabrielle Dean"
+      ],
+      "pages": "480-483",
+      "doi": "10.17723/2327-9702-88.2.480",
+      "abstract": "",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.480",
+      "title_ko": "분산된 기억을 모아 역사 새로 쓴 흑인 수집가들"
+    },
+    {
+      "title": "Preserving Disability: Disability and the Archival Profession",
+      "authors": [
+        "Moira Armstrong"
+      ],
+      "pages": "494-496",
+      "doi": "10.17723/2327-9702-88.2.494",
+      "abstract": "",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.494",
+      "title_ko": "장애인의 권익 보호: 아카이브 전문가와 장애 문제"
+    },
+    {
+      "title": "Front Matter",
+      "authors": [],
+      "pages": "fmi",
+      "doi": "10.17723/2327-9702-88.2.fmi",
+      "abstract": "",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.fmi",
+      "title_ko": "서문 또는 머리말"
+    },
+    {
+      "title": "Beyond Evidence: The Use of Archives in Transitional Justice",
+      "authors": [
+        "Sarah R. Demb"
+      ],
+      "pages": "491-493",
+      "doi": "10.17723/2327-9702-88.2.491",
+      "abstract": "",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.491",
+      "title_ko": "증거 너머: 전환 정의에서 아카이브의 활용"
+    },
+    {
+      "title": "Averting the Digital Dark Age: How Archivists, Librarians, and Technologists Built the Web a Memory",
+      "authors": [
+        "Kailyn Slater"
+      ],
+      "pages": "484-490",
+      "doi": "10.17723/2327-9702-88.2.484",
+      "abstract": "",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.484",
+      "title_ko": "디지털 어두운 시대를 막는다: 아카이ivist, 도서관사, 기술자들이 웹에 기억을 심다"
+    },
+    {
+      "title": "Box 25: Archival Secrets, Caribbean Workers, and the Panama Canal",
+      "authors": [
+        "Katie Sutrina-Haney"
+      ],
+      "pages": "477-479",
+      "doi": "10.17723/2327-9702-88.2.477",
+      "abstract": "",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.477",
+      "title_ko": "파나마 운하의 카리브해 노동자와 아카이벌 비밀들"
+    },
+    {
+      "title": "The Mumia Rules for Carceral Collecting",
+      "authors": [
+        "Mary O. Murphy",
+        "Amanda M. Knox"
+      ],
+      "pages": "391-403",
+      "doi": "10.17723/2327-9702-88.2.391",
+      "abstract": "ABSTRACT This case study sets forth “The Mumia Rules” for carceral collecting. As the curator and archivist of the Mumia Abu-Jamal papers, the authors outline information they wish they'd had when they began their work with Abu-Jamal in 2020. They introduce Abu-Jamal and how they came to his collection. Then they discuss the sources they relied on to make the case for the acquisition, as well as some literature that has been published since the acquisition. They will also provide five key take-aways from their experience and outline their dos and don'ts for curating and processing carceral collections. The authors hope this study can be used as a tool to help shine a bit of light onto this work, where they worked in darkness for nearly four years. Mumia Abu-Jamal has dedicated his life to the betterment of incarcerated people; the authors hope his experience working with the Pembroke Center Archives and John Hay Library at Brown University can promote positive change for future archives contributors and archival professionals as well.",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.391",
+      "title_ko": "무미아 수감자 수집 규칙"
+    },
+    {
+      "title": "The State of American State Archives (Revisited)",
+      "authors": [
+        "Elizabeth Joffrion"
+      ],
+      "pages": "331-363",
+      "doi": "10.17723/2327-9702-88.2.331",
+      "abstract": "ABSTRACT Over the last century, professional organizations, commissions, and advocacy groups have compiled reports and surveys devoted to the status of state and local archival and records management programs and practices across the United States. Through this long lens of data, this article revisits the historical development of state archival systems to examine the programmatic placement of state archives agencies within broader state governmental structures and the implications of these designations. The study begins with an examination of public records advocacy in the United States and how this historical background influenced Ernst Posner's seminal book, American State Archives , and subsequent reports compiled by professional organizations that collectively offer a longitudinal view into the mission and health of state archival programs. It is hoped that this initial examination of the administrative and political structures supporting state archives and records management programs will encourage additional research on state archival systems, including a deeper review of historical levels of funding, the evolution of education and research services, the impact of digital technology and preservation, staffing and expertise, and efforts to diversify the record and the profession. The preliminary research set forth in this article illustrates the complex history of American state archives and the potential for a more comprehensive and critical review of historical data, including a complete update of Posner's analysis of archival programs in all fifty states and territories.",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.331",
+      "title_ko": "미국 주립문서원의 현황(재고)"
+    },
+    {
+      "title": "No Time (Not) to Read",
+      "authors": [
+        "Amy Cooper Cary"
+      ],
+      "pages": "245-246",
+      "doi": "10.17723/2327-9702-88.2.245",
+      "abstract": "",
+      "url": "https://doi.org/10.17723/2327-9702-88.2.245",
+      "title_ko": "더 이상 읽을 시간 없다 아니다"
+    }
+  ],
+  "published": "2025",
+  "collected": "2026-06-19"
+}
