@@ -1,0 +1,108 @@
+{
+  "journal_key": "archrec",
+  "journal_name": "Archives and Records",
+  "issue_id": "0",
+  "issue_label": "(latest)",
+  "source_url": "https://portal.issn.org/resource/ISSN/2325-7962",
+  "articles": [
+    {
+      "title": "AI ready: how to prepare archives for Artificial Intelligence, improve discoverability, and enhance access",
+      "authors": [
+        "Giovanni Colavizza",
+        "Lise Jaillant"
+      ],
+      "pages": "1-22",
+      "doi": "10.1080/23257962.2026.2675937",
+      "abstract": "Artificial Intelligence (AI) and machine learning offer significant potential for archives: they can help identify sensitive content at scale, support the creation and enhancement of descriptive metadata, and enable new forms of access and interpretation. Yet AI also risks compounding long-standing challenges around archival description, bias, and power, especially where collections are fragmentary, under-described, or documented using outdated or harmful terminology.This article asks: how can archives prepare their collections for AI in ways that enhance discoverability and access, while remaining grounded in archival principles and ethical commitments? Co-authored by a computer scientist and a digital humanist with experience in cultural heritage, the article offers a cross-disciplinary literature review and practice-oriented guidelines for “AI data preparedness” in archives. Drawing on work in data documentation, data readiness, collections-as-data, and archival theory, we argue that concepts such as provenance, appraisal, authenticity, reliability, and trustworthiness should shape AI applications in records and archives.We distinguish between task-specific AI systems and generative AI, and propose workflows in which AI assists rather than replaces archivists, including description, terminology mapping, and sensitivity review. AI readiness, we argue, is an ethical and interventionist approach to data curation.",
+      "url": "https://doi.org/10.1080/23257962.2026.2675937"
+    },
+    {
+      "title": "Lost in oblivion: the widespread non-archiving of research records",
+      "authors": [
+        "Charlotte Borgerud"
+      ],
+      "pages": "1-22",
+      "doi": "10.1080/23257962.2026.2652086",
+      "abstract": "Effective archiving of research materials and records is essential for advancing modern science. While previous research highlights deficiencies in data management and calls for improved policies, it often overlooks the role of Freedom of Information (FOI) legislation, which mandates proper records management in many countries. This study examines the implications of FOI legislation for research data management, focusing on why research materials are rarely archived in Sweden despite legal obligations for public universities. Through 15 semi-structured interviews with university archivists, the study utilizes infrastructure theory to analyse challenges in implementing formal archiving. Findings reveal that, despite legal mandates, research materials often remain unarchived due to inadequate infrastructure, insufficient resources, contradictory legal frameworks, and cultural resistance. Outdated IT systems, lack of standardization, and unclear roles further hinder efficient archiving. Archivists advocate for harmonized regulations, standardized metadata practices, and technical solutions tailored to disciplinary needs. The study underscores that enacting laws and policies is insufficient; successful implementation requires a shared understanding of archival value, practical feasibility of archiving, and institutional commitment. These insights inform policymakers, universities, and infrastructure providers in developing strategies to integrate archiving into research workflows, ensuring long-term data preservation and accessibility.",
+      "url": "https://doi.org/10.1080/23257962.2026.2652086"
+    },
+    {
+      "title": "Automated curation and museum archiving of large-scale tomography data for scientific research",
+      "authors": [
+        "Yusuke Takeda",
+        "Aya Kubota",
+        "Aya Togashi",
+        "Rinto Noguchi",
+        "Shintaro Sasaki",
+        "Shin Ikegami",
+        "Kanta Sugiura",
+        "Mehmet Oguz Derin",
+        "Kazuki Tainaka",
+        "Akiyoshi Kakita",
+        "Hitoshi Uchida",
+        "Rie Saito",
+        "Harufumi Nishida",
+        "Benjamin T. Breeden",
+        "Chisako Sakata",
+        "Makoto Manabe",
+        "Yasuhiro Iba"
+      ],
+      "pages": "1-18",
+      "doi": "10.1080/23257962.2026.2652085",
+      "abstract": "Tomography is a technique used to image the three-dimensional structure of an object by cutting it into parallel two-dimensional slices. This technique has many applications to scientific research, but preserving tomography datasets for scientific repeatability poses considerable logistical and financial challenges. Conventional curation of fundamental tomography data and associated metadata demands long working-person hours because there is no standardized, easy-to-use software. Tomography datasets often exceed 1,000 files, and these large dataset sizes exceed the capacity of open online data repositories, and archiving these data locally demands abundant disk storage. Here, we present a new cost-effective software and hardware developed to facilitate the large-scale curation of tomography data. Our user-friendly software processes RAW tomography data, generates flipbook-style animations, and outputs metadata tables, while a cluster of desktop computers ensures efficient execution. Data are stored on magnetic tapes for robust long-term archiving. This comprehensive, open-source method is designed for easy adoption, especially in museums. It is compatible with the distribution of lightweight 3D models with open data repositories, mirroring the relationship between publishing research papers by publishers and archiving the described specimens by museums. It supports scientific integrity, particularly in the establishment of new species in natural history sciences.",
+      "url": "https://doi.org/10.1080/23257962.2026.2652085"
+    },
+    {
+      "title": "Developing a categorical climate risk assessment scale for archival institutions: a GIS-based pilot study from the PROTECCT-GLAM project",
+      "authors": [
+        "Edward Benoit",
+        "Jill C. Trepanier",
+        "Jennifer K. Vanos",
+        "Emily E. Fisher",
+        "Kaitlyn R. Bailey",
+        "Gisel Guzman-Echavarria",
+        "Annie Waddell",
+        "Reilly Corkran"
+      ],
+      "pages": "1-29",
+      "doi": "10.1080/23257962.2026.2652089",
+      "abstract": "Cultural heritage institutions, including archives, face significant and increasing climate-change-related threats. This paper presents a pilot study from the Providing Risk of the Environment’s Changing Climate Threats for Galleries, Libraries, Archives and Museums (PROTECCT-GLAM) project. Focused on the United States Gulf Coast region, the study applies an advanced Geographic Information System analysis to assess county-level risk for archival institutions based on two climate variables: Flash Flood Warnings and Tropical Cyclone Wind occurrence. Based on historical data, the study developed a novel A-F grading scale to categorize risk. The pilot study successfully validated the methodological framework for integrating multi-hazard climate data and translating complex climate information into an intuitive, actionable, risk assessment tool for archival professionals. GLAMs within Louisiana and Mississippi are the most at-risk from these variables when compared to other states in the study region.",
+      "url": "https://doi.org/10.1080/23257962.2026.2652089"
+    },
+    {
+      "title": "Actions and reports of archival institutions: a measurement study of policy documents on adaptation to climate change in key areas of China",
+      "authors": [
+        "Yue Ren",
+        "Boyong Li",
+        "Keming Tan",
+        "Zeyu Liu"
+      ],
+      "pages": "1-21",
+      "doi": "10.1080/23257962.2026.2652087",
+      "abstract": "This study collected a total of 2,318 policy documents on adapting to climate change in key areas from various central government departments of China. The policies were divided into four stages. Subsequently, we used LDA to conduct policy topic mining, identifying 23 policy themes, drawing a Sankey diagram for the diffusion of policy themes. The research findings indicate that the overall trajectory of policy evolution shows a development pattern from dispersion to integration, from local to global, from initial exploration to focused breakthroughs. The change in policy propositions lies in the fact that the focus of policy themes varies at different stages: the comprehensiveness of the policy content has been enhanced, with laws and regulations continuing to deepen and become more complete; the unchanging aspect of the policy proposition is that policy formulation gives priority to regions across the country significantly affected by climate change; the policy content consistently attaches great importance to disaster prevention and mitigation-related work; finally, the relevant policies and actions have always been in line with the goals, principles, and institutional arrangements of international climate change response policies.",
+      "url": "https://doi.org/10.1080/23257962.2026.2652087"
+    },
+    {
+      "title": "Germaine Greer, celebrity feminism and the archive",
+      "authors": [
+        "Anne Marie Williamson"
+      ],
+      "pages": "1-3",
+      "doi": "10.1080/23257962.2026.2642611",
+      "abstract": "In charting the genesis of social movements, the academic and politician Michael P. Fogarty identified ‘orientation’ as the foundational step.1 For any movement to succeed, observed Fogarty in his ...",
+      "url": "https://doi.org/10.1080/23257962.2026.2642611"
+    },
+    {
+      "title": "Archives and emotions: international dialogues across past, present, and future",
+      "authors": [
+        "Victoria Hoyle"
+      ],
+      "pages": "1-3",
+      "doi": "10.1080/23257962.2026.2613980",
+      "abstract": "In 2016 the journal Archival Science published a special issue titled ‘Affect and the Archive, Archives and their Affects.’1 The articles in the issue, now almost a decade old, reflected a then-gro...",
+      "url": "https://doi.org/10.1080/23257962.2026.2613980"
+    }
+  ],
+  "published": "2026-06",
+  "collected": "2026-06-19"
+}

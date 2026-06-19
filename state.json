@@ -8,5 +8,20 @@
     "last_issue_id": "88",
     "last_issue_label": "통권 제88호",
     "updated_at": "2026-06-19T07:54:39.096506+00:00"
+  },
+  "amarch": {
+    "last_issue_id": "88-1",
+    "last_issue_label": "Vol. 88, No. 1",
+    "updated_at": "2026-06-19T12:26:24.049364+00:00"
+  },
+  "archivaria": {
+    "last_issue_id": "100",
+    "last_issue_label": "No. 100",
+    "updated_at": "2026-06-19T12:26:27.133126+00:00"
+  },
+  "archrec": {
+    "last_issue_id": "0",
+    "last_issue_label": "(latest)",
+    "updated_at": "2026-06-19T12:26:29.576181+00:00"
   }
 }
