@@ -178,6 +178,24 @@ def load_issues(output_dir: Path, logger: logging.Logger | None = None) -> list[
     return sorted(issues, key=_pub_sort_key, reverse=True)
 
 
+def load_summaries(output_dir: Path, logger: logging.Logger | None = None) -> dict[str, dict]:
+    """Load extractive summaries (``output/summaries/*.json``) keyed by DOI."""
+    summaries: dict[str, dict] = {}
+    sdir = Path(output_dir) / "summaries"
+    if not sdir.is_dir():
+        return summaries
+    for path in sorted(sdir.glob("*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            if logger:
+                logger.warning("build_site: could not read summary %s", path)
+            continue
+        if data.get("doi"):
+            summaries[data["doi"]] = data
+    return summaries
+
+
 # --- Publication date (for chronological ordering) --------------------------
 #
 # The collected JSON has no explicit publication date, but it can be derived
@@ -291,6 +309,15 @@ _CSS = """
     padding: 2px 8px; font-size: .78rem;
   }
   .tag a { color: var(--accent); text-decoration: none; }
+  .tag-sum { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .summary {
+    background: var(--accent-soft); border: 1px solid #cfe3d8; border-radius: 8px;
+    padding: 8px 12px; margin: 0 0 10px;
+  }
+  .summary-h { cursor: pointer; font-size: .9rem; font-weight: 600; color: var(--accent); }
+  .summary ul { margin: 8px 0 4px; padding-left: 18px; }
+  .summary li { font-size: .9rem; color: #2b3a33; margin-bottom: 4px; }
+  .summary-note { font-size: .72rem; color: var(--muted); margin: 4px 0 0; }
   .abstract { font-size: .92rem; color: #374151; margin: 0; }
   .abstract.clamp {
     display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
@@ -383,22 +410,40 @@ def _attr(s: str) -> str:
     return html.escape(s or "", quote=True)
 
 
-def _render_card(art: dict) -> str:
+def _render_summary(summary: dict) -> str:
+    items = "".join(f"<li>{_esc(s)}</li>" for s in summary.get("summary", []))
+    if not items:
+        return ""
+    return (
+        '<details class="summary"><summary class="summary-h">'
+        "📝 요약 (원문 핵심 문장 발췌)</summary>"
+        f"<ul>{items}</ul>"
+        '<p class="summary-note">원문 PDF에서 추출 요약(TextRank) · 생성 문장 아님</p>'
+        "</details>"
+    )
+
+
+def _render_card(art: dict, summaries: dict[str, dict]) -> str:
     title = art.get("title", "")
     authors = art.get("authors") or []
     abstract = art.get("abstract", "")
-    # Lowercased haystack for client-side search (title + authors + abstract).
-    haystack = " ".join([title, " ".join(authors), abstract]).lower()
+    doi = art.get("doi", "")
+    summary = summaries.get(doi)
+    summary_text = " ".join(summary.get("summary", [])) if summary else ""
+    # Lowercased haystack for client-side search (title + authors + abstract + summary).
+    haystack = " ".join([title, " ".join(authors), abstract, summary_text]).lower()
 
     tags: list[str] = []
+    if summary:
+        tags.append('<span class="tag tag-sum">📝 요약</span>')
     if authors:
         tags.append(f'<span class="tag">{_esc(", ".join(authors))}</span>')
     if art.get("pages"):
         tags.append(f'<span class="tag">pp. {_esc(art["pages"])}</span>')
-    if art.get("doi"):
+    if doi:
         tags.append(
-            f'<span class="tag"><a href="https://doi.org/{_attr(art["doi"])}" '
-            f'target="_blank" rel="noopener">DOI: {_esc(art["doi"])}</a></span>'
+            f'<span class="tag"><a href="https://doi.org/{_attr(doi)}" '
+            f'target="_blank" rel="noopener">DOI: {_esc(doi)}</a></span>'
         )
     if art.get("url"):
         tags.append(
@@ -407,17 +452,19 @@ def _render_card(art: dict) -> str:
         )
 
     abstract_html = _esc(abstract) if abstract else "<em>(초록 없음)</em>"
+    has_sum = " has-summary" if summary else ""
     return (
-        f'<article class="card" data-text="{_attr(haystack)}">'
+        f'<article class="card{has_sum}" data-text="{_attr(haystack)}">'
         f"<h3>{_esc(title)}</h3>"
         f'<div class="tags">{"".join(tags)}</div>'
+        f"{_render_summary(summary) if summary else ''}"
         f'<p class="abstract">{abstract_html}</p>'
         f"</article>"
     )
 
 
-def _render_issue(issue: dict) -> str:
-    cards = "".join(_render_card(a) for a in issue.get("articles", []))
+def _render_issue(issue: dict, summaries: dict[str, dict]) -> str:
+    cards = "".join(_render_card(a, summaries) for a in issue.get("articles", []))
     src = (
         f' · <a href="{_attr(issue["source_url"])}" target="_blank" rel="noopener">출처</a>'
         if issue.get("source_url") else ""
@@ -446,10 +493,11 @@ def _render_filters(issues: list[dict]) -> str:
     return "".join(buttons)
 
 
-def render_site(issues: list[dict]) -> str:
+def render_site(issues: list[dict], summaries: dict[str, dict] | None = None) -> str:
     """Render the full single-page HTML for the given issues (content pre-rendered)."""
+    summaries = summaries or {}
     total = sum(len(i.get("articles", [])) for i in issues)
-    main_html = "".join(_render_issue(i) for i in issues)
+    main_html = "".join(_render_issue(i, summaries) for i in issues)
     if not main_html:
         main_html = '<p class="empty">아직 수집된 논문이 없습니다.</p>'
 
@@ -500,12 +548,16 @@ def build_site(
     """Build ``site/index.html`` from the digests in ``output_dir``."""
     output_dir, site_dir = Path(output_dir), Path(site_dir)
     issues = load_issues(output_dir, logger)
+    summaries = load_summaries(output_dir, logger)
     site_dir.mkdir(parents=True, exist_ok=True)
     index = site_dir / "index.html"
-    index.write_text(render_site(issues), encoding="utf-8")
+    index.write_text(render_site(issues, summaries), encoding="utf-8")
     n_articles = sum(len(i["articles"]) for i in issues)
     if logger:
-        logger.info("build_site: wrote %s (%d issues, %d articles)", index, len(issues), n_articles)
+        logger.info(
+            "build_site: wrote %s (%d issues, %d articles, %d summaries)",
+            index, len(issues), n_articles, len(summaries),
+        )
     return index
 
 
