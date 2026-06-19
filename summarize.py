@@ -158,10 +158,11 @@ def ollama_available(host: str, logger: logging.Logger) -> bool:
         return False
 
 
-def ollama_generate(host: str, model: str, prompt: str, system: str | None = None, timeout: int = 240) -> str:
+def ollama_generate(host: str, model: str, prompt: str, system: str | None = None,
+                    timeout: int = 240, num_predict: int = 400) -> str:
     """Call Ollama's /api/generate and return the model's text response."""
     payload = {"model": model, "prompt": prompt, "stream": False,
-               "options": {"temperature": 0.2, "num_predict": 400}}
+               "options": {"temperature": 0.2, "num_predict": num_predict}}
     if system:
         payload["system"] = system
     resp = requests.post(f"{host.rstrip('/')}/api/generate", json=payload, timeout=timeout)

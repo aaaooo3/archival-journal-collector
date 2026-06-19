@@ -309,7 +309,10 @@ _CSS = """
     background: var(--card); border: 1px solid var(--line); border-radius: 12px;
     padding: 16px 18px; margin-bottom: 12px;
   }
-  .card h3 { margin: 0 0 8px; font-size: 1.02rem; }
+  .card h3 { margin: 0 0 2px; font-size: 1.02rem; }
+  .title-en { color: var(--muted); font-size: .82rem; font-style: italic; margin: 0 0 8px; }
+  .orig { margin-top: 6px; }
+  .orig > summary { cursor: pointer; font-size: .78rem; color: var(--muted); }
   .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
   .tag {
     background: var(--chip); color: var(--muted); border-radius: 6px;
@@ -468,13 +471,15 @@ def _summary_text(summary: dict) -> str:
 
 def _render_card(art: dict, summaries: dict[str, dict]) -> str:
     title = art.get("title", "")
+    title_ko = art.get("title_ko", "")
     authors = art.get("authors") or []
     abstract = art.get("abstract", "")
+    abstract_ko = art.get("abstract_ko", "")
     doi = art.get("doi", "")
     summary = summaries.get(doi)
     summary_text = _summary_text(summary) if summary else ""
-    # Lowercased haystack for client-side search (title + authors + abstract + summary).
-    haystack = " ".join([title, " ".join(authors), abstract, summary_text]).lower()
+    # Lowercased haystack for client-side search (titles + authors + abstracts + summary).
+    haystack = " ".join([title, title_ko, " ".join(authors), abstract, abstract_ko, summary_text]).lower()
 
     tags: list[str] = []
     if summary:
@@ -494,14 +499,30 @@ def _render_card(art: dict, summaries: dict[str, dict]) -> str:
             f'target="_blank" rel="noopener">원문</a></span>'
         )
 
-    abstract_html = _esc(abstract) if abstract else "<em>(초록 없음)</em>"
+    # 제목: 국문 번역이 있으면 국문을 크게, 영어 원제를 부제로 함께 표시.
+    if title_ko:
+        heading = f"<h3>{_esc(title_ko)}</h3><div class=\"title-en\">{_esc(title)}</div>"
+    else:
+        heading = f"<h3>{_esc(title)}</h3>"
+
+    # 초록: 국문 번역이 있으면 국문을 보여주고, 영문 원문은 접어서 함께 보존.
+    if abstract_ko:
+        abstract_block = (
+            f'<p class="abstract">{_esc(abstract_ko)}</p>'
+            f'<details class="orig"><summary>영문 초록 원문</summary>'
+            f'<p class="abstract">{_esc(abstract)}</p></details>'
+        )
+    else:
+        abstract_html = _esc(abstract) if abstract else "<em>(초록 없음)</em>"
+        abstract_block = f'<p class="abstract">{abstract_html}</p>'
+
     has_sum = " has-summary" if summary else ""
     return (
         f'<article class="card{has_sum}" data-text="{_attr(haystack)}">'
-        f"<h3>{_esc(title)}</h3>"
+        f"{heading}"
         f'<div class="tags">{"".join(tags)}</div>'
         f"{_render_summary(summary) if summary else ''}"
-        f'<p class="abstract">{abstract_html}</p>'
+        f"{abstract_block}"
         f"</article>"
     )
 
