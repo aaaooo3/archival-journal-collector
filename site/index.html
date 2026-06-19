@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>기록학 학회지 아카이브</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --ink: #1f2328; --muted: #6b7280;
+    --line: #e5e7eb; --accent: #2f6f4f; --accent-soft: #e7f1ec; --chip: #eef2f7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+      "Malgun Gothic", "Noto Sans KR", Segoe UI, Roboto, sans-serif;
+    line-height: 1.6;
+  }
+  header {
+    background: var(--accent); color: #fff; padding: 28px 20px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+  header h1 { margin: 0 0 6px; font-size: 1.5rem; }
+  header p { margin: 0; opacity: .9; font-size: .9rem; }
+  .controls {
+    position: sticky; top: 0; z-index: 5; background: var(--bg);
+    border-bottom: 1px solid var(--line); padding: 14px 0;
+  }
+  .controls .wrap { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  #search {
+    flex: 1 1 240px; min-width: 200px; padding: 10px 12px; font-size: .95rem;
+    border: 1px solid var(--line); border-radius: 8px; background: #fff;
+  }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filter {
+    border: 1px solid var(--line); background: #fff; color: var(--ink);
+    padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: .9rem;
+  }
+  .filter.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  #count { color: var(--muted); font-size: .85rem; margin-left: auto; }
+  main { padding: 24px 0 60px; }
+  .issue { margin-bottom: 34px; }
+  .issue h2 {
+    font-size: 1.15rem; margin: 0 0 4px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft);
+  }
+  .issue .meta { color: var(--muted); font-size: .82rem; margin: 0 0 14px; }
+  .issue .meta a { color: var(--accent); }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 18px; margin-bottom: 12px;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 1.02rem; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .tag {
+    background: var(--chip); color: var(--muted); border-radius: 6px;
+    padding: 2px 8px; font-size: .78rem;
+  }
+  .tag a { color: var(--accent); text-decoration: none; }
+  .abstract { font-size: .92rem; color: #374151; margin: 0; }
+  .abstract.clamp {
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .toggle {
+    margin-top: 8px; background: none; border: none; color: var(--accent);
+    cursor: pointer; font-size: .82rem; padding: 0;
+  }
+  .empty { text-align: center; color: var(--muted); padding: 60px 0; }
+  mark { background: #fff3b0; padding: 0 1px; }
+  footer { color: var(--muted); font-size: .8rem; text-align: center; padding: 24px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>기록학 학회지 아카이브</h1>
+    <p>한국기록관리학회지 · 기록학연구 — 새 호가 나오면 자동 수집한 목차·초록 모음 (AI 요약 없음)</p>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="wrap">
+    <input id="search" type="search" placeholder="제목·저자·초록 검색…" autocomplete="off">
+    <div class="filters" id="filters"></div>
+    <span id="count"></span>
+  </div>
+</div>
+
+<main class="wrap" id="app"></main>
+
+<footer>마지막 생성: 2026-06-19 · 정적 페이지 (서버 불필요)</footer>
+
+<script id="data" type="application/json">[{"journal_key": "jksarm", "journal_name": "한국기록관리학회지", "issue_id": "26-2", "issue_label": "제26권 제2호", "source_url": "https://accesson.kr/jksarm/", "articles": [{"title": "아카이브의 탈식민화: 기억 주권, 제도적 복원, 그리고 디지털 윤리", "authors": ["윤지수"], "pages": "1-18", "doi": "10.14404/JKSARM.2026.26.2.001", "abstract": "본 논문은 탈식민적 실천을 통해 아카이브가 어떻게 정치적이고 윤리적인 공간으로 재구성될 수 있는지를 분석한다. Derrida의 아카이브 권력 개념과 Stoler의 식민 아카이브 분석에 기반하여, 기억 주권, 제도적 회복, 디지털 윤리라는 세 가지 핵심 차원을 중심으로 한 분석 틀을 제시한다. 이 분석 틀은 남아프리카 역사 아카이브(SAHA)와 Blackivists라는 두 사례에 적용된다. 분석 결과, SAHA는 공적 기록 체계에 대한 접근과 제도적 개입을 통해 주변화된 기억을 공적 기록으로 재구성하는 반면, Blackivists는 공동체 기반 기록 생산과 디지털 윤리 실천을 통해 기억의 소유와 통제 문제를 재구성하는 것으로 나타난다. 접근 방식에는 차이가 있지만, 두 사례 모두 주변화된 역사를 복원하고 아카이브 권위를 재구성하려는 공통된 목표를 공유한다. 본 논문은 아카이브의 탈식민화가 단순한 제도 개혁을 넘어, 기억 주권, 윤리, 참여에 대한 근본적인 재사유를 요구하며, 한국의 기록관리 논의와 실천에도 중요한 시사점을 제공한다.", "url": "https://accesson.kr/jksarm/v.26/2/1/59329"}, {"title": "육군 기록관의 군단급 통합 운영 방안 연구", "authors": ["유샛별", "이성숙"], "pages": "19-46", "doi": "10.14404/JKSARM.2026.26.2.019", "abstract": "본 연구의 목적은 육군 기록관 운영의 효율성과 전문성을 제고하기 위해 현행 사단급 제대 기록관 운영 체계를 진단하고, 군단급 제대 중심의 통합 운영 방안을 제시하는 것이다. 이를 위해 문헌연구와 사례연구를 하였으며, 육군 기록물관리 전문요원 및 실무자를 대상으로 설문조사 및 인터뷰를 통해 현장의 실태와 기록관의 통합 운영에 대한 인식을 실증적으로 분석하였다. 육군 기록관의 통합 운영을 위한 개선방안으로는 첫째, 조직 운영 측면에서 현행 사단급 기록관을 지역적⋅작전적 특성을 고려하여 군단급 통합기록관으로 재편하고 육군기록정보관리단 직속의 독립기구로 편성하여 행정적⋅기능적 통제력을 확보해야 한다. 둘째, 인력 운영 측면에서 기록물관리 전문요원을 통합기록관별 집중 배치를 통해 업무의 전문성을 높이고, 직무의 연속성을 보장해야 한다. 셋째, 시설 및 인프라 측면에서 독립된 전용 보존 건물 확보와 물리적 보존환경의 안정성을 강화해야 한다. 넷째, 단계별 추진 전략을 통해 체계적인 절차를 거쳐 순차적으로 진행되어야 한다. 본 연구는 향후 육군 기록관리 정책 수립과 조직개편을 위한 기초 자료로 활용될 수 있을 것이다.", "url": "https://accesson.kr/jksarm/v.26/2/19/59330"}, {"title": "개인 온톨로지 기반 지식 그래프 리랭킹이 PKMS 검색 품질에 미치는 영향", "authors": ["정혜지"], "pages": "47-70", "doi": "10.14404/JKSARM.2026.26.2.047", "abstract": "본 연구는 개인지식관리시스템에서 생산자의 사고방식과 가치관을 반영한 온톨로지 기반 검색 리랭킹의 효과를 검증한다. 기록학의 출처주의가 생산 맥락으로 기록의 의미를 보존하듯, 생산자의 인지적 맥락이 검색 관련성을 결정한다는 가설 하에, 연구자 본인의 마크다운 기반 PKMS 환경 3,702건을 대상으로 시맨틱 검색 결과를 7개 온톨로지 요인(허브 부스트, 정체성 렌즈, 교차 도메인, 사고 패턴, 그래프 근접도, 가치 정렬, 저자성)으로 리랭킹하는 POR(v1.0~v2.1.0)을 설계하였다. 5,717 노드와 13,544 엣지의 지식 그래프에서 10개 허브 노트 전체가 PageRank 상위 15위 이내에 위치하여 허브 선정의 타당성을 확인하였다. 10개 쿼리의 실시간 A/B 비교 결과, 평균 Kendall’s tau 0.621(SD=0.252)로 쿼리 유형에 따라 차등적 재배열을 보였다. 허브 관련 쿼리(tau=0.300)에서 가장 큰 순위 변경이 발생하였고, 일반 쿼리(tau=0.786)에서는 기존 순위가 보존되었다. 정체성 렌즈 매칭(57건)과 교차 도메인 교집합(29건)이 가장 활발한 요인이었다. 이로써 개인 온톨로지가 시맨틱 유사도만으로는 포착할 수 없는 맥락적 관련성을 쿼리 유형에 따라 차등 제공함을 확인하였다.", "url": "https://accesson.kr/jksarm/v.26/2/47/59331"}, {"title": "예술기록물 분류체계 유형에 따른 이용가능성 모델 연구", "authors": ["윤소정"], "pages": "71-91", "doi": "10.14404/JKSARM.2026.26.2.071", "abstract": "본 연구는 예술기록물 분류체계의 유형이 이용가능성에 어떤 영향을 미치는지를 밝히고 이를 바탕으로 이용가능성 유형화 모델을 제안하는 것을 목적으로 한다. 연구방법으로 아르코예술기록원(ARCO)⋅미국미술아카이브(AAA)⋅프랑스국립도서관 공연예술부(BnF)를 연구 대상으로 선정하였다. 분류체계⋅검색도구⋅이용자 서비스의 3축을 기준으로 비교⋅분석하였다. 분석 결과, 3기관의 분류체계는 수집 범위의 특성에 따라 서로 다른 구성 논리를 가진다. 이를 바탕으로 분류 논리의 일관성⋅계층 구조의 확립⋅3축 연계의 통합성의 3가지 요인을 도출하였다. 이를 적용한 결과 이용가능성의 유형은 원칙 분산형⋅계층 미확립형⋅사건 맥락 중심 일관형⋅생산자 중심 일관형의 4가지로 구분된다. Finding Aid의 존재 여부가 유형별 이용가능성 실현 수준의 핵심 분기점임을 확인하였다.", "url": "https://accesson.kr/jksarm/v.26/2/71/59332"}, {"title": "FAIR 원칙에 따른 한국 고문헌 메타데이터 관리체계 진단: KORCIS를 중심으로", "authors": ["신은선"], "pages": "93-111", "doi": "10.14404/JKSARM.2026.26.2.093", "abstract": "본 연구는 한국고문헌종합목록시스템(KORCIS) 서지 데이터 567,212건을 대상으로 FAIR 원칙 준수 현황을 실증적으로 진단하고 개선 방향을 제시하는 것을 목적으로 한다. 본 연구에서 메타데이터 관리체계란 고문헌 서지 데이터의 생산⋅기술⋅식별⋅접근⋅연계에 이르는 전 과정을 규율하는 표준, 시스템 구조, 운영 정책의 총체를 의미하며, KORCIS는 142개 참여 기관을 포괄하는 국가 단위 고문헌 메타데이터 관리체계로 기능하고 있다. 분석은 KORMARC 주요 필드 출현 빈도 및 완성도 측정, 전거 제어 및 식별자 체계 실태 분석, FAIR 원칙 15개 세부 항목별 준수도 평가의 세 단계로 수행하였으며, 필드 유형(필수⋅해당시 필수⋅재량) 구분과 데이터 구조적 특성⋅시스템 기능 지원 여부⋅정량 분석 결과를 종합하여 판정하였다. 분석 결과 필수 필드의 완성도는 높으나 국제 영구 식별자⋅전거 연계⋅표준 어휘 등 시맨틱 웹 환경의 핵심 요건이 전반적으로 미충족 상태임이 확인되었으며, FAIR 15개 항목 평가 결과 적합 0개(0%), 부분 적합 5개(33.3%), 미흡⋅결여 10개(66.7%)로 나타났다. Europeana, 일본 NDL, 중국 중화고적자원고와의 비교를 통해 RDF 기반 온톨로지 전환, 국제 전거 연계, 라이선스 체계 정비가 시급한 과제임을 논증하였으며, 분석 스크립트와 FAIR 항목별 판정 기준은 공개 리포지터리(https://github.com/SHINEUNSUN1027/korcis-fair-analysis)에 공개하였다.", "url": "https://accesson.kr/jksarm/v.26/2/93/59325"}, {"title": "AI 기반 기록관리의 설명책임성 확보를 위한 파라데이터 확장 스키마 연구: ISO 23081-2와 Human-in-the-Loop를 중심으로", "authors": ["김주영", "김순희"], "pages": "113-130", "doi": "10.14404/JKSARM.2026.26.2.113", "abstract": "본 연구의 목적은 AI 기반 기록관리 환경에서 설명책임성을 확보하기 위한 파라데이터의 개념과 구조를 구체화하고, 이를 기록관리 메타데이터 체계 안에서 활용할 수 있는 확장 스키마로 제안하는 데 있다. 이를 위해 문헌연구, 법제 분석, 표준 분석, 개념모형 설계의 방법을 활용하였다. 먼저 AI 기반 기록관리, 파라데이터, Human-in-the-Loop에 관한 국내외 논의를 검토하고, ｢인공지능 발전과 신뢰 기반 조성 등에 관한 기본법｣을 중심으로 설명, 인간의 관리⋅감독, 문서화와 관련된 요구를 검토하였다. 이어 ISO 15489-1과 ISO 23081-2를 분석하여 기록, 행위주체, 업무, 규정과 이들 간의 관계 및 사건 이력 메타데이터를 중심으로 한 구조화 원리를 정리하였다. 연구 결과, AI 기반 기록관리의 설명책임성은 설명가능성, 추적가능성, 감독가능성, 재검토가능성, 문서화가능성의 다섯 가지 요건으로 체계화될 수 있었으며, 이를 지원하는 파라데이터는 식별 정보, 기술 정보, 사건 이력 정보, 관계 정보의 네 가지 범주로 구조화될 수 있음을 확인하였다. 이를 바탕으로 본 연구는 ISO 23081-2의 구조 논리를 기반으로 기술적 파라데이터와 조직적 파라데이터를 통합하고, Human-in-the-Loop 통제 구조를 반영한 파라데이터 확장 스키마를 제안하였다.", "url": "https://accesson.kr/jksarm/v.26/2/113/59326"}, {"title": "웹 기반 행정정보 데이터세트의 XSLT 재현 방안 연구: HTML 구조 유형화를 중심으로", "authors": ["박라미", "양동민"], "pages": "131-156", "doi": "10.14404/JKSARM.2026.26.2.131", "abstract": "현행 기록관리 체계는 행정정보 데이터세트의 원천 데이터(Raw Data) 보존에는 기술적으로 유효하나, 사용자 인터페이스와 같은 재현 정보를 포함하지 않아 산 당시의 구조와 맥락을 충분히 전달하는 데 한계가 있다. 이에 본 연구는 웹 기반 행정정보시스템에서 생성되는 행정정보 데이터세트의 재현을 위해 HTML 구조를 분석하고, XSLT 기반 재현 방안의 적용 가능성을 실증적으로 검증하였다. 이를 위해 공공기관 행정정보시스템 관련 웹 서비스 10개 사례를 수집하고, 문법 적합성, 구조 복잡도, 화면 복잡도, 스타일/스크립트 의존성, 동적 기능 수준의 다섯 가지 기준에 따라 HTML 구조를 분석하였다. 분석을 통해 재현 대상 HTML은 정적 내재형, 클라이언트-서버 조회형, 다중화면 구성형, 동적 렌더링형의 네 가지 유형으로 구분되었다. 또한 각 유형의 대표 사례를 대상으로 XSLT를 설계⋅적용하여 재현 가능 범위와 한계를 검증하였다. 검증 결과, 정적 내재형에서 XSLT 재현 방식이 가장 효과적으로 적용되었으며, 외부 실행 환경에 대한 의존도가 높을수록 재현 가능 범위는 축소되고 적용상의 한계가 뚜렷하게 나타났다. 본 연구는 재현 대상 HTML의 유형을 체계적으로 구분하고, XSLT 재현 방안의 적용 가능성과 한계를 실증적으로 제시하였다는 점에서 의의를 가진다.", "url": "https://accesson.kr/jksarm/v.26/2/131/59327"}, {"title": "레코드 컨티뉴엄에 기반한 공공도서관 프로그램 기록관리방안 연구: 2024 길 위의 인문학을 중심으로", "authors": ["이태용", "박성재"], "pages": "157-175", "doi": "10.14404/JKSARM.2026.26.2.157", "abstract": "본 연구는 2024년 길 위의 인문학 프로그램의 기록관리 실태를 레코드 컨티뉴엄 이론에 기반하여 분석하고, 공공도서관 프로그램 수행 과정에서 기록이 생산 초기부터 연속적⋅다원적 맥락 속에서 관리될 수 있는 방안을 모색하였다. 이를 위해 문헌조사를 통해 업무 프로세스를 도출하고, 담당자 면담 자료를 내용분석하여 생산⋅획득⋅조직화⋅다원화 차원으로 범주화하였다. 분석 결과, 다양한 생산 주체 간 기록 생산 기준의 비일관성과 필수 생산 기록의 누락 문제가 확인되었으며, 도서관 외부 시스템 중심의 분산된 획득 구조로 인해 통합적 관리가 어려운 것으로 나타났다. 또한 도서관별 분류 기준의 차이로 기록의 맥락화와 구조화가 미흡하고, 활용 역시 제한적인 수준에 머무는 것으로 분석되었다. 이에 본 연구는 생산 주체별 기록 유형의 사전 목록화, 전자기록 기반의 통합 기록관리체계 구축, 다층적 분류체계 설계, 지역사회 참여 기반 아카이브 조성을 개선 방안으로 제시하였다.", "url": "https://accesson.kr/jksarm/v.26/2/157/59333"}, {"title": "이천시립기록원 출범과 기록문화복지 실현", "authors": ["이생동"], "pages": "177-190", "doi": "10.14404/JKSARM.2026.26.2.177", "abstract": "본 연구는 2025년 출범한 이천시립기록원의 사례를 통해 기초지자체 기록행정의 발전 모델과 ‘기록문화복지’의 실현 방안을 고찰하였다. 이천시는 10여 년간 비전자 기록물 관리, 디지털 아카이브 구축, 마을기록인단 운영 등 기록관리 역량을 단계적으로 강화하며 영구기록물관리기관으로 승격되었다. 특히 단순 행정 보조를 넘어, 시민이 기록 활동을 통해 정서적 풍요를 누리는 ‘기록복지’를 조례에 명시하고 5대 비전을 선포하였다. 본 사례가 전국 기초지자체가 지역 여건에 맞는 기록자치를 실현하고, 기록관리의 패러다임을 행정에서 복지로 전환하는 데 중요한 마중물이 되길 바란다.", "url": "https://accesson.kr/jksarm/v.26/2/177/59328"}], "collected": "2026-06-19"}, {"journal_key": "kjas", "journal_name": "기록학연구", "issue_id": "88", "issue_label": "통권 제88호", "source_url": "https://www.koreascience.kr/journal/HGKRBZ.page?lang=ko", "articles": [{"title": "A Study on the Analysis and Improvement of the Classified Records Management System", "authors": ["Yun, Jeong-hoon"], "pages": "5-45", "doi": "10.20923/kjas.2026.88.005", "abstract": "본 연구는 한국 비밀기록관리 제도의 구조적 한계를 분석하고, 해외 사례 비교를 통해 개선 방향을 도출하는 것을 목적으로 한다. 미국, 영국, 캐나다의 비밀기록관리 제도를 비교하고, 한국의 비밀기록관리 체계를 「보안업무규정」, 「공공기록물물」, 그리고 「비밀보호법(안)」을 중심으로 분석하였다. 분석 결과, 한국의 비밀기록관리 체계는 보안 행정과 기록관리 행정이 분절된 이원적 구조를 보이며, 법제적 정합성 부족, 생애주기 관리의 단절, 거버넌스의 불균형이라는 한계를 나타낸다. 특히 비밀기록관리 정책이 지정과 보호 단계에 집중되어 해제 및 공개 전환 체계가 미흡하고, 기록관리 전문기관의 참여가 제한되어 있는 점이 주요 문제로 확인되었다. 이에 본 연구는 비밀기록관리 법제의 통합적 정비, 비밀 해제 및 재분류 중심 관리체계 확립, 그리고 국가기록원과 전문가 참여를 포함한 거버넌스 구축이 필요성을 강조하며 개선방안을 제시하였다. 본 연구는 비밀기록관리 문제를 보안 행정의 영역을 넘어 국가 기록관리체계의 관점에서 재해석하고 제도 개선 방향을 제시했다는 점에서 의의를 가진다.", "url": "https://www.koreascience.kr:443/article/JAKO202613936120276.pdf"}, {"title": "A Study on the Affective Experiences of Citizen Archival Activists: Focusing on the experiences of citizen archival archivists in Buk-gu and Yeongdo-gu, Busan", "authors": ["Bae, Eunhee"], "pages": "47-102", "doi": "10.20923/kjas.2026.88.047", "abstract": "자기 지역을 기록하는 시민은 어떤 경험을 하게 되는가? 본 연구는 시민 기록활동이 개인의 인식과 삶의 방식에 영향을 미치는 과정이라는 전제 아래 정동(affect) 이론을 주요 틀로 삼아 '시민은 기록활동 과정에서 어떠한 정동적 경험을 하게 되는가'와 '시민은 정동적 경험을 통해 어떠한 당사자-되기를 경험하는가'를 연구문제로 설정하였다. 개인의 감정에 주목하고 관계성을 강조하는 '정동(affect, 情動)'과 그와 관련한 개념들을 주요한 이론적 틀로 활용하고 이를 토대로 시민 기록활동가의 정동적 경험 분석 모델을 개발했다. 부산 북구와 영도구의 시민 기록활동 경험자 11명을 대상으로 심층 면담을 실시하고 자연주의 탐구 패러다임에 기반한 질적 내용분석과 내러티브 서술 전략을 적용하였다. 연구 결과 참여자들은 인간 및 비인간 정동적 행위자와의 관계 속에서 정서적 경험을 하였으며 기록활동과 지역 및 공동체 그리고 자신에 대한 인식의 변화와 역량 성장 및 관계 재구성이라는 존재의 변화를 경험하였다. 이러한 정동적 경험의 과정은 '기록활동가 당사자-되기'와 '지역 및 공동체 당사자-되기'로 귀결되었다. 본 연구는 시민 기록활동의 의미와 가치를 탐색함으로써 기록학의 논의 영역을 확장하고 시민 기록활동을 해석하고 평가할 수 있는 실천적 분석 틀을 마련하였다는 데에 의의가 있다.", "url": "https://www.koreascience.kr:443/article/JAKO202613872086075.pdf"}, {"title": "Rethinking Archival Exhibitions: A Critical Intervention into Archival Exhibition Discourses", "authors": ["Lee, Kyong Rae"], "pages": "103-137", "doi": "10.20923/kjas.2026.88.103", "abstract": "본 연구는 전통적으로 기록관리의 주변적 기능에 머물러 온 아카이브 전시의 실태를 비판적으로 성찰하고, 이를 기록관리 업무의 중심부로 복귀시키기 위한 이론적 재구성을 시도한다. 오랫동안 젠킨슨주의적 중립성에 갇혀 단순히 기록의 노출에 머물렀던 전시의 한계를 극복하기 위해, 본 연구는 기록연속체론의 다원화(4차원)를 구현하는 기록학적 실천으로서 아카이브 전시의 가치에 주목한다. 이를 위해 전시 공간을 차이 공간으로, 기록 독해를 이용자가 의미를 직조하는 해석적 독해로 전환할 것을 제안한다. 이는 아카이브를 박제된 재현물에서 끊임없이 사건화되는 수행의 아카이브로 이동시키는 존재론적 전회를 의미한다. 또한, 존재론적 전회가 발휘하는 '변혁적 잠재력'을 전시행위, 이용자 참여, 기록의 정동적 수행성의 세 차원에서 국내외 전시사례를 통해 논증한다. 결론적으로 아카이브 전시의 재구상은 서고 속에 박제된 기록에 동시대적 생명력을 부여하는 맥락적 복원 작업이자, 아키비스트가 이를 매개하는 수행적 촉진자로 재정의되어야 하는 논리적 귀결로 이어진다. 본 연구는 단순한 전시 실무 개선의 차원을 넘어, 아카이브 전시를 사회적 소통과 기록 실천의 장으로 탈바꿈시키기 위한 인식론적 이정표를 제시한다는 점에서 그 의의가 있다.", "url": "https://www.koreascience.kr:443/article/JAKO202613943304009.pdf"}, {"title": "Disconnection Between Collections and Archives: The Necessity of Context-Rich Cross-Linking", "authors": ["Lee, Doo Ri", "Park, Ju Seok"], "pages": "139-216", "doi": "10.20923/kjas.2026.88.139", "abstract": "본 연구는 미술관의 컬렉션(collection)과 아카이브(archives)가 서로 다른 시스템에서 분리 운영되는 구조적 현실을 검토하고, 사용자 관점에서 정보 접근성과 작품 및 기록의 맥락적 이해를 확장하기 위한 연결 구조의 방향을 모색하는 데 목적이 있다. 본 연구가 문제로 지적하는 핵심은 시스템이 분리되어 있다는 관리상의 구조가 아니라, 서비스 단계에서 작품 정보와 관련 기록, 혹은 기록과 관련된 작품을 상호 연계하여 제시하는 '맥락 기반 연결 장치'(예: 관련 항목 링크, 참조 안내, 연계된 기록 보기)가 구축되어 있지 않다는 점이다. 국내 미술관에서는 작품과 직접적으로 연관된 기록이 존재함에도, 컬렉션과 아카이브가 별도의 페이지·플랫폼에서 제공될 뿐 아니라, 두 자료를 구조적으로 연결해 주는 서비스 설계가 부재하여 상호 참조가 어려운 현실이다. 이로 인해 작품 및 기록의 맥락적 이해가 충분히 확보되지 못하며, 작품과 기록 모두 국내외 학술적 활용 가능성이 제한되는 문제가 발생하고 있다. 국내 사례 분석으로는 국립현대미술관과 서울시립미술관을 선정하였다. 특히 국립현대미술관의 <다다익선>(1988) 작품은 1986년 과천관 개관과 함께 제작·운영 단계에서 방대한 기술 문서, 보존 기록, 행정 자료가 생성되었음에도, 해당 기록이 작품 정보와 연결된 단일 인터페이스에서 제공되지 않아 작품의 기술적·제도적 맥락을 통합적으로 파악하는 데 어려움이 존재한다. 이처럼 국내 사례를 통해 국내 미술관 정보 구조가 기능별 분리 운영 체계를 유지하면서도, 사용자 중심의 맥락적 연결 제공 방식에서는 여전히 미흡함을 확인하였다. 국외 사례 비교에서는 MoMA, Getty, Tate, Japan Search를 중심으로 정보 구조와 연계 방식의 차이를 검토하였다. MoMA는 전시 기록과 컬렉션 데이터베이스를 통해 서사적 참조 구조를 강화하고 있으며, Getty는 표준화된 메타데이터와 프로비넌스 인덱스(provenance index)를 기반으로 연구 맥락을 확장한다. Tate는 프로젝트를 통해서 아카이브와 컬렉션 정보를 하나의 검색·인터페이스로 통합하여 사용자 경험을 강화하려는 시도를 보여주었다. 한편 Japan Search는 국가 차원의 메타데이터 거버넌스 기반 연결 모델을 통해 이질적 기관 데이터를 상호운용 가능한 구조로 조직하였다. 본 연구는 이러한 비교 분석을 토대로, 국내 미술관 정보 시스템이 단순한 기술적(technical) 통합을 넘어 작품·기록·제작 맥락을 의미적으로 연결하는 서비스 차원의 구조적 연계 체계로 발전해야 함을 제안한다. 이는 메타데이터 상호운용성 확보, 시스템 간 참조 링크 설계, 작업 과정 기록의 체계적 편입을 포함하는 제도적 개선을 요구한다. 궁극적으로 컬렉션과 아카이브의 맥락 기반 연결은 미술관이 예술적 의미 생산과 공적 기억 형성의 기관으로 기능하기 위한 핵심 조건임을 밝힌다.", "url": "https://www.koreascience.kr:443/article/JAKO202613939726229.pdf"}, {"title": "The Triad of Knowledge: Cognitive Isomorphism in Classification, Retrieval, and Linking across Archives, PKM, and Cognitive Science", "authors": ["Jung, Hye Ji"], "pages": "217-257", "doi": "10.20923/kjas.2026.88.217", "abstract": "본 연구는 기록학(Archival Science), 개인지식관리(Personal Knowledge Management, PKM), 인지과학(Cognitive Science) 세 분야가 분류-검색-연결이라는 삼중 구조를 공유한다는 가설을 검증한다. 아카이브의 기록군 계층과 PKMS의 폴더/태그 체계, 뇌의 의미 네트워크는 모두 계층적 분류 원리를 따르며, 아카이브의 메타데이터와 PKMS 의 태그/백링크, 뇌의 인출 단서는 동일한 검색 메커니즘을 구현한다. 또한 아카이브의 기록 연계와 PKMS의 노트 링크, 뇌의 시냅스 연결은 연결을 통한 의미 생성이라는 공통 원리를 공유한다. 연구에는 문헌 분석과 자문화기술지 방법론을 결합하여, 필자가 3년간 구축한 AI 기반 PKMS(총 용량 7.6GB, 8,020개 마크다운 노트, 온톨로지 그래프 3,664개 노드·7,166개 엣지)를 실증 사례로 분석한다. 연구 결과, 세 분야의 구조적 유사성은 인간 인지의 공통 원리가 외부 시스템 설계에 반영된 결과로 해석할 수 있다. 이를 바탕으로 '인지적 아카이브(Cognitive Archives)' 개념을 제안하여 뇌-아카이브-PKMS를 연결하는 외부화 연속체 모델을 제시하고, '세 개의 뇌 모델'을 통해 AI 에이전트가 뇌의 특정 구조가 담당하는 인지 기능을 외부화하고 보완함을 분석한다. 아키비스트는 인지과학 원리를 적용한 검색 시스템 설계를 고려해야 하며, 개인지식관리 실천가는 AI를 제3의 뇌로 활용해야 한다. 본 연구는 지식 조직의 보편 원리를 밝혀 AI 시대 기록관리의 새로운 프레임워크를 제안한다.", "url": "https://www.koreascience.kr:443/article/JAKO202613939726809.pdf"}, {"title": "Managing electronic medical records in South Korea from a socio-technical perspective and lessons learned for Vietnam", "authors": ["Hoang Quang Cuong"], "pages": "259-309", "doi": "", "abstract": "In the context of global digital transformation in healthcare, Electronic Health Records(EHRs) are no longer viewed simply as a technological solution, but as a complex data governance structure linked to institutional, legal, standardization, and intersectoral coordination mechanisms. This study analyzes the South Korean model of electronic health record management from a socio-technical systems perspective, aiming to clarify the interaction between technical components(IT infrastructure, data standards, information security) and socio-institutional components(legal framework, financial mechanisms, organizational governance, and human resource development). Based on a systematic literature review combined with an analysis of the electronic medical record management model and the SWOT framework, the study indicates that South Korea's success stems not purely from technological capabilities, but from a synchronized institutional design, national-level data standardization, and appropriate incentive mechanisms. However, this model also raises academic debates regarding the level of data centralization, the cost of complying with international standards, and cybersecurity risks. Based on a comparative analysis with the Vietnamese context, the study proposes six key policy lessons, including improving the legal framework, standardizing health data, building a national-level Health Information Exchange(HIE) system, strengthening information security, developing human resources in health informatics, and establishing appropriate financial mechanisms. Simultaneously, the study emphasizes that the application of international experience needs to be adapted to Vietnam's institutional conditions, resources, and data governance culture to ensure feasibility and sustainability.", "url": "https://www.koreascience.kr:443/article/JAKO202613939726422.pdf"}], "collected": "2026-06-19"}]</script>
+<script>
+  const ISSUES = JSON.parse(document.getElementById("data").textContent);
+  const JOURNALS = [{key:"all", name:"전체"}].concat(
+    [...new Set(ISSUES.map(i => i.journal_key))].map(k => ({
+      key: k, name: (ISSUES.find(i => i.journal_key === k) || {}).journal_name || k
+    }))
+  );
+  let activeJournal = "all";
+  let query = "";
+
+  const filtersEl = document.getElementById("filters");
+  JOURNALS.forEach(j => {
+    const b = document.createElement("button");
+    b.className = "filter" + (j.key === "all" ? " active" : "");
+    b.textContent = j.name;
+    b.onclick = () => {
+      activeJournal = j.key;
+      [...filtersEl.children].forEach(c => c.classList.remove("active"));
+      b.classList.add("active");
+      render();
+    };
+    filtersEl.appendChild(b);
+  });
+
+  const searchEl = document.getElementById("search");
+  searchEl.addEventListener("input", () => { query = searchEl.value.trim().toLowerCase(); render(); });
+
+  function esc(s) {
+    return (s || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  }
+  function highlight(s) {
+    s = esc(s);
+    if (!query) return s;
+    const q = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return s.replace(new RegExp(q, "gi"), m => "<mark>" + m + "</mark>");
+  }
+  function matches(art) {
+    if (!query) return true;
+    const hay = (art.title + " " + (art.authors || []).join(" ") + " " + art.abstract).toLowerCase();
+    return hay.includes(query);
+  }
+
+  function render() {
+    const app = document.getElementById("app");
+    app.innerHTML = "";
+    let shown = 0;
+
+    ISSUES.filter(i => activeJournal === "all" || i.journal_key === activeJournal).forEach(issue => {
+      const arts = issue.articles.filter(matches);
+      if (!arts.length) return;
+      shown += arts.length;
+
+      const sec = document.createElement("section");
+      sec.className = "issue";
+      const src = issue.source_url
+        ? ` · <a href="${esc(issue.source_url)}" target="_blank" rel="noopener">출처</a>` : "";
+      sec.innerHTML =
+        `<h2>${esc(issue.journal_name)} — ${esc(issue.issue_label)}</h2>` +
+        `<p class="meta">논문 ${arts.length}편 · 수집일 ${esc(issue.collected)}${src}</p>`;
+
+      arts.forEach(art => {
+        const card = document.createElement("div");
+        card.className = "card";
+        const tags = [];
+        if ((art.authors || []).length) tags.push(`<span class="tag">${highlight(art.authors.join(", "))}</span>`);
+        if (art.pages) tags.push(`<span class="tag">pp. ${esc(art.pages)}</span>`);
+        if (art.doi) tags.push(`<span class="tag"><a href="https://doi.org/${esc(art.doi)}" target="_blank" rel="noopener">DOI: ${esc(art.doi)}</a></span>`);
+        if (art.url) tags.push(`<span class="tag"><a href="${esc(art.url)}" target="_blank" rel="noopener">원문</a></span>`);
+        const longAbs = (art.abstract || "").length > 220;
+        card.innerHTML =
+          `<h3>${highlight(art.title)}</h3>` +
+          `<div class="tags">${tags.join("")}</div>` +
+          `<p class="abstract${longAbs ? " clamp" : ""}">${highlight(art.abstract) || "<em>(초록 없음)</em>"}</p>` +
+          (longAbs ? `<button class="toggle">더 보기</button>` : "");
+        if (longAbs) {
+          const p = card.querySelector(".abstract"), t = card.querySelector(".toggle");
+          t.onclick = () => { p.classList.toggle("clamp"); t.textContent = p.classList.contains("clamp") ? "더 보기" : "접기"; };
+        }
+        sec.appendChild(card);
+      });
+      app.appendChild(sec);
+    });
+
+    document.getElementById("count").textContent = shown ? `논문 ${shown}편` : "";
+    if (!shown) app.innerHTML = `<p class="empty">조건에 맞는 논문이 없습니다.</p>`;
+  }
+
+  render();
+</script>
+</body>
+</html>
