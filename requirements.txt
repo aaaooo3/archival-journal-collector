@@ -1,3 +1,4 @@
 requests>=2.31
 beautifulsoup4>=4.12
 lxml>=5.0
+pdfminer.six>=20221105   # PDF 본문 추출 (summarize.py) — 비용 없는 로컬 처리

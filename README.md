@@ -24,8 +24,12 @@ sources/
   kjas.py             기록학연구 파서 (citation_* meta + 목록 셀렉터)
 render.py             Issue -> 마크다운(.md) + 구조화 JSON(.json) 저장
 build_site.py         output/ 데이터 -> 단일 페이지 정적 사이트(site/index.html)
+backfill.py           과거 호 채우기 (각 학회지 최근 N개 호 수집)
+summarize.py          관심 논문 선택 -> PDF 다운로드 -> 추출 요약 -> 저장
+summarizer.py         무료·로컬 추출 요약기 (TextRank, 생성형 아님)
 state.json            학회지별 마지막 처리 호 기록
 output/               생성된 마크다운·JSON (예: kjas_88.md/.json, jksarm_26-2.md/.json)
+output/summaries/     논문별 추출 요약 JSON (DOI 기준)
 site/                 생성된 정적 웹페이지 (index.html, 서버 불필요)
 logs/                 watcher.log
 tests/                네트워크 없이 픽스처로 파서/상태/렌더 검증
@@ -51,6 +55,31 @@ python build_site.py        # output/ 의 .json(없으면 .md)을 읽어 site/in
 
 > 웹에 공개(URL)하고 싶으면 나중에 저장소 **Settings → Pages**에서
 > "Deploy from a branch"의 폴더를 `/site`로 지정하면 됩니다. 코드 수정은 필요 없습니다.
+
+## 관심 논문 요약 (무료·로컬, API 비용 없음)
+
+수집된 목록에서 관심 있는 논문을 골라 **원문 PDF를 내려받아 핵심 문장을 뽑아**
+요약합니다. 유료 LLM API나 모델 다운로드 없이, 로컬에서 도는 **추출 요약(TextRank)**
+이라 비용이 발생하지 않습니다. 생성형이 아니라 **원문 문장을 그대로 발췌**합니다.
+
+```bash
+python summarize.py --list                       # 논문에 번호를 매겨 출력
+python summarize.py --num 2 5                     # 목록 2, 5번 논문 요약
+python summarize.py 10.20923/kjas.2026.88.005     # DOI로 직접 지정
+python summarize.py --num 3 --sentences 8         # 더 긴 요약(문장 수 지정)
+python summarize.py --num 3 --force               # 기존 요약 덮어쓰기
+```
+
+- 요약은 `output/summaries/<DOI>.json`에 저장되고, 사이트를 다시 빌드하면 해당 논문
+  카드에 **📝 요약** 블록으로 표시됩니다(검색에도 포함).
+- PDF는 정중하게(User-Agent·지연·재시도) 받아오며, PDF가 공개돼 있지 않은 논문은
+  명확한 메시지와 함께 건너뜁니다.
+- 추출 요약 특성상 표·머리글 같은 잡음은 정제하지만, 발췌 문장은 원문 그대로라
+  완벽한 문장이 아닐 수 있습니다(생성형 요약과 다름).
+
+> 참고: 본 도구의 기본 수집 단계는 여전히 **초록을 원문 그대로** 옮기며 AI 생성
+> 요약을 하지 않습니다. 위 요약 기능은 사용자가 직접 고른 논문에 한해, 별도 명령으로
+> 비용 없이 핵심 문장을 발췌해 주는 보조 기능입니다.
 
 ## 설치
 
