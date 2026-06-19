@@ -21,38 +21,14 @@ from __future__ import annotations
 
 import argparse
 import logging
-import sys
-from pathlib import Path
 
 from build_site import build_site
 from render import write_issue
 from sources import SOURCES
 from sources.base import ExtractionError, make_session
-
-ROOT = Path(__file__).resolve().parent
-OUTPUT_DIR = ROOT / "output"
-SITE_DIR = ROOT / "site"
-LOG_DIR = ROOT / "logs"
+from tooling import OUTPUT_DIR, SITE_DIR, setup_logging
 
 DEFAULT_COUNT = 10
-
-
-def setup_logging() -> logging.Logger:
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
-    logger = logging.getLogger("backfill")
-    logger.setLevel(logging.DEBUG)
-    if logger.handlers:
-        return logger
-    fmt = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
-    fh = logging.FileHandler(LOG_DIR / "watcher.log", encoding="utf-8")
-    fh.setLevel(logging.DEBUG)
-    fh.setFormatter(fmt)
-    ch = logging.StreamHandler(sys.stdout)
-    ch.setLevel(logging.INFO)
-    ch.setFormatter(fmt)
-    logger.addHandler(fh)
-    logger.addHandler(ch)
-    return logger
 
 
 def _output_exists(key: str, issue_id: str) -> bool:
@@ -118,7 +94,7 @@ def parse_args(argv=None) -> argparse.Namespace:
 
 def main(argv=None) -> int:
     args = parse_args(argv)
-    logger = setup_logging()
+    logger = setup_logging("backfill")
     journals = list(SOURCES.keys()) if args.journal == "all" else [args.journal]
     count = None if args.all else args.count
 

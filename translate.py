@@ -27,13 +27,13 @@ import glob
 import json
 import logging
 import re
-import sys
 
 import requests
 
 import build_site
 from summarize import (DEFAULT_OLLAMA_HOST, DEFAULT_OLLAMA_MODEL,
                        ollama_available, ollama_generate)
+from tooling import setup_logging
 
 # 번역 대상 해외 저널 키.
 INTL_KEYS = ["amarch", "archivaria", "archrec"]
@@ -55,16 +55,6 @@ _TITLE_PROMPT = (
 )
 _ABSTRACT_PROMPT = ("다음 영어 논문 초록을 한국어로 번역하세요. 학술적 의미를 정확히 "
                     "보존하세요:\n\n{text}")
-
-
-def setup_logging() -> logging.Logger:
-    logger = logging.getLogger("translate")
-    logger.setLevel(logging.INFO)
-    if not logger.handlers:
-        h = logging.StreamHandler(sys.stdout)
-        h.setFormatter(logging.Formatter("%(message)s"))
-        logger.addHandler(h)
-    return logger
 
 
 def _has_hangul(s: str) -> bool:
@@ -105,7 +95,7 @@ def main(argv=None) -> int:
     p.add_argument("--titles-only", action="store_true",
                    help="제목만 (다시) 번역하고 초록은 건드리지 않음 (제목 품질 개선용, 빠름)")
     args = p.parse_args(argv)
-    logger = setup_logging()
+    logger = setup_logging("translate", logfile=False, simple=True)
 
     keys = INTL_KEYS if args.journal == "all" else [args.journal]
     files: list[str] = []

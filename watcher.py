@@ -22,47 +22,17 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import sys
 import time
 from datetime import datetime, timezone
-from pathlib import Path
 
 from build_site import build_site
 from render import write_issue
 from sources import SOURCES
 from sources.base import ExtractionError, make_session
+from tooling import OUTPUT_DIR, ROOT, SITE_DIR, setup_logging
 
-ROOT = Path(__file__).resolve().parent
 STATE_PATH = ROOT / "state.json"
-OUTPUT_DIR = ROOT / "output"
-SITE_DIR = ROOT / "site"
-LOG_DIR = ROOT / "logs"
 DEFAULT_INTERVAL_SECONDS = 6 * 60 * 60  # 6 hours
-
-
-# --- Logging ----------------------------------------------------------------
-
-
-def setup_logging() -> logging.Logger:
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
-    logger = logging.getLogger("collector")
-    logger.setLevel(logging.DEBUG)
-    if logger.handlers:  # avoid duplicate handlers on repeated calls
-        return logger
-
-    fmt = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
-
-    file_handler = logging.FileHandler(LOG_DIR / "watcher.log", encoding="utf-8")
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(fmt)
-
-    console = logging.StreamHandler(sys.stdout)
-    console.setLevel(logging.INFO)
-    console.setFormatter(fmt)
-
-    logger.addHandler(file_handler)
-    logger.addHandler(console)
-    return logger
 
 
 # --- State ------------------------------------------------------------------
@@ -165,7 +135,7 @@ def parse_args(argv=None) -> argparse.Namespace:
 
 def main(argv=None) -> int:
     args = parse_args(argv)
-    logger = setup_logging()
+    logger = setup_logging("collector")
     journals = list(SOURCES.keys()) if args.journal == "all" else [args.journal]
 
     if args.once:

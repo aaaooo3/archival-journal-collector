@@ -26,20 +26,14 @@ import json
 import logging
 import os
 import re
-import sys
 import time
-from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
 
 from build_site import build_site
 from sources.base import DEFAULT_HEADERS, clean_text
-
-ROOT = Path(__file__).resolve().parent
-OUTPUT_DIR = ROOT / "output"
-SITE_DIR = ROOT / "site"
-LOG_DIR = ROOT / "logs"
+from tooling import OUTPUT_DIR, SITE_DIR, setup_logging
 
 REQUEST_TIMEOUT = 15          # 빠르게 실패하도록 짧게 (차단 사이트에서 오래 안 매달림)
 REQUEST_DELAY_SECONDS = 1.5
@@ -56,17 +50,6 @@ _ABSTRACT_SELECTORS = [
 _META_ABSTRACT = [("citation_abstract", "name"), ("dc.Description", "name"),
                   ("dc.description", "name"), ("description", "name"),
                   ("og:description", "property")]
-
-
-def setup_logging() -> logging.Logger:
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
-    logger = logging.getLogger("enrich")
-    logger.setLevel(logging.INFO)
-    if not logger.handlers:
-        h = logging.StreamHandler(sys.stdout)
-        h.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
-        logger.addHandler(h)
-    return logger
 
 
 def _fetch(session: requests.Session, url: str, logger: logging.Logger) -> str | None:
@@ -200,7 +183,7 @@ def main(argv=None) -> int:
     p.add_argument("--journal", default="all", help="특정 학회지 키만 (예: archivaria). 기본 all")
     p.add_argument("--force", action="store_true", help="이미 초록 있는 것도 다시 시도")
     args = p.parse_args(argv)
-    logger = setup_logging()
+    logger = setup_logging("enrich", logfile=False)
 
     files = sorted(f for f in OUTPUT_DIR.glob("*.json"))
     if args.journal != "all":
