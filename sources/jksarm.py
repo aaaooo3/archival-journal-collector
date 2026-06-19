@@ -224,12 +224,8 @@ def _parse_article(item, logger: logging.Logger) -> Article | None:
     )
 
 
-def fetch_latest_issue(session, logger: logging.Logger) -> Issue:
-    """Fetch the landing page and parse the latest issue into an :class:`Issue`."""
-    logger.info("jksarm: fetching %s", URL)
-    html = fetch_html(session, URL, logger)
-    soup = BeautifulSoup(html, "lxml")
-
+def _issue_from_soup(soup: BeautifulSoup, source_url: str, logger: logging.Logger) -> Issue:
+    """Parse a rendered issue page (landing or archive) into an :class:`Issue`."""
     issue_id, issue_label, skey = _parse_issue_label(soup, logger)
     items = _select_items(soup, logger)
 
@@ -249,6 +245,52 @@ def fetch_latest_issue(session, logger: logging.Logger) -> Issue:
         issue_id=issue_id,
         issue_label=issue_label,
         sort_key=skey,
-        source_url=URL,
+        source_url=source_url,
         articles=articles,
     )
+
+
+def fetch_latest_issue(session, logger: logging.Logger) -> Issue:
+    """Fetch the landing page and parse the latest issue into an :class:`Issue`."""
+    logger.info("jksarm: fetching %s", URL)
+    html = fetch_html(session, URL, logger)
+    soup = BeautifulSoup(html, "lxml")
+    return _issue_from_soup(soup, URL, logger)
+
+
+def fetch_issue(session, url: str, logger: logging.Logger) -> Issue:
+    """Fetch one archive issue page (e.g. /jksarm/v.26/1/2026) into an :class:`Issue`."""
+    logger.info("jksarm: fetching %s", url)
+    html = fetch_html(session, url, logger)
+    soup = BeautifulSoup(html, "lxml")
+    return _issue_from_soup(soup, url, logger)
+
+
+# Archive issue links on the landing page look like /jksarm/v.26/2/2026.
+RE_ISSUE_HREF = re.compile(r"^/jksarm/v\.\d+/\d+/\d+/?$")
+RE_ISSUE_ID_URL = re.compile(r"/v\.(\d+)/(\d+)/")
+
+
+def issue_id_from_url(url: str) -> str | None:
+    """Derive the issue_id (e.g. "26-2") from an archive URL, or None."""
+    m = RE_ISSUE_ID_URL.search(url)
+    return f"{int(m.group(1))}-{int(m.group(2))}" if m else None
+
+
+def list_issue_urls(session, logger: logging.Logger, limit: int | None = None) -> list[str]:
+    """Return archive issue URLs from the landing page, newest first."""
+    logger.info("jksarm: listing issues from %s", URL)
+    html = fetch_html(session, URL, logger)
+    soup = BeautifulSoup(html, "lxml")
+
+    urls: list[str] = []
+    seen: set[str] = set()
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        if RE_ISSUE_HREF.match(href):
+            full = urljoin(BASE, href)
+            if full not in seen:
+                seen.add(full)
+                urls.append(full)
+    logger.info("jksarm: found %d archive issues", len(urls))
+    return urls[:limit] if limit else urls

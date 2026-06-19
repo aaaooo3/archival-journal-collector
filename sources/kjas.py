@@ -246,18 +246,23 @@ def _parse_detail(session, url: str, logger: logging.Logger) -> Article | None:
     )
 
 
-def fetch_latest_issue(session, logger: logging.Logger) -> Issue:
-    """Fetch the list page, then each article detail page, into an :class:`Issue`."""
-    logger.info("kjas: fetching %s", URL)
-    html = fetch_html(session, URL, logger)
-    soup = BeautifulSoup(html, "lxml")
+def _issue_from_listing(session, soup: BeautifulSoup, source_url: str, logger: logging.Logger) -> Issue:
+    """Parse a list page (latest or archive), fetching each article detail page.
 
+    A single article whose detail page cannot be fetched/parsed is skipped (with
+    a warning) rather than failing the whole issue — important when backfilling
+    many issues against a flaky host.
+    """
     issue_id, issue_label, skey = _detect_serial(soup, logger)
     links = _collect_article_links(soup, logger)
 
     articles: list[Article] = []
     for link in links:
-        art = _parse_detail(session, link, logger)
+        try:
+            art = _parse_detail(session, link, logger)
+        except ExtractionError as exc:
+            logger.warning("kjas: skipping article (fetch failed) %s: %s", link, exc)
+            continue
         if art is not None:
             articles.append(art)
 
@@ -271,6 +276,53 @@ def fetch_latest_issue(session, logger: logging.Logger) -> Issue:
         issue_id=issue_id,
         issue_label=issue_label,
         sort_key=skey,
-        source_url=URL,
+        source_url=source_url,
         articles=articles,
     )
+
+
+def fetch_latest_issue(session, logger: logging.Logger) -> Issue:
+    """Fetch the list page, then each article detail page, into an :class:`Issue`."""
+    logger.info("kjas: fetching %s", URL)
+    html = fetch_html(session, URL, logger)
+    soup = BeautifulSoup(html, "lxml")
+    return _issue_from_listing(session, soup, URL, logger)
+
+
+def fetch_issue(session, url: str, logger: logging.Logger) -> Issue:
+    """Fetch one archive issue page (e.g. /journal/HGKRBZ/n87.page) into an :class:`Issue`."""
+    logger.info("kjas: fetching %s", url)
+    html = fetch_html(session, url, logger)
+    soup = BeautifulSoup(html, "lxml")
+    return _issue_from_listing(session, soup, url, logger)
+
+
+# Past-issue links on the journal page look like /journal/HGKRBZ/n87.page?lang=ko.
+RE_ISSUE_HREF = re.compile(r"/journal/HGKRBZ/n(\d+)\.page")
+
+
+def issue_id_from_url(url: str) -> str | None:
+    """Derive the issue_id (e.g. "87") from a past-issue URL, or None."""
+    m = RE_ISSUE_HREF.search(url)
+    return str(int(m.group(1))) if m else None
+
+
+def list_issue_urls(session, logger: logging.Logger, limit: int | None = None) -> list[str]:
+    """Return past-issue list-page URLs from the journal page, newest first."""
+    logger.info("kjas: listing issues from %s", URL)
+    html = fetch_html(session, URL, logger)
+    soup = BeautifulSoup(html, "lxml")
+
+    refs: list[tuple[int, str]] = []
+    seen: set[str] = set()
+    for a in soup.find_all("a", href=True):
+        m = RE_ISSUE_HREF.search(a["href"])
+        if m:
+            full = urljoin(BASE, a["href"])
+            if full not in seen:
+                seen.add(full)
+                refs.append((int(m.group(1)), full))
+    refs.sort(key=lambda r: r[0], reverse=True)  # newest serial first
+    urls = [u for _, u in refs]
+    logger.info("kjas: found %d past issues", len(urls))
+    return urls[:limit] if limit else urls
