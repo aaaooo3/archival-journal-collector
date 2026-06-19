@@ -40,7 +40,7 @@ SUMMARY_DIR = OUTPUT_DIR / "summaries"
 SITE_DIR = ROOT / "site"
 LOG_DIR = ROOT / "logs"
 
-DEFAULT_SENTENCES = 6
+DEFAULT_SENTENCES = 5   # max key sentences per chapter
 
 
 def setup_logging() -> logging.Logger:
@@ -123,9 +123,9 @@ def extract_pdf_text(data: bytes) -> str:
     return extract_text(io.BytesIO(data)) or ""
 
 
-def summarize_row(session, row: dict, sentences: int, logger: logging.Logger) -> dict | None:
+def summarize_row(session, row: dict, per_section: int, logger: logging.Logger) -> dict | None:
     """Download, extract and summarise one article. Returns a summary dict or None."""
-    from summarizer import summarize
+    from summarizer import summarize, summarize_by_section
 
     title = row["title"][:50]
     logger.info("summarising %r (%s)", title, row.get("doi") or "no-doi")
@@ -149,13 +149,7 @@ def summarize_row(session, row: dict, sentences: int, logger: logging.Logger) ->
         logger.error("  extracted text too short (%d chars) — skipping", len(text.strip()))
         return None
 
-    key_sentences = summarize(text, max_sentences=sentences)
-    if not key_sentences:
-        logger.error("  summariser produced nothing — skipping")
-        return None
-
-    logger.info("  → %d key sentences from %d chars", len(key_sentences), len(text))
-    return {
+    result = {
         "doi": row.get("doi", ""),
         "title": row.get("title", ""),
         "authors": row.get("authors", []),
@@ -165,10 +159,26 @@ def summarize_row(session, row: dict, sentences: int, logger: logging.Logger) ->
         "issue_label": row.get("issue_label", ""),
         "url": row.get("url", ""),
         "pdf_url": pdf_url,
-        "summary": key_sentences,
-        "method": "extractive-textrank",
         "source_chars": len(text),
     }
+
+    sections = summarize_by_section(text, per_section=per_section)
+    if sections:
+        total = sum(len(s["sentences"]) for s in sections)
+        logger.info("  → %d개 장, 총 %d문장 (원문 %d자)", len(sections), total, len(text))
+        result["method"] = "extractive-textrank-sectioned"
+        result["sections"] = sections
+        return result
+
+    # Fallback: no chapter structure detected -> flat summary.
+    flat = summarize(text, max_sentences=max(6, per_section))
+    if not flat:
+        logger.error("  summariser produced nothing — skipping")
+        return None
+    logger.info("  → 장 구조 미검출, 핵심 %d문장 (원문 %d자)", len(flat), len(text))
+    result["method"] = "extractive-textrank"
+    result["summary"] = flat
+    return result
 
 
 def save_summary(summary: dict, row: dict, logger: logging.Logger) -> Path:
@@ -184,7 +194,8 @@ def parse_args(argv=None) -> argparse.Namespace:
     p.add_argument("selectors", nargs="*", help="article DOIs to summarise")
     p.add_argument("--num", type=int, nargs="*", default=[], help="select by --list numbers")
     p.add_argument("--list", action="store_true", help="print a numbered list of all articles and exit")
-    p.add_argument("--sentences", type=int, default=DEFAULT_SENTENCES, help=f"summary length (default {DEFAULT_SENTENCES})")
+    p.add_argument("--sentences", type=int, default=DEFAULT_SENTENCES,
+                   help=f"장별 최대 문장 수 (default {DEFAULT_SENTENCES}; 장이 길수록 이 한도까지 늘어남)")
     p.add_argument("--force", action="store_true", help="re-summarise even if a summary already exists")
     return p.parse_args(argv)
 

@@ -315,9 +315,11 @@ _CSS = """
     padding: 8px 12px; margin: 0 0 10px;
   }
   .summary-h { cursor: pointer; font-size: .9rem; font-weight: 600; color: var(--accent); }
-  .summary ul { margin: 8px 0 4px; padding-left: 18px; }
+  .sum-sec { margin: 8px 0; }
+  .sum-sec h4 { margin: 6px 0 3px; font-size: .86rem; color: var(--accent); }
+  .summary ul { margin: 4px 0 4px; padding-left: 18px; }
   .summary li { font-size: .9rem; color: #2b3a33; margin-bottom: 4px; }
-  .summary-note { font-size: .72rem; color: var(--muted); margin: 4px 0 0; }
+  .summary-note { font-size: .72rem; color: var(--muted); margin: 6px 0 0; }
   .abstract { font-size: .92rem; color: #374151; margin: 0; }
   .abstract.clamp {
     display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
@@ -411,16 +413,37 @@ def _attr(s: str) -> str:
 
 
 def _render_summary(summary: dict) -> str:
-    items = "".join(f"<li>{_esc(s)}</li>" for s in summary.get("summary", []))
-    if not items:
+    sections = summary.get("sections")
+    if sections:
+        blocks = []
+        for sec in sections:
+            items = "".join(f"<li>{_esc(s)}</li>" for s in sec.get("sentences", []))
+            if items:
+                blocks.append(
+                    f'<div class="sum-sec"><h4>{_esc(sec.get("heading", ""))}</h4>'
+                    f"<ul>{items}</ul></div>"
+                )
+        body = "".join(blocks)
+        label = "📝 장별 요약 (원문 핵심 문장 발췌)"
+    else:
+        items = "".join(f"<li>{_esc(s)}</li>" for s in summary.get("summary", []))
+        body = f"<ul>{items}</ul>" if items else ""
+        label = "📝 요약 (원문 핵심 문장 발췌)"
+    if not body:
         return ""
     return (
-        '<details class="summary"><summary class="summary-h">'
-        "📝 요약 (원문 핵심 문장 발췌)</summary>"
-        f"<ul>{items}</ul>"
-        '<p class="summary-note">원문 PDF에서 추출 요약(TextRank) · 생성 문장 아님</p>'
+        f'<details class="summary"><summary class="summary-h">{label}</summary>'
+        f"{body}"
+        '<p class="summary-note">원문 PDF에서 추출 요약(TextRank) · 생성 문장이 아닌 원문 발췌</p>'
         "</details>"
     )
+
+
+def _summary_text(summary: dict) -> str:
+    """All summary sentences flattened, for the search haystack."""
+    if summary.get("sections"):
+        return " ".join(s for sec in summary["sections"] for s in sec.get("sentences", []))
+    return " ".join(summary.get("summary", []))
 
 
 def _render_card(art: dict, summaries: dict[str, dict]) -> str:
@@ -429,7 +452,7 @@ def _render_card(art: dict, summaries: dict[str, dict]) -> str:
     abstract = art.get("abstract", "")
     doi = art.get("doi", "")
     summary = summaries.get(doi)
-    summary_text = " ".join(summary.get("summary", [])) if summary else ""
+    summary_text = _summary_text(summary) if summary else ""
     # Lowercased haystack for client-side search (title + authors + abstract + summary).
     haystack = " ".join([title, " ".join(authors), abstract, summary_text]).lower()
 
