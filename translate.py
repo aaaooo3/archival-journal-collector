@@ -37,7 +37,12 @@ from summarize import (DEFAULT_OLLAMA_HOST, DEFAULT_OLLAMA_MODEL,
 INTL_KEYS = ["amarch", "archivaria", "archrec"]
 
 _SYSTEM = ("당신은 영어 학술 텍스트를 한국어로 번역하는 전문 번역가입니다. "
+           "반드시 한국어(한글)로만 출력하세요. 중국어 한자나 일본어 등 다른 언어를 "
+           "절대 섞지 마세요(인명·약어 등 꼭 필요한 고유명사만 로마자 허용). "
            "번역 결과만 출력하고, 원문·설명·따옴표·머리말을 덧붙이지 마세요.")
+
+# 한국어 출력에는 거의 안 쓰이는 CJK 한자(중국어) 범위 — 섞이면 잘못된 번역으로 간주.
+_CJK = re.compile(r"[㐀-鿿぀-ヿ]")
 _TITLE_PROMPT = (
     "다음 영어 학술 논문 제목을 자연스럽고 간결한 한국어 제목으로 번역하세요. "
     "영어 단어를 그대로 남기지 말고 모두 한국어로 옮기되, 사람 이름·기관명 같은 "
@@ -62,13 +67,18 @@ def _has_hangul(s: str) -> bool:
 
 
 def _translate(host, model, prompt_tmpl, text, num_predict, logger) -> str:
-    try:
-        out = ollama_generate(host, model, prompt_tmpl.format(text=text),
-                              system=_SYSTEM, num_predict=num_predict)
-    except Exception as exc:  # noqa: BLE001
-        logger.info("    번역 실패 (%s)", type(exc).__name__)
-        return ""
-    return out.strip()
+    """번역. 결과에 중국어 한자가 섞이면 최대 3회 재시도, 그래도면 빈 문자열."""
+    prompt = prompt_tmpl.format(text=text)
+    for attempt in range(3):
+        try:
+            out = ollama_generate(host, model, prompt, system=_SYSTEM, num_predict=num_predict).strip()
+        except Exception as exc:  # noqa: BLE001
+            logger.info("    번역 실패 (%s)", type(exc).__name__)
+            return ""
+        if out and not _CJK.search(out):
+            return out
+        logger.info("    (한자 섞임 → 재시도 %d)", attempt + 1)
+    return ""   # 계속 오염되면 포기(원문 유지)
 
 
 def main(argv=None) -> int:
