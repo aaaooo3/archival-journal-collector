@@ -413,36 +413,49 @@ def _attr(s: str) -> str:
 
 
 def _render_summary(summary: dict) -> str:
+    generative = summary.get("method", "").startswith("ollama")
     sections = summary.get("sections")
     if sections:
         blocks = []
         for sec in sections:
-            items = "".join(f"<li>{_esc(s)}</li>" for s in sec.get("sentences", []))
-            if items:
-                blocks.append(
-                    f'<div class="sum-sec"><h4>{_esc(sec.get("heading", ""))}</h4>'
-                    f"<ul>{items}</ul></div>"
-                )
+            heading = _esc(sec.get("heading", ""))
+            if sec.get("summary"):                       # generative: a paragraph
+                inner = f"<p>{_esc(sec['summary'])}</p>"
+            else:                                        # extractive: key sentences
+                items = "".join(f"<li>{_esc(s)}</li>" for s in sec.get("sentences", []))
+                inner = f"<ul>{items}</ul>" if items else ""
+            if inner:
+                blocks.append(f'<div class="sum-sec"><h4>{heading}</h4>{inner}</div>')
         body = "".join(blocks)
-        label = "📝 장별 요약 (원문 핵심 문장 발췌)"
+        label = "📝 장별 요약 (생성형 · 로컬 LLM)" if generative else "📝 장별 요약 (원문 핵심 문장 발췌)"
     else:
         items = "".join(f"<li>{_esc(s)}</li>" for s in summary.get("summary", []))
         body = f"<ul>{items}</ul>" if items else ""
         label = "📝 요약 (원문 핵심 문장 발췌)"
     if not body:
         return ""
+    note = (
+        f"로컬 LLM(Ollama, {_esc(summary.get('method', '')[7:])}) 생성 요약 · 원문 PDF 기반"
+        if generative else
+        "원문 PDF에서 추출 요약(TextRank) · 생성 문장이 아닌 원문 발췌"
+    )
     return (
         f'<details class="summary"><summary class="summary-h">{label}</summary>'
         f"{body}"
-        '<p class="summary-note">원문 PDF에서 추출 요약(TextRank) · 생성 문장이 아닌 원문 발췌</p>'
+        f'<p class="summary-note">{note}</p>'
         "</details>"
     )
 
 
 def _summary_text(summary: dict) -> str:
-    """All summary sentences flattened, for the search haystack."""
+    """All summary text flattened, for the search haystack."""
     if summary.get("sections"):
-        return " ".join(s for sec in summary["sections"] for s in sec.get("sentences", []))
+        parts = []
+        for sec in summary["sections"]:
+            if sec.get("summary"):
+                parts.append(sec["summary"])
+            parts.extend(sec.get("sentences", []))
+        return " ".join(parts)
     return " ".join(summary.get("summary", []))
 
 

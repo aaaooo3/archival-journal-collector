@@ -236,6 +236,21 @@ def _textrank_pick(sentences: list[str], k: int, max_input: int = 250) -> list[s
     return [sentences[i] for i in sorted(ranked)]
 
 
+def section_bodies(text: str) -> list[tuple[str, str]]:
+    """Return [(heading, cleaned prose)] per chapter — input for a generative LLM.
+
+    Same chapter detection as :func:`summarize_by_section`, but instead of
+    picking sentences it returns each chapter's de-noised prose so an external
+    summariser (e.g. a local Ollama model) can rewrite it.
+    """
+    out: list[tuple[str, str]] = []
+    for _num, heading, body in split_into_sections(_clean_lines(text)):
+        prose = " ".join(split_sentences(body))
+        if prose:
+            out.append((heading, prose))
+    return out
+
+
 def summarize(text: str, max_sentences: int = 6) -> list[str]:
     """Flat extractive summary (fallback when chapters can't be detected)."""
     return _textrank_pick(split_sentences(clean_text(text)), max_sentences)
