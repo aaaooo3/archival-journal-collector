@@ -320,6 +320,10 @@ _CSS = """
   }
   .tag a { color: var(--accent); text-decoration: none; }
   .tag-sum { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .tag-topic { background: #eef0ff; color: #3b46c4; font-weight: 600; }
+  .topic-row { padding: 0; }
+  .topic-row .filters { padding: 8px 0 2px; }
+  .filters.topics .filter.active { background: #3b46c4; border-color: #3b46c4; }
   .summary {
     background: var(--accent-soft); border: 1px solid #cfe3d8; border-radius: 8px;
     padding: 8px 12px; margin: 0 0 10px;
@@ -350,8 +354,8 @@ _JS = """
   var countEl = document.getElementById("count");
   var emptyEl = document.getElementById("empty");
   var sections = [].slice.call(document.querySelectorAll(".issue"));
-  var filters = [].slice.call(document.querySelectorAll(".filter"));
   var activeJournal = "all";
+  var activeTopic = "all";
   var query = "";
 
   // Clamp long abstracts and add a 더 보기/접기 toggle (only when JS runs).
@@ -380,7 +384,9 @@ _JS = """
       var cards = sec.querySelectorAll(".card");
       var visible = 0;
       for (var i = 0; i < cards.length; i++) {
-        var ok = !query || (cards[i].getAttribute("data-text") || "").indexOf(query) !== -1;
+        var matchTopic = activeTopic === "all" || cards[i].getAttribute("data-topic") === activeTopic;
+        var matchSearch = !query || (cards[i].getAttribute("data-text") || "").indexOf(query) !== -1;
+        var ok = matchTopic && matchSearch;
         cards[i].style.display = ok ? "" : "none";
         if (ok) visible++;
       }
@@ -398,14 +404,22 @@ _JS = """
   document.getElementById("search-clear").addEventListener("click", function () {
     searchEl.value = ""; runSearch(); searchEl.focus();
   });
-  filters.forEach(function (b) {
-    b.addEventListener("click", function () {
-      activeJournal = b.getAttribute("data-journal");
-      filters.forEach(function (x) { x.classList.remove("active"); });
-      b.classList.add("active");
-      apply();
+  function bindFilterGroup(containerId, setter) {
+    var group = document.getElementById(containerId);
+    if (!group) return;
+    var btns = [].slice.call(group.querySelectorAll(".filter"));
+    btns.forEach(function (b) {
+      b.addEventListener("click", function () {
+        btns.forEach(function (x) { x.classList.remove("active"); });
+        b.classList.add("active");
+        var v = b.getAttribute("data-journal");
+        setter(v !== null ? v : b.getAttribute("data-topic"));
+        apply();
+      });
     });
-  });
+  }
+  bindFilterGroup("journal-filters", function (v) { activeJournal = v; });
+  bindFilterGroup("topic-filters", function (v) { activeTopic = v; });
 
   apply();
 })();
@@ -476,12 +490,15 @@ def _render_card(art: dict, summaries: dict[str, dict]) -> str:
     abstract = art.get("abstract", "")
     abstract_ko = art.get("abstract_ko", "")
     doi = art.get("doi", "")
+    topic = art.get("topic", "")
     summary = summaries.get(doi)
     summary_text = _summary_text(summary) if summary else ""
-    # Lowercased haystack for client-side search (titles + authors + abstracts + summary).
-    haystack = " ".join([title, title_ko, " ".join(authors), abstract, abstract_ko, summary_text]).lower()
+    # Lowercased haystack for client-side search (titles + authors + abstracts + summary + topic).
+    haystack = " ".join([title, title_ko, " ".join(authors), abstract, abstract_ko, summary_text, topic]).lower()
 
     tags: list[str] = []
+    if topic:
+        tags.append(f'<span class="tag tag-topic">🏷 {_esc(topic)}</span>')
     if summary:
         tags.append('<span class="tag tag-sum">📝 요약</span>')
     if authors:
@@ -518,7 +535,7 @@ def _render_card(art: dict, summaries: dict[str, dict]) -> str:
 
     has_sum = " has-summary" if summary else ""
     return (
-        f'<article class="card{has_sum}" data-text="{_attr(haystack)}">'
+        f'<article class="card{has_sum}" data-topic="{_attr(topic)}" data-text="{_attr(haystack)}">'
         f"{heading}"
         f'<div class="tags">{"".join(tags)}</div>'
         f"{_render_summary(summary) if summary else ''}"
@@ -557,6 +574,22 @@ def _render_filters(issues: list[dict]) -> str:
     return "".join(buttons)
 
 
+def _render_topic_filters(issues: list[dict]) -> str:
+    """Topic filter row — empty string until articles have been clustered (cluster.py)."""
+    topics: list[str] = []
+    for iss in issues:
+        for art in iss.get("articles", []):
+            t = art.get("topic", "")
+            if t and t not in topics:
+                topics.append(t)
+    if not topics:
+        return ""
+    buttons = ['<button class="filter active" type="button" data-topic="all">전체 주제</button>']
+    for t in sorted(topics):
+        buttons.append(f'<button class="filter" type="button" data-topic="{_attr(t)}">🏷 {_esc(t)}</button>')
+    return f'<div class="filters topics" id="topic-filters">{"".join(buttons)}</div>'
+
+
 def render_site(issues: list[dict], summaries: dict[str, dict] | None = None) -> str:
     """Render the full single-page HTML for the given issues (content pre-rendered)."""
     summaries = summaries or {}
@@ -586,9 +619,10 @@ def render_site(issues: list[dict], summaries: dict[str, dict] | None = None) ->
     <input id="search" type="search" placeholder="제목·저자·초록 검색…" autocomplete="off">
     <button id="search-btn" type="button">검색</button>
     <button id="search-clear" type="button">초기화</button>
-    <div class="filters">{_render_filters(issues)}</div>
+    <div class="filters" id="journal-filters">{_render_filters(issues)}</div>
     <span id="count">논문 {total}편</span>
   </div>
+  <div class="wrap topic-row">{_render_topic_filters(issues)}</div>
 </div>
 
 <main class="wrap">

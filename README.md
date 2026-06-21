@@ -154,6 +154,7 @@ git push
 ```
 watcher.py            진입점: 새 호 확인·수집 (--once / --journal / --interval)
 backfill.py           과거 호 채우기 (--count N / --all)
+cluster.py            논문을 비슷한 주제로 묶기 (Ollama 다국어 임베딩 + 주제 태그/필터)
 summarize.py          논문 요약 CLI (--num / --engine extractive|ollama)
 summarizer.py         요약 엔진: 추출(TextRank) + 장 분할
 summarize_local.sh    생성형 요약 헬퍼(macOS/Linux): Ollama 준비 후 summarize 실행
