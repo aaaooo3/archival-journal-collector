@@ -10,3 +10,6 @@ logs/*.log
 
 # OS
 .DS_Store
+
+# 군집화 임베딩 캐시 (로컬 전용)
+output/.embed_cache.json

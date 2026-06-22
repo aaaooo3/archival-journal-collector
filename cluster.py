@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import glob
+import hashlib
 import json
 import logging
 import math
@@ -162,17 +163,38 @@ def main(argv=None) -> int:
         logger.error("군집화할 논문이 너무 적습니다 (%d편).", len(texts))
         return 1
 
-    # 2) 임베딩
+    # 2) 임베딩 (캐시 사용 — --topics 만 바꿔 재실행하면 다시 임베딩 안 함)
+    cache_path = OUTPUT_DIR / ".embed_cache.json"
+    cache: dict[str, list[float]] = {}
+    if cache_path.exists():
+        try:
+            cache = json.loads(cache_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            cache = {}
+
+    def _key(txt: str) -> str:
+        return f"{args.model}:" + hashlib.sha1(txt.encode("utf-8")).hexdigest()
+
     logger.info("임베딩 중… (%d편, 모델 %s)", len(texts), args.model)
     vectors: list[list[float]] = []
-    for i, txt in enumerate(texts):
+    embedded = 0
+    for txt in texts:
+        k = _key(txt)
+        if k in cache:
+            vectors.append(cache[k])
+            continue
         try:
-            vectors.append(_normalize(embed(args.ollama_host, args.model, txt)))
+            v = _normalize(embed(args.ollama_host, args.model, txt))
         except Exception as exc:  # noqa: BLE001
             logger.error("임베딩 실패 (%s) — 중단", type(exc).__name__)
             return 4
-        if (i + 1) % 25 == 0:
-            logger.info("  %d/%d", i + 1, len(texts))
+        cache[k] = v
+        vectors.append(v)
+        embedded += 1
+        if embedded % 25 == 0:
+            logger.info("  %d개 임베딩…", embedded)
+    cache_path.write_text(json.dumps(cache), encoding="utf-8")
+    logger.info("  (신규 임베딩 %d편, 캐시 재사용 %d편)", embedded, len(texts) - embedded)
 
     # 3) 군집화
     k = args.topics or max(4, min(12, round(math.sqrt(len(texts) / 2))))
