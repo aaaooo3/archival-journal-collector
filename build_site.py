@@ -658,7 +658,7 @@ def build_site(
     site_dir.mkdir(parents=True, exist_ok=True)
     index = site_dir / "index.html"
     index.write_text(render_site(issues, summaries), encoding="utf-8")
-    n_articles = sum(len(i["articles"]) for i in issues)
+    n_articles = sum(len(i.get("articles", [])) for i in issues)
     if logger:
         logger.info(
             "build_site: wrote %s (%d issues, %d articles, %d summaries)",
