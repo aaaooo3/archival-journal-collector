@@ -284,7 +284,8 @@ MCA 직원들은 최근 몇 년 동안 아카이브 생애 주기 전반에 걸�
       var cards = sec.querySelectorAll(".card");
       var visible = 0;
       for (var i = 0; i < cards.length; i++) {
-        var matchTopic = activeTopic === "all" || cards[i].getAttribute("data-topic") === activeTopic;
+        var matchTopic = activeTopic === "all" ||
+          (cards[i].getAttribute("data-topic") || "").split("|").indexOf(activeTopic) !== -1;
         var matchSearch = !query || (cards[i].getAttribute("data-text") || "").indexOf(query) !== -1;
         var ok = matchTopic && matchSearch;
         cards[i].style.display = ok ? "" : "none";
