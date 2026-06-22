@@ -81,7 +81,8 @@ def _dot(a: list[float], b: list[float]) -> float:
     return sum(x * y for x, y in zip(a, b))
 
 
-def kmeans(vectors: list[list[float]], k: int, iters: int = 40, seed: int = 0) -> list[int]:
+def kmeans(vectors: list[list[float]], k: int, iters: int = 40, seed: int = 0):
+    """반환: (각 점의 군집번호, 군집 중심 벡터들)."""
     n = len(vectors)
     random.seed(seed)
     centroids = [vectors[i][:] for i in random.sample(range(n), k)]
@@ -100,7 +101,24 @@ def kmeans(vectors: list[list[float]], k: int, iters: int = 40, seed: int = 0) -
                 centroids[c] = _normalize([sum(m[d] for m in members) / len(members) for d in range(dim)])
         if not changed:
             break
-    return assign
+    return assign, centroids
+
+
+def _topics_for(vec, centroids, labels: dict[int, str], ratio: float, max_topics: int) -> list[str]:
+    """주 주제 + 유사도가 주 주제의 ``ratio`` 이상인 군집들(최대 ``max_topics``개)."""
+    sims = sorted(((c, _dot(vec, centroids[c])) for c in labels), key=lambda x: x[1], reverse=True)
+    if not sims:
+        return []
+    primary = sims[0][1]
+    chosen: list[str] = []
+    for c, sim in sims:
+        if len(chosen) >= max_topics:
+            break
+        if not chosen or sim >= primary * ratio:
+            lab = labels[c]
+            if lab not in chosen:
+                chosen.append(lab)
+    return chosen
 
 
 # --- data ------------------------------------------------------------------
@@ -137,6 +155,9 @@ def main(argv=None) -> int:
     p.add_argument("--model", default=EMBED_MODEL, help=f"임베딩 모델 (기본 {EMBED_MODEL})")
     p.add_argument("--label-model", default=LABEL_MODEL, help=f"주제 이름 짓는 LLM (기본 {LABEL_MODEL})")
     p.add_argument("--ollama-host", default=DEFAULT_OLLAMA_HOST)
+    p.add_argument("--multi-ratio", type=float, default=0.90,
+                   help="보조 주제 추가 기준(주 주제 유사도 대비 비율; 낮출수록 한 논문에 주제가 더 많이 붙음). 1.0이면 단일 주제")
+    p.add_argument("--max-topics", type=int, default=3, help="논문당 최대 주제 수 (기본 3)")
     args = p.parse_args(argv)
     logger = setup_logging("cluster", logfile=False, simple=True)
 
@@ -199,9 +220,9 @@ def main(argv=None) -> int:
     # 3) 군집화
     k = args.topics or max(4, min(12, round(math.sqrt(len(texts) / 2))))
     logger.info("군집화: 주제 %d개", k)
-    assign = kmeans(vectors, k)
+    assign, centroids = kmeans(vectors, k)
 
-    # 4) 주제 라벨
+    # 4) 주제 라벨 (라벨에 구분자 '|' 가 들어가지 않게 정리)
     use_llm = _model_installed(args.ollama_host, args.label_model)
     labels: dict[int, str] = {}
     for c in range(k):
@@ -209,16 +230,22 @@ def main(argv=None) -> int:
         if not c_titles:
             continue
         label = _llm_label(args.ollama_host, args.label_model, c_titles, logger) if use_llm else ""
-        labels[c] = label or _keyword_label(c_titles)
+        labels[c] = (label or _keyword_label(c_titles)).replace("|", "/")
         logger.info("  [주제] %s  (%d편)", labels[c], len(c_titles))
 
-    # 5) topic 저장 + 사이트 재생성
-    for (path, idx), c in zip(refs, assign):
-        files[path]["articles"][idx]["topic"] = labels.get(c, "기타")
+    # 5) 각 논문에 주제(들) 저장 — 여러 군집에 가까우면 보조 주제도 함께. 사이트 재생성.
+    multi = 0
+    for ref_i, (path, idx) in enumerate(refs):
+        tops = _topics_for(vectors[ref_i], centroids, labels, args.multi_ratio, args.max_topics) or ["기타"]
+        if len(tops) > 1:
+            multi += 1
+        art = files[path]["articles"][idx]
+        art["topic"] = tops[0]      # 주 주제(하위호환)
+        art["topics"] = tops        # 전체 주제 목록
     for path, data in files.items():
         open(path, "w", encoding="utf-8").write(json.dumps(data, ensure_ascii=False, indent=2) + "\n")
 
-    logger.info("주제 %d개로 묶음 완료.", len(labels))
+    logger.info("주제 %d개로 묶음 완료. (여러 주제 배정 %d편)", len(labels), multi)
     build_site.build_site(OUTPUT_DIR, SITE_DIR, logger)
     logger.info("사이트 재생성 완료. (git add -A && git commit && git push 로 저장)")
     return 0

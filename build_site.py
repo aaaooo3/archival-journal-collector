@@ -153,6 +153,8 @@ def load_issues(output_dir: Path, logger: logging.Logger | None = None) -> list[
     seen: set[str] = set()
 
     for path in sorted(output_dir.glob("*.json")):
+        if path.name.startswith("."):
+            continue  # 숨김/캐시 파일(.embed_cache.json 등)은 논문 파일 아님
         key = path.stem.split("_", 1)[0]
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
@@ -160,10 +162,14 @@ def load_issues(output_dir: Path, logger: logging.Logger | None = None) -> list[
             if logger:
                 logger.warning("build_site: could not read %s", path)
             continue
+        if "articles" not in data:
+            continue  # 이슈 형식이 아닌 JSON은 무시
         issues.append(_normalise(data, key))
         seen.add(path.stem)
 
     for path in sorted(output_dir.glob("*.md")):
+        if path.name.startswith("."):
+            continue
         if path.stem in seen:
             continue  # already loaded from JSON
         key = path.stem.split("_", 1)[0]
@@ -384,7 +390,8 @@ _JS = """
       var cards = sec.querySelectorAll(".card");
       var visible = 0;
       for (var i = 0; i < cards.length; i++) {
-        var matchTopic = activeTopic === "all" || cards[i].getAttribute("data-topic") === activeTopic;
+        var matchTopic = activeTopic === "all" ||
+          (cards[i].getAttribute("data-topic") || "").split("|").indexOf(activeTopic) !== -1;
         var matchSearch = !query || (cards[i].getAttribute("data-text") || "").indexOf(query) !== -1;
         var ok = matchTopic && matchSearch;
         cards[i].style.display = ok ? "" : "none";
@@ -490,15 +497,16 @@ def _render_card(art: dict, summaries: dict[str, dict]) -> str:
     abstract = art.get("abstract", "")
     abstract_ko = art.get("abstract_ko", "")
     doi = art.get("doi", "")
-    topic = art.get("topic", "")
+    topics = art.get("topics") or ([art["topic"]] if art.get("topic") else [])
+    topic_attr = "|".join(topics)
     summary = summaries.get(doi)
     summary_text = _summary_text(summary) if summary else ""
-    # Lowercased haystack for client-side search (titles + authors + abstracts + summary + topic).
-    haystack = " ".join([title, title_ko, " ".join(authors), abstract, abstract_ko, summary_text, topic]).lower()
+    # Lowercased haystack for client-side search (titles + authors + abstracts + summary + topics).
+    haystack = " ".join([title, title_ko, " ".join(authors), abstract, abstract_ko, summary_text, " ".join(topics)]).lower()
 
     tags: list[str] = []
-    if topic:
-        tags.append(f'<span class="tag tag-topic">🏷 {_esc(topic)}</span>')
+    for t in topics:
+        tags.append(f'<span class="tag tag-topic">🏷 {_esc(t)}</span>')
     if summary:
         tags.append('<span class="tag tag-sum">📝 요약</span>')
     if authors:
@@ -535,7 +543,7 @@ def _render_card(art: dict, summaries: dict[str, dict]) -> str:
 
     has_sum = " has-summary" if summary else ""
     return (
-        f'<article class="card{has_sum}" data-topic="{_attr(topic)}" data-text="{_attr(haystack)}">'
+        f'<article class="card{has_sum}" data-topic="{_attr(topic_attr)}" data-text="{_attr(haystack)}">'
         f"{heading}"
         f'<div class="tags">{"".join(tags)}</div>'
         f"{_render_summary(summary) if summary else ''}"
@@ -579,9 +587,9 @@ def _render_topic_filters(issues: list[dict]) -> str:
     topics: list[str] = []
     for iss in issues:
         for art in iss.get("articles", []):
-            t = art.get("topic", "")
-            if t and t not in topics:
-                topics.append(t)
+            for t in (art.get("topics") or ([art["topic"]] if art.get("topic") else [])):
+                if t and t not in topics:
+                    topics.append(t)
     if not topics:
         return ""
     buttons = ['<button class="filter active" type="button" data-topic="all">전체 주제</button>']
