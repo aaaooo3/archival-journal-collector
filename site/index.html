@@ -20,6 +20,14 @@
   .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
   header h1 { margin: 0 0 6px; font-size: 1.5rem; }
   header p { margin: 0; opacity: .9; font-size: .9rem; }
+  header .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  .console-btn {
+    display: inline-block; background: #fff; color: var(--accent);
+    font-weight: 600; font-size: .9rem; text-decoration: none;
+    padding: 8px 14px; border-radius: 8px; white-space: nowrap;
+  }
+  .console-btn:hover { opacity: .9; }
+  .console-hint { margin: 8px 0 0; opacity: .85; font-size: .78rem; display: none; }
   .controls {
     position: sticky; top: 0; z-index: 5; background: var(--bg);
     border-bottom: 1px solid var(--line); padding: 14px 0;
@@ -100,8 +108,14 @@
 <body>
 <header>
   <div class="wrap">
-    <h1>기록학 학회지 아카이브</h1>
-    <p>한국기록관리학회지 · 기록학연구 — 새 호가 나오면 자동 수집한 목차·초록 모음 (AI 요약 없음)</p>
+    <div class="top">
+      <div>
+        <h1>기록학 학회지 아카이브</h1>
+        <p>한국기록관리학회지 · 기록학연구 — 새 호가 나오면 자동 수집한 목차·초록 모음 (AI 요약 없음)</p>
+      </div>
+      <a class="console-btn" id="console-btn" href="http://localhost:8000" target="_blank" rel="noopener" onclick="document.getElementById('console-hint').style.display='block'">📝 요약 콘솔 열기</a>
+    </div>
+    <p class="console-hint" id="console-hint">콘솔이 안 열리면 내 Mac 터미널에서 <code>python3 app.py</code> 를 먼저 실행하세요(이 버튼은 내 PC에서만 동작).</p>
   </div>
 </header>
 
