@@ -496,9 +496,13 @@ def _render_summary(summary: dict) -> str:
         body = "".join(blocks)
         label = "📝 장별 요약 (생성형 · 로컬 LLM)" if generative else "📝 장별 요약 (원문 핵심 문장 발췌)"
     else:
-        items = "".join(f"<li>{_esc(s)}</li>" for s in summary.get("summary", []))
-        body = f"<ul>{items}</ul>" if items else ""
-        label = "📝 요약 (원문 핵심 문장 발췌)"
+        flat = summary.get("summary", [])
+        if isinstance(flat, str):                        # generative whole-doc summary (a paragraph)
+            body = f"<p>{_esc(flat)}</p>" if flat.strip() else ""
+        else:                                            # extractive: list of key sentences
+            items = "".join(f"<li>{_esc(s)}</li>" for s in flat)
+            body = f"<ul>{items}</ul>" if items else ""
+        label = "📝 요약 (생성형 · 로컬 LLM)" if generative else "📝 요약 (원문 핵심 문장 발췌)"
     if not body:
         return ""
     note = (

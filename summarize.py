@@ -47,11 +47,12 @@ _OLLAMA_SYSTEM = (
     "당신은 한국어 학술 요약 도우미입니다. 어떤 경우에도 반드시 한국어(한글)로만 "
     "답하세요. 영어·중국어 등 다른 언어로는 절대 쓰지 마세요."
 )
-_OLLAMA_PROMPT = """다음은 한국어 학술 논문의 한 장(章)입니다. 이 장의 핵심 내용을 \
-**한국어**로 3~4문장 충실하게 요약하세요.
+_OLLAMA_PROMPT = """다음은 학술 논문의 한 장(章)입니다(원문은 한국어일 수도, 영어일 수도 \
+있습니다). 이 장의 핵심 내용을 **한국어**로 3~4문장 충실하게 요약하세요.
 
 규칙:
 - 반드시 한국어(한글)로만 작성합니다. 영어·중국어 등 다른 언어 사용 금지.
+- **원문이 영어여도 한국어로 번역하여 요약**합니다(영어 문장을 그대로 옮기지 않습니다).
 - 아래 제공된 내용에만 근거하고, 없는 내용을 지어내지 않습니다.
 - 머리말이나 목록 기호 없이 요약문만 출력합니다.
 
@@ -172,6 +173,36 @@ def summarize_sections_ollama(text: str, host: str, model: str, logger: logging.
     return sections or None
 
 
+_OLLAMA_FLAT_PROMPT = """다음은 학술 논문 본문입니다(원문은 한국어일 수도, 영어일 수도 \
+있습니다). 논문 전체의 핵심을 **한국어**로 6~10문장으로 충실히 요약하세요. 연구 목적·방법·\
+주요 결과·결론이 드러나게 하세요.
+
+규칙:
+- 반드시 한국어(한글)로만 작성합니다. 영어·중국어 등 다른 언어 사용 금지.
+- **원문이 영어여도 한국어로 번역하여 요약**합니다(영어 문장을 그대로 옮기지 않습니다).
+- 아래 제공된 내용에만 근거하고, 없는 내용을 지어내지 않습니다.
+- 머리말이나 목록 기호 없이 요약문만 출력합니다.
+
+[내용]
+{body}"""
+
+
+def summarize_flat_ollama(text: str, host: str, model: str, logger: logging.Logger) -> str | None:
+    """Whole-document generative Korean summary (when no chapters are detected)."""
+    from summarizer import clean_text
+
+    body = clean_text(text)[:8000]
+    if len(body.strip()) < 200:
+        return None
+    try:
+        out = ollama_generate(host, model, _OLLAMA_FLAT_PROMPT.format(body=body),
+                              system=_OLLAMA_SYSTEM, num_predict=600)
+    except requests.RequestException as exc:
+        logger.error("  Ollama 전체 요약 실패: %s", exc)
+        return None
+    return out or None
+
+
 def summarize_row(session, row: dict, opts: argparse.Namespace, logger: logging.Logger,
                   problems: list | None = None, local_pdf: str | None = None) -> dict | None:
     """Download, extract and summarise one article. Returns a summary dict or None.
@@ -251,6 +282,13 @@ def summarize_row(session, row: dict, opts: argparse.Namespace, logger: logging.
             logger.info("  → %d개 장 생성 요약 (모델 %s, 원문 %d자)", len(gen), opts.model, len(text))
             result["method"] = f"ollama-{opts.model}"
             result["sections"] = gen
+            return result
+        # 장 구조가 없으면(해외 논문에 흔함) 통째로 한국어 생성 요약 — 추출(영어)로 떨어지기 전에.
+        flat_gen = summarize_flat_ollama(text, opts.ollama_host, opts.model, logger)
+        if flat_gen:
+            logger.info("  → 장 미검출, 전체 생성 요약 (모델 %s, 원문 %d자)", opts.model, len(text))
+            result["method"] = f"ollama-{opts.model}-flat"
+            result["summary"] = flat_gen
             return result
         logger.warning("  Ollama 요약 실패/장 미검출 — 추출 요약으로 대체합니다")
 
