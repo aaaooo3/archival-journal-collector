@@ -247,6 +247,15 @@ def _pub_month(issue: dict) -> int:
     return 6
 
 
+def _pub_date_label(issue: dict) -> str:
+    """발간일 라벨: 'YYYY년 M월'(월 추정 가능 시) 또는 'YYYY년'. 없으면 빈 문자열."""
+    year = _pub_year(issue)
+    if not year:
+        return ""
+    month = _pub_month(issue)
+    return f"{year}년 {month}월" if month else f"{year}년"
+
+
 def _pub_sort_key(issue: dict) -> tuple:
     # (year, month, then issue recency as a tiebreak) — all ascending; the
     # caller sorts reverse=True for newest first.
@@ -309,6 +318,7 @@ _CSS = """
     font-size: 1.15rem; margin: 0 0 4px; padding-bottom: 8px;
     border-bottom: 2px solid var(--accent-soft);
   }
+  .issue h2 .pubdate { color: var(--muted); font-weight: 400; font-size: .9rem; }
   .issue .meta { color: var(--muted); font-size: .82rem; margin: 0 0 14px; }
   .issue .meta a { color: var(--accent); }
   .card {
@@ -558,12 +568,12 @@ def _render_issue(issue: dict, summaries: dict[str, dict]) -> str:
         f' · <a href="{_attr(issue["source_url"])}" target="_blank" rel="noopener">출처</a>'
         if issue.get("source_url") else ""
     )
-    year = _pub_year(issue)
-    year_txt = f"{year}년 · " if year else ""
+    date_label = _pub_date_label(issue)
+    date_txt = f' <span class="pubdate">({_esc(date_label)})</span>' if date_label else ""
     return (
         f'<section class="issue" data-journal="{_attr(issue.get("journal_key", ""))}">'
-        f'<h2>{_esc(issue.get("journal_name", ""))} — {_esc(issue.get("issue_label", ""))}</h2>'
-        f'<p class="meta">{year_txt}논문 {len(issue.get("articles", []))}편 · '
+        f'<h2>{_esc(issue.get("journal_name", ""))} — {_esc(issue.get("issue_label", ""))}{date_txt}</h2>'
+        f'<p class="meta">논문 {len(issue.get("articles", []))}편 · '
         f'수집일 {_esc(issue.get("collected", ""))}{src}</p>'
         f"{cards}</section>"
     )
