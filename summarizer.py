@@ -111,7 +111,7 @@ def _is_heading(line: str) -> tuple[int, str] | None:
         return None
     if len(re.findall(r"\d+[.)]", line)) > 1:        # more than one numbered item
         return None
-    if not re.search(r"[가-힣]", title):             # title must have Korean
+    if not re.search(r"[가-힣A-Za-z]", title):       # title must have Korean or English letters
         return None
     return int(m.group(1)), line
 
@@ -139,8 +139,24 @@ def split_into_sections(lines: list[str]) -> list[tuple[int, str, str]]:
     return [best[k] for k in sorted(best)]
 
 
-def split_sentences(text: str) -> list[str]:
-    """Split Korean/English text into sentences, dropping non-prose fragments."""
+def _is_korean_doc(text: str) -> bool:
+    """True if the document is Korean-dominant (so English-only sentences are
+    likely the trailing English abstract and can be dropped). For an all-English
+    paper this is False, so English prose is kept."""
+    ko = len(re.findall(r"[가-힣]", text))
+    en = len(re.findall(r"[A-Za-z]", text))
+    return ko >= 50 and ko * 4 >= en        # meaningful Korean and not overwhelmingly English
+
+
+def split_sentences(text: str, drop_english: bool | None = None) -> list[str]:
+    """Split Korean/English text into sentences, dropping non-prose fragments.
+
+    ``drop_english`` — drop English-dominant sentences (the trailing English
+    abstract in Korean papers). Auto-detected from ``text`` when not given; an
+    all-English (foreign) paper keeps its sentences.
+    """
+    if drop_english is None:
+        drop_english = _is_korean_doc(text)
     rough = re.split(r"(?<=[.!?])\s+", text)
     sents: list[str] = []
     seen: set[str] = set()
@@ -153,12 +169,13 @@ def split_sentences(text: str) -> list[str]:
         letters = re.findall(r"[가-힣a-zA-Z]", s)
         if len(letters) < 15:
             continue
-        # Drop English-dominant lines (e.g. the trailing English abstract /
-        # "Keywords:") in these Korean papers.
-        ko = len(re.findall(r"[가-힣]", s))
-        en = len(re.findall(r"[A-Za-z]", s))
-        if ko < 3 and en > 15:
-            continue
+        # Drop English-dominant lines (trailing English abstract / "Keywords:")
+        # — only in Korean-dominant papers, never in an all-English paper.
+        if drop_english:
+            ko = len(re.findall(r"[가-힣]", s))
+            en = len(re.findall(r"[A-Za-z]", s))
+            if ko < 3 and en > 15:
+                continue
         if re.match(r"^[<\[]?\s*(표|그림|Table|Figure)\s*\d", s):
             continue
         if len(re.findall(r"\d\s*\)", s)) >= 3:
@@ -243,9 +260,10 @@ def section_bodies(text: str) -> list[tuple[str, str]]:
     picking sentences it returns each chapter's de-noised prose so an external
     summariser (e.g. a local Ollama model) can rewrite it.
     """
+    drop_en = _is_korean_doc(text)
     out: list[tuple[str, str]] = []
     for _num, heading, body in split_into_sections(_clean_lines(text)):
-        prose = " ".join(split_sentences(body))
+        prose = " ".join(split_sentences(body, drop_english=drop_en))
         if prose:
             out.append((heading, prose))
     return out
@@ -253,7 +271,8 @@ def section_bodies(text: str) -> list[tuple[str, str]]:
 
 def summarize(text: str, max_sentences: int = 6) -> list[str]:
     """Flat extractive summary (fallback when chapters can't be detected)."""
-    return _textrank_pick(split_sentences(clean_text(text)), max_sentences)
+    cleaned = clean_text(text)
+    return _textrank_pick(split_sentences(cleaned, drop_english=_is_korean_doc(text)), max_sentences)
 
 
 def summarize_by_section(
@@ -268,9 +287,10 @@ def summarize_by_section(
     if not sections:
         return []
 
+    drop_en = _is_korean_doc(text)
     result: list[dict] = []
     for _num, heading, body in sections:
-        sents = split_sentences(body)
+        sents = split_sentences(body, drop_english=drop_en)
         if not sents:
             continue
         # Scale the number of kept sentences to the chapter's length.
