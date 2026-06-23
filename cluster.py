@@ -211,6 +211,9 @@ def main(argv=None) -> int:
     p.add_argument("--multi-ratio", type=float, default=0.90,
                    help="보조 주제 추가 기준(주 주제 유사도 대비 비율; 낮출수록 한 논문에 주제가 더 많이 붙음). 1.0이면 단일 주제")
     p.add_argument("--max-topics", type=int, default=3, help="논문당 최대 주제 수 (기본 3)")
+    p.add_argument("--min-sim", type=float, default=None,
+                   help="주제로 인정할 최소 유사도(0~1). 안 주면 자동(평균-표준편차). "
+                        "어느 주제와도 이보다 멀면 '기타(미분류)'로 둠 — 초록 없는 약한 논문 오분류 방지")
     args = p.parse_args(argv)
     logger = setup_logging("cluster", logfile=False, simple=True)
 
@@ -295,17 +298,36 @@ def main(argv=None) -> int:
         logger.info("  [주제] %s  (%d편)", labels[c], len(c_titles))
 
     # 5) 각 논문에 주제(들) 저장 — 여러 군집에 가까우면 보조 주제도 함께. 사이트 재생성.
-    multi = 0
+    #    어느 주제와도 충분히 가깝지 않은(외톨이) 논문은 '기타'로 — 초록 없는 약한
+    #    논문을 특정 주제로 오분류하는 것 방지.
+    primary_sims = [max((_dot(vectors[i], centroids[c]) for c in labels), default=0.0)
+                    for i in range(len(refs))]
+    if args.min_sim is not None:
+        floor = args.min_sim
+    elif primary_sims:
+        mean = sum(primary_sims) / len(primary_sims)
+        std = (sum((s - mean) ** 2 for s in primary_sims) / len(primary_sims)) ** 0.5
+        floor = mean - std
+    else:
+        floor = 0.0
+    multi = outliers = 0
     for ref_i, (path, idx) in enumerate(refs):
+        art = files[path]["articles"][idx]
+        if primary_sims[ref_i] < floor:
+            art["topic"] = "기타"
+            art["topics"] = ["기타"]
+            outliers += 1
+            continue
         tops = _topics_for(vectors[ref_i], centroids, labels, args.multi_ratio, args.max_topics) or ["기타"]
         if len(tops) > 1:
             multi += 1
-        art = files[path]["articles"][idx]
         art["topic"] = tops[0]      # 주 주제(하위호환)
         art["topics"] = tops        # 전체 주제 목록
     for path, data in files.items():
         open(path, "w", encoding="utf-8").write(json.dumps(data, ensure_ascii=False, indent=2) + "\n")
 
+    if outliers:
+        logger.info("어느 주제와도 가깝지 않아 '기타'로 둔 논문 %d편 (대개 초록 없는 해외 논문)", outliers)
     logger.info("주제 %d개로 묶음 완료. (여러 주제 배정 %d편)", len(labels), multi)
     build_site.build_site(OUTPUT_DIR, SITE_DIR, logger)
     logger.info("사이트 재생성 완료. (git add -A && git commit && git push 로 저장)")
