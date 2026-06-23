@@ -97,46 +97,73 @@ def clean_text(text: str) -> str:
 
 
 # A real top-level chapter heading: "1. 서론", "5. 결론" — a short line with a
-# single number and a Korean title (excludes inline enumerations like
+# single number and a Korean/English title (excludes inline enumerations like
 # "1. 목적, 2. 정의" and table rows).
 _HEADING = re.compile(r"^(\d{1,2})\.\s+(.{1,36})$")
 
+# English papers usually use *unnumbered* section titles ("Introduction",
+# "Methods", "Results"…). Recognise these standalone heading lines so foreign
+# papers also get chapter-by-chapter summaries (optionally numbered "2. Methods"
+# or roman "II. Methods").
+_EN_SECTION = re.compile(
+    r"^(?:(?:\d{1,2}|[IVX]{1,5})[.)]?\s+)?"
+    r"(abstract|introduction|background|related works?|literature review|prior work|"
+    r"materials and methods|methodology|methods?|approach|research design|"
+    r"data and methods|data|results and discussion|results?|findings|analysis|"
+    r"evaluation|discussions?|conclusions?|concluding remarks|"
+    r"summary|implications|limitations|future work|acknowledge?ments?)"
+    r"\s*[:.—-]?\s*$", re.IGNORECASE)
 
-def _is_heading(line: str) -> tuple[int, str] | None:
-    m = _HEADING.match(line)
-    if not m:
-        return None
-    title = m.group(2)
-    if "," in line:                                  # "1. 목적, 2. 정의" enumeration
-        return None
-    if len(re.findall(r"\d+[.)]", line)) > 1:        # more than one numbered item
-        return None
-    if not re.search(r"[가-힣A-Za-z]", title):       # title must have Korean or English letters
-        return None
-    return int(m.group(1)), line
 
+def _is_heading(line: str) -> tuple[str, str] | None:
+    """Return (key, line) if the line is a chapter heading, else None.
 
-def split_into_sections(lines: list[str]) -> list[tuple[int, str, str]]:
-    """Split cleaned lines into (number, heading, body) per top-level chapter.
-
-    Chapter headings appear twice (table of contents + body); for each chapter
-    number we keep the occurrence with the most prose (the real body).
+    ``key`` groups duplicate occurrences (a heading appears in the table of
+    contents and again in the body): the chapter number for numbered headings,
+    or the normalised section name for unnumbered English headings.
     """
-    marks = [(i, *h) for i, ln in enumerate(lines) if (h := _is_heading(ln))]
+    m = _HEADING.match(line)
+    if m:
+        title = m.group(2)
+        if "," in line:                              # "1. 목적, 2. 정의" enumeration
+            return None
+        if len(re.findall(r"\d+[.)]", line)) > 1:    # more than one numbered item
+            return None
+        if not re.search(r"[가-힣A-Za-z]", title):   # title must have Korean or English letters
+            return None
+        return str(int(m.group(1))), line
+    if len(line) <= 40:                              # unnumbered English section title
+        em = _EN_SECTION.match(line.strip())
+        if em:
+            return "en:" + em.group(1).lower().replace(" ", ""), line
+    return None
+
+
+def split_into_sections(lines: list[str]) -> list[tuple[str, str, str]]:
+    """Split cleaned lines into (key, heading, body) per top-level chapter.
+
+    A heading can appear twice (table of contents + body); for each heading key
+    we keep the occurrence with the most prose (the real body), then return them
+    in reading order (by the kept occurrence's position).
+    """
+    marks = [(i, key, heading) for i, ln in enumerate(lines)
+             if (h := _is_heading(ln)) for key, heading in [h]]
     if len(marks) < 2:
         return []
 
-    segments: list[tuple[int, str, str]] = []
-    for idx, (li, num, heading) in enumerate(marks):
+    segments: list[tuple[int, str, str, str]] = []
+    for idx, (li, key, heading) in enumerate(marks):
         end = marks[idx + 1][0] if idx + 1 < len(marks) else len(lines)
         body = " ".join(lines[li + 1: end])
-        segments.append((num, heading, body))
+        segments.append((li, key, heading, body))
 
-    best: dict[int, tuple[int, str, str]] = {}
-    for num, heading, body in segments:
-        if num not in best or len(body) > len(best[num][2]):
-            best[num] = (num, heading, body)
-    return [best[k] for k in sorted(best)]
+    best: dict[str, tuple[int, str, str, str]] = {}
+    for seg in segments:
+        _li, key, _heading, body = seg
+        if key not in best or len(body) > len(best[key][3]):
+            best[key] = seg
+    ordered = sorted(best.values(), key=lambda s: s[0])    # reading order
+    return [(s[1], s[2], s[3]) for s in ordered]
 
 
 def _is_korean_doc(text: str) -> bool:
