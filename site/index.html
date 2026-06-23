@@ -27,7 +27,25 @@
     padding: 8px 14px; border-radius: 8px; white-space: nowrap;
   }
   .console-btn:hover { opacity: .9; }
+  .console-wrap { display: flex; gap: 6px; align-items: center; }
+  .help-btn {
+    background: rgba(255,255,255,.2); color: #fff; border: 1px solid rgba(255,255,255,.6);
+    width: 30px; height: 30px; border-radius: 50%; font-size: .95rem; font-weight: 700;
+    cursor: pointer; line-height: 1; flex: 0 0 auto;
+  }
+  .help-btn:hover { background: rgba(255,255,255,.35); }
   .console-hint { margin: 8px 0 0; opacity: .85; font-size: .78rem; display: none; }
+  .console-help {
+    display: none; margin: 12px 0 0; background: rgba(0,0,0,.18); border-radius: 10px;
+    padding: 12px 16px; font-size: .82rem; line-height: 1.5;
+  }
+  .console-help h3 { margin: 0 0 6px; font-size: .9rem; }
+  .console-help ol { margin: 0; padding-left: 1.2em; }
+  .console-help code {
+    background: rgba(0,0,0,.3); padding: 1px 6px; border-radius: 4px;
+    font-family: ui-monospace, monospace; font-size: .82rem;
+  }
+  .console-help .note { margin: 8px 0 0; opacity: .85; }
   .controls {
     position: sticky; top: 0; z-index: 5; background: var(--bg);
     border-bottom: 1px solid var(--line); padding: 14px 0;
@@ -113,9 +131,23 @@
         <h1>기록학 학회지 아카이브</h1>
         <p>한국기록관리학회지 · 기록학연구 — 새 호가 나오면 자동 수집한 목차·초록 모음 (AI 요약 없음)</p>
       </div>
-      <a class="console-btn" id="console-btn" href="http://localhost:8000" target="_blank" rel="noopener" onclick="document.getElementById('console-hint').style.display='block'">📝 요약 콘솔 열기</a>
+      <div class="console-wrap">
+        <a class="console-btn" id="console-btn" href="http://localhost:8000" target="_blank" rel="noopener" onclick="document.getElementById('console-hint').style.display='block'">📝 요약 콘솔 열기</a>
+        <button class="help-btn" type="button" title="콘솔 켜는 법" aria-label="콘솔 켜는 법" onclick="var h=document.getElementById('console-help');h.style.display=h.style.display==='block'?'none':'block'">?</button>
+      </div>
     </div>
     <p class="console-hint" id="console-hint">콘솔이 안 열리면 내 Mac 터미널에서 <code>python3 app.py</code> 를 먼저 실행하세요(이 버튼은 내 PC에서만 동작).</p>
+    <div class="console-help" id="console-help">
+      <h3>요약 콘솔(로컬호스트) 켜는 법 — 내 Mac에서만</h3>
+      <ol>
+        <li>터미널을 열고 프로젝트 폴더로: <code>cd ~/archival-journal-collector</code></li>
+        <li>파이썬 환경 켜기: <code>source .venv/bin/activate</code></li>
+        <li>(생성형 요약 쓸 때만) 모델 서버 켜기: <code>ollama serve</code></li>
+        <li>콘솔 실행: <code>python3 app.py</code></li>
+        <li>이제 위 <b>📝 요약 콘솔 열기</b> 버튼을 누르면 <code>http://localhost:8000</code> 이 열립니다.</li>
+      </ol>
+      <p class="note">콘솔은 내 PC에서 켜둔 동안만 동작합니다. 폰·다른 PC에서는 열리지 않아요. 끌 때는 터미널에서 <code>Ctrl+C</code>.</p>
+    </div>
   </div>
 </header>
 
