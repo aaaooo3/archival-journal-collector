@@ -147,9 +147,11 @@ def api_summarize():
 
     opts = SimpleNamespace(engine=engine, model=model,
                            ollama_host=S.DEFAULT_OLLAMA_HOST, sentences=S.DEFAULT_SENTENCES)
-    summary = S.summarize_row(make_session(), row, opts, logger)
+    problems: list[str] = []
+    summary = S.summarize_row(make_session(), row, opts, logger, problems)
     if not summary:
-        return jsonify(ok=False, message="요약 실패 (PDF 접근 불가 또는 추출 실패)"), 500
+        reason = problems[-1] if problems else "PDF 접근 불가 또는 추출 실패"
+        return jsonify(ok=False, message=f"요약 실패 — {reason}"), 500
     S.save_summary(summary, row, logger)
     B.build_site(B.OUTPUT_DIR, B.SITE_DIR, logger)
 

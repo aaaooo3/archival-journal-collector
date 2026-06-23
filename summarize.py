@@ -171,32 +171,47 @@ def summarize_sections_ollama(text: str, host: str, model: str, logger: logging.
     return sections or None
 
 
-def summarize_row(session, row: dict, opts: argparse.Namespace, logger: logging.Logger) -> dict | None:
-    """Download, extract and summarise one article. Returns a summary dict or None."""
+def summarize_row(session, row: dict, opts: argparse.Namespace, logger: logging.Logger,
+                  problems: list | None = None) -> dict | None:
+    """Download, extract and summarise one article. Returns a summary dict or None.
+
+    On failure, appends a human-readable Korean reason to ``problems`` (if given)
+    so callers (web console) can show *why* it failed, not just "실패".
+    """
     from summarizer import summarize, summarize_by_section
+
+    def _fail(reason: str):
+        if problems is not None:
+            problems.append(reason)
+        return None
 
     per_section = opts.sentences
     title = row["title"][:50]
+    foreign = row.get("journal_key", "") in ("amarch", "archivaria", "archrec")
     logger.info("summarising %r (%s)", title, row.get("doi") or "no-doi")
     try:
         pdf_url = resolve_pdf_url(session, row, logger)
     except ExtractionError as exc:
         logger.error("  could not resolve PDF url: %s", exc)
-        return None
+        return _fail("PDF 주소를 찾지 못했어요. 논문 공개 페이지 구조가 바뀌었을 수 있어요.")
     if not pdf_url:
         logger.error("  no PDF url found — skipping")
-        return None
+        return _fail("공개 PDF 링크가 없어요" + (
+            " — 해외 유료 저널이라 본문이 막혀 있습니다. 초록까지만 볼 수 있어요."
+            if foreign else " — 이 논문은 공개 PDF가 제공되지 않습니다."))
 
     try:
         data = download_pdf(session, pdf_url, logger)
     except ExtractionError as exc:
         logger.error("  %s", exc)
-        return None
+        return _fail("PDF를 내려받지 못했어요" + (
+            " — 해외 유료 저널의 접근 차단(페이월)일 가능성이 큽니다."
+            if foreign else " — 접근 차단 또는 일시적 네트워크 문제예요. 잠시 후 다시 시도해 보세요."))
 
     text = extract_pdf_text(data)
     if len(text.strip()) < 300:
         logger.error("  extracted text too short (%d chars) — skipping", len(text.strip()))
-        return None
+        return _fail("PDF에서 본문을 충분히 추출하지 못했어요 (스캔본·이미지 PDF일 수 있어요).")
 
     result = {
         "doi": row.get("doi", ""),
