@@ -17,11 +17,9 @@
       "doi": "10.17723/2327-9702-89.1.12",
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-89.1.12",
-      "topic": "성소수자 구술사",
+      "topic": "사용자 경험",
       "topics": [
-        "성소수자 구술사",
-        "온라인 아카이브 관리 방법론",
-        "중동·북아프리카 아카이브"
+        "사용자 경험"
       ]
     },
     {
@@ -37,10 +35,13 @@
       "doi": "10.17723/2327-9702-89.1.40",
       "abstract": "ABSTRACT Balancing access and privacy is one of the most important and most challenging responsibilities for an archivist. Understanding the impact and perception of access decisions on archives users supports the delivery of ethical and effective services. This research study aims to assess the impact of access restrictions in US archival collections on archives users across repositories and disciplines. Findings reveal that archives users face inconsistent and unclear access policies. Restrictions impact research by delaying project completion, forcing changes in scope and methodology (such as building in additional time for archival research) and causing users to self-censor how they present their projects to repositories. Participants emphasize the need for documentation and clear communication explaining access restrictions, preferably included in finding aids, on websites, and in archival staff communication with researchers. Suggestions for archivists also include creating and regularly assessing the application of access policies to address researchers’ perceptions that archival staff make access decisions arbitrarily or prejudicially. Clearer communication and regular re-examination of restrictions can mitigate negative user experiences. This study benefits archival practitioners managing restricted collections, anyone seeking to understand the effects of restrictions on users, and those aiming to create equitable access policies and procedures.",
       "url": "https://doi.org/10.17723/2327-9702-89.1.40",
-      "topic": "온라인 아카이브 관리 방법론",
+      "topic": "접근제한",
       "topics": [
-        "온라인 아카이브 관리 방법론",
-        "개인 반대기록 활성화 사례 연구"
+        "접근제한",
+        "연구자",
+        "접근정책",
+        "자료실",
+        "통보"
       ]
     },
     {
@@ -52,11 +53,12 @@
       "doi": "10.17723/2327-9702-89.1.243",
       "abstract": "ABSTRACT During the Vietnam War, US province advisory teams supported government leaders in each of South Vietnam's forty-four provinces. From October 1967 to February 1973, all province advisory teams created monthly province reports that contained a narrative account of government programs, counterinsurgency efforts, and the state of the war in each province. Advisors created these and other reports in the context of the US government's vast effort to document, measure, and make sense of the Vietnam War. This study explores the recordkeeping and political context of the province report, the report's warrants and rules, and two inherent tensions within the province report. The first of these tensions was the intent of capturing advisors’ original insights about the war but structuring those insights within the confines of institutional norms and assumptions. The second tension was the balance between the perceived value of the province report and the effort it took to create, read, and manage them. In examining these tensions, this article discusses how the effort to formulate original insights within institutional constraints informs recordkeeping scholarship and how the tension between the perceived value of the province report and the effort to create, read, and manage these reports informs current records management practice. Additionally, this article briefly examines the province report's research potential for historical scholarship about the Vietnam War.",
       "url": "https://doi.org/10.17723/2327-9702-89.1.243",
-      "topic": "온라인 아카이브 관리 방법론",
+      "topic": "기록보관",
       "topics": [
-        "온라인 아카이브 관리 방법론",
-        "개인 반대기록 활성화 사례 연구",
-        "중심 · 방안"
+        "기록보관",
+        "정부문서",
+        "전쟁기록",
+        "정치적맥락"
       ]
     },
     {
@@ -71,9 +73,12 @@
       "doi": "10.17723/2327-9702-89.1.130",
       "abstract": "ABSTRACT In this case study, librarians and archivists at Northwestern University Libraries (NUL) detail a year-long process of conducting a user experience (UX) assessment on the ArchivesSpace public user interface (PUI) with the intention of assembling recommendations to be worked on by NUL software developers as feature requests despite their limited time available to work on the system. The authors of this article—a collaboration between NUL's McCormick Library of Special Collections and University Archives and the library's user experience librarian—describe and discuss lessons learned from the assessment that included a peer institution analysis, heuristic evaluation, an accessibility audit, and user interviews and user testing. The user interviews and testing included Northwestern students, faculty, staff, and external researchers to capture diverse perspectives. The collected data were then used to formulate and prioritize changes to the ArchivesSpace PUI to maximize UX improvements for the least amount of developer time required, while also avoiding potential duplication of ongoing work via core code maintenance and feature requests by ArchivesSpace developers. This case study concludes with an exploration of feature prioritization and considerations for other academic and cultural heritage institutions considering a similar assessment.",
       "url": "https://doi.org/10.17723/2327-9702-89.1.130",
-      "topic": "온라인 아카이브 관리 방법론",
+      "topic": "아카이브스페이스",
       "topics": [
-        "온라인 아카이브 관리 방법론"
+        "아카이브스페이스",
+        "사용자인터페이스",
+        "접근성검사",
+        "우선순위지정"
       ]
     },
     {
@@ -85,11 +90,13 @@
       "doi": "10.17723/2327-9702-89.1.325",
       "abstract": "ABSTRACT This article examines the complexities involved in identifying and naming documentary forms in personal archives, with particular attention to newspaper clippings. Often overlooked or inade-quately classified due to their fragmentary nature, these records frequently receive generic labels that obscure their provenance and diminish their archival value. Drawing on diplomatics, journalism theory, and archival science, the study proposes a methodological framework that enables the recognition of structural and contextual elements that define these fragments as distinct documentary forms. The analysis shows that clippings, though often treated as miscellaneous material, may exhibit formal traits that justify their identification as autonomous documentary forms. The article also considers the implications of digital environments for archival description, suggesting that the transformation of press clippings into digital equivalents may reshape existing forms or give rise to new ones. Ultimately, the study underscores the archivist's central role in naming, contextualizing, and situating records within their provenance, reaffirming the principle that archival meaning emerges from the interplay between the part and the whole.",
       "url": "https://doi.org/10.17723/2327-9702-89.1.325",
-      "topic": "온라인 아카이브 관리 방법론",
+      "topic": "신문기사클립",
       "topics": [
-        "온라인 아카이브 관리 방법론",
-        "개인 반대기록 활성화 사례 연구",
-        "중동·북아프리카 아카이브"
+        "신문기사클립",
+        "문서형태",
+        "분류",
+        "프레임워크",
+        "디플로마틱스"
       ]
     },
     {
@@ -101,9 +108,13 @@
       "doi": "10.17723/2327-9702-89.1.357",
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-89.1.357",
-      "topic": "성소수자 구술사",
+      "topic": "컴퓨터 기술",
       "topics": [
-        "성소수자 구술사"
+        "컴퓨터 기술",
+        "역사",
+        "조각",
+        "시각화",
+        "인간학 연구"
       ]
     },
     {
@@ -115,9 +126,12 @@
       "doi": "10.17723/2327-9702-89.1.364",
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-89.1.364",
-      "topic": "성소수자 구술사",
+      "topic": "라이브러리",
       "topics": [
-        "성소수자 구술사"
+        "라이브러리",
+        "개인적 아카이브",
+        "문신",
+        "가이드"
       ]
     },
     {
@@ -129,10 +143,12 @@
       "doi": "10.17723/2327-9702-89.1.349",
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-89.1.349",
-      "topic": "성소수자 구술사",
+      "topic": "사회정의",
       "topics": [
-        "성소수자 구술사",
-        "개인 반대기록 활성화 사례 연구"
+        "사회정의",
+        "특별수집물",
+        "보존",
+        "중심화"
       ]
     },
     {
@@ -144,11 +160,12 @@
       "doi": "10.17723/2327-9702-89.1.8",
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-89.1.8",
-      "topic": "성소수자 구술사",
+      "topic": "커뮤니티",
       "topics": [
-        "성소수자 구술사",
-        "온라인 아카이브 관리 방법론",
-        "개인 반대기록 활성화 사례 연구"
+        "커뮤니티",
+        "변화",
+        "공정성",
+        "투명성"
       ]
     },
     {
@@ -160,9 +177,11 @@
       "doi": "10.17723/2327-9702-89.1.17",
       "abstract": "ABSTRACT Archives face unique challenges to implementing user experience (UX) research and design practices, including limited and contingent staffing, constrained budgets, complex systems, and lack of technology ownership. Drawing on a comparative analysis of existing corporate and library UX maturity models, recent survey and project data related to archival resourcing and systems challenges, and the author's experience as a UX practitioner, this article proposes the Archives UX Maturity Model: a new cyclical model supporting small, iterative interventions to assess and build UX capacity in archives. Its stages support organizations of varying sizes and capacities and act as a roadmap for integrating UX practices through a cycle of awareness, experimentation, collaboration and advocacy, and reflection and documentation. The article offers methods to support this model of incremental integration, including moderated usability testing, card sorting, tree testing, service blueprinting, and accessibility evaluations. By leveraging existing strengths like the agility of small teams and close user connections, archives can enhance user experience and embed care-centered approaches.",
       "url": "https://doi.org/10.17723/2327-9702-89.1.17",
-      "topic": "온라인 아카이브 관리 방법론",
+      "topic": "성숙도 모델",
       "topics": [
-        "온라인 아카이브 관리 방법론"
+        "성숙도 모델",
+        "사용자 중심 설계",
+        "usability 테스트"
       ]
     },
     {
@@ -182,11 +201,13 @@
       "doi": "10.17723/2327-9702-89.1.163",
       "abstract": "ABSTRACT As digital collections become a central access point for archival materials, archivists are increasingly called to integrate reparative description practices into online environments. This case study analyzes content mediation strategies across 100 digital collections platforms at US academic institutions and statewide aggregators, identifying six distinct notice types: header/footer links, homepage features, search results statements, collection-level notes, item-level notes, and item-level inserts. Using Jakob Nielsen's Ten Usability Heuristics for Interface Design, the project team conducted a heuristic evaluation of representative examples from eight institutions to assess how effectively each strategy communicates the presence of potentially sensitive or harmful content while adhering to established usability principles. Findings indicate that header and footer links are among the least effective strategies due to low visibility, while item-level inserts—displayed prior to viewing a digital object—demonstrate the strongest adherence to usability heuristics, particularly in visibility, user control, and error prevention. Results further suggest that a combination approach, implementing multiple notice types across stages of a user's search process, best supports recognition and recall while centering user needs. This study contributes to ongoing conversations about reparative description by recognizing user experience as a critical component of online archival access and demonstrates the value of heuristic evaluation as a practical, cost-effective tool for assessing archival interfaces.",
       "url": "https://doi.org/10.17723/2327-9702-89.1.163",
-      "topic": "온라인 아카이브 관리 방법론",
+      "topic": "디지털 koleksi션 웹사이트",
       "topics": [
-        "온라인 아카이브 관리 방법론",
-        "텍스트마이닝 연구동향",
-        "전자기록 관리"
+        "디지털 koleksi션 웹사이트",
+        "내용 공지",
+        "헤더",
+        "푸터 링크",
+        "아이템 레벨 삽입"
       ]
     },
     {
@@ -201,10 +222,13 @@
       "doi": "10.17723/2327-9702-89.1.103",
       "abstract": "ABSTRACT As part of inclusive and reparative description efforts, archivists are increasingly engaging in content mediation practices to mitigate harm caused by researchers’ unwanted exposure to harmful or offensive description or collection content. For the past few years, Princeton University Library archivists have been applying online content warnings and using feedback forms to discover and identify harmful language and content. Given the new application of these features, Princeton staff wanted to understand how end users feel about content mediation in archival description, especially because there are no studies that look at user perceptions of these features in archival discovery, research, and access platforms. In this research article, a cross-departmental team of Princeton University Library staff shares insights from a focus group study conducted on harmful content mediation features that archivists are employing. The primary goal of the study was to hear users’ perspectives on harmful and offensive content and their mental models of content mediation features in the finding aids website that might inform more effective harm mitigation measures. The team found that participants in the study had a shared understanding of harmful and offensive content. Participants also agreed that providing specificity and context when applying content mediation features is critical in giving users agency to make informed decisions about whether to view particular content. Given the complexities surrounding the application of content warnings, participants emphasized the need for collaboration with researchers and communities who create and are represented in archival collections, especially around the issue of harmful or offensive language.",
       "url": "https://doi.org/10.17723/2327-9702-89.1.103",
-      "topic": "온라인 아카이브 관리 방법론",
+      "topic": "포괄적 기록",
       "topics": [
-        "온라인 아카이브 관리 방법론",
-        "개인 반대기록 활성화 사례 연구"
+        "포괄적 기록",
+        "사용자",
+        "내용 경고",
+        "피드백 양식",
+        "해석권"
       ]
     },
     {
@@ -216,9 +240,12 @@
       "doi": "10.17723/2327-9702-89.1.344",
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-89.1.344",
-      "topic": "성소수자 구술사",
+      "topic": "특별전집",
       "topics": [
-        "성소수자 구술사"
+        "특별전집",
+        "접근성",
+        "이론",
+        "실천"
       ]
     },
     {
@@ -230,9 +257,12 @@
       "doi": "10.17723/2327-9702-89.1.5",
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-89.1.5",
-      "topic": "유령 세계 연구",
+      "topic": "문제",
       "topics": [
-        "유령 세계 연구"
+        "문제",
+        "규칙",
+        "관리",
+        "해결"
       ]
     },
     {
@@ -245,11 +275,11 @@
       "doi": "10.17723/2327-9702-89.1.342",
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-89.1.342",
-      "topic": "성소수자 구술사",
+      "topic": "역사적 유산",
       "topics": [
-        "성소수자 구술사",
-        "온라인 아카이브 관리 방법론",
-        "중동·북아프리카 아카이브"
+        "역사적 유산",
+        "미래 프레임워크",
+        "아카이브 연구"
       ]
     },
     {
@@ -266,11 +296,11 @@
       "doi": "10.17723/2327-9702-89.1.196",
       "abstract": "ABSTRACT This article reports findings from a national mixed-methods survey examining how Native and Indigenous community-based researchers engage with archival collections and the barriers they face in search, access, and use. Drawing on 129 survey responses distributed through the Association of Tribal Archives, Libraries, and Museums (ATALM), the authors analyzed research motivations, search behaviors, access constraints, and training experiences among Native and Indigenous community-based researchers. Results reveal persistent structural, financial, human, and infrastructural barriers rooted in colonial archival systems, particularly around description, lack of digital access, and institutional gatekeeping. The authors argue that these findings extend and operationalize the Protocols for Native American Archival Materials (PNAAM), as well as related principles and policies, offering concrete recommendations for community-centered access, description, outreach, and shared stewardship.",
       "url": "https://doi.org/10.17723/2327-9702-89.1.196",
-      "topic": "온라인 아카이브 관리 방법론",
+      "topic": "장벽",
       "topics": [
-        "온라인 아카이브 관리 방법론",
-        "개인 반대기록 활성화 사례 연구",
-        "전자기록 관리"
+        "장벽",
+        "추천",
+        "원주민"
       ]
     },
     {
@@ -284,11 +314,13 @@
       "doi": "10.17723/2327-9702-89.1.296",
       "abstract": "ABSTRACT The Israel Folktale Archives (IFA), named in honor of Dov Noy, was established to preserve the traditions of the heterogeneous groups in Israel and is a UNESCO Memory of the World site. This research aims to learn the best practices of digital folktale archives to implement in IFA. The authors examined four aspects: data access, copyright, metadata, and visual representation of data. The archives selected were Wossidlo Digital Archive (WossiDiA), Dúchas, Norwegian Folklore Archives (NFS), Intelligent Search Engine for Belief Legends (ISEBEL), and Forced Labor 1939–1945. Enabling easy access to the materials is quintessential in the current information culture while maintaining the privacy of informants. Copyright information is vital, and the use of Creative Commons licensing is most prevalent. All archives provide basic metadata, but it is not always inter-linked to corresponding records. Translation of texts and metadata is especially beneficial. Full-text search is also available in some archives. Visual representation of records on maps greatly aids discovery. The authors propose to implement the above features in IFA and expect that the innovation will depend on the available funds and team.",
       "url": "https://doi.org/10.17723/2327-9702-89.1.296",
-      "topic": "전자기록 관리",
+      "topic": "디지털 아카이브",
       "topics": [
-        "전자기록 관리",
-        "개인 반대기록 활성화 사례 연구",
-        "온라인 아카이브 관리 방법론"
+        "디지털 아카이브",
+        "저작권",
+        "메타데이터",
+        "정보 접근성",
+        "지도 시각화"
       ]
     },
     {
@@ -300,9 +332,13 @@
       "doi": "10.17723/2327-9702-89.1.367",
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-89.1.367",
-      "topic": "기타",
+      "topic": "서체",
       "topics": [
-        "기타"
+        "서체",
+        "검열",
+        "도서관",
+        "책",
+        "규칙"
       ]
     },
     {
@@ -316,9 +352,12 @@
       "doi": "10.17723/2327-9702-89.1.271",
       "abstract": "ABSTRACT In 2015, the Louisville Underground Music Archive (LUMA) team published their approach to documenting the Louisville local music scene by combining documentation strategy with a community archives–influenced sensibility. In the ten years since “Saving All the Freaks on the Life Raft,” the LUMA project has received more collections, taught dozens of classes using the materials, participated in community events, and even had a pair of jeans named after it. This is also a point to reflect on LUMA's future. To help plan that path, the LUMA team turned to colleagues working on other punk music projects at similar institutions, including university archives and manuscript repositories, large public libraries, and major museums. This article provides a look at the literature since 2015, a report on LUMA's progress, and the results of conversations with similarly situated colleagues, ending with the identification of some overarching lessons learned. From this pool of data, the LUMA team observed that complex collecting projects can succeed without advisory boards, as long as the community connections and wisdom these boards offer exist in other forms; that it is not unusual for genre-focused music collecting projects to consider expanding their focus to other types of music; that work with creative communities can require changes to policies and deeds; and that staffing, and therefore sustainability, will likely always be an issue.",
       "url": "https://doi.org/10.17723/2327-9702-89.1.271",
-      "topic": "공연기록 수집과 보존",
+      "topic": "지역음악",
       "topics": [
-        "공연기록 수집과 보존"
+        "지역음악",
+        "커뮤니티",
+        "수집",
+        "정책"
       ]
     },
     {
@@ -332,11 +371,9 @@
       "doi": "10.17723/2327-9702-89.1.69",
       "abstract": "ABSTRACT Despite the digital transformation of archival research, gaps persist in understanding the diverse population of online archival users. This mixed-methods study, conducted from 2020 to 2023, surveyed 3,300 users across thirteen archival aggregators and conducted twenty-five in-depth interviews to comprehensively examine online user behaviors, motivations, and needs. The research reveals a far more diverse user base than traditionally studied, including retirees, journalists, educators, and avocational researchers alongside academics and genealogists. Users employ multiple tools—search engines, archival aggregators, personal networks, and direct contact with archivists—to locate materials driven by professional, educational, and emotional motivations. While 42.7 percent prefer online access, users strategically employ various access methods. These findings challenge existing assumptions about archival users and provide essential insights for designing contemporary discovery systems, developing archival description practices, and creating services that meet the needs of the full spectrum of online archival users in the digital age.",
       "url": "https://doi.org/10.17723/2327-9702-89.1.69",
-      "topic": "온라인 아카이브 관리 방법론",
+      "topic": "온라인 아카이브 사용자",
       "topics": [
-        "온라인 아카이브 관리 방법론",
-        "중동·북아프리카 아카이브",
-        "개인 반대기록 활성화 사례 연구"
+        "온라인 아카이브 사용자"
       ]
     },
     {
@@ -348,9 +385,12 @@
       "doi": "10.17723/2327-9702-89.1.360",
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-89.1.360",
-      "topic": "성소수자 구술사",
+      "topic": "문화기억",
       "topics": [
-        "성소수자 구술사"
+        "문화기억",
+        "기억",
+        "디스터트션",
+        "전통"
       ]
     },
     {
@@ -362,9 +402,12 @@
       "doi": "10.17723/2327-9702-89.1.353",
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-89.1.353",
-      "topic": "성소수자 구술사",
+      "topic": "디지털인문학",
       "topics": [
-        "성소수자 구술사"
+        "디지털인문학",
+        "도서관",
+        "종교학",
+        "소개"
       ]
     }
   ],
