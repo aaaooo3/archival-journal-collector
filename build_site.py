@@ -366,6 +366,16 @@ _CSS = """
   .topic-row { padding: 0; }
   .topic-row .filters { padding: 8px 0 2px; }
   .filters.topics .filter.active { background: #3b46c4; border-color: #3b46c4; }
+  .topic-wrap { border-top: 1px solid var(--line); }
+  .topic-wrap > summary {
+    cursor: pointer; list-style: none; max-width: 920px; margin: 0 auto;
+    padding: 9px 20px; font-size: .85rem; font-weight: 600; color: #3b46c4;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .topic-wrap > summary::-webkit-details-marker { display: none; }
+  .topic-wrap > summary #topic-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .topic-wrap > summary::after { content: "▾"; margin-left: auto; color: var(--muted); transition: transform .2s; }
+  .topic-wrap[open] > summary::after { transform: rotate(180deg); }
   .summary {
     background: var(--accent-soft); border: 1px solid #cfe3d8; border-radius: 8px;
     padding: 8px 12px; margin: 0 0 10px;
@@ -462,7 +472,16 @@ _JS = """
     });
   }
   bindFilterGroup("journal-filters", function (v) { activeJournal = v; });
-  bindFilterGroup("topic-filters", function (v) { activeTopic = v; });
+
+  var topicWrap = document.getElementById("topic-wrap");
+  var topicLabel = document.getElementById("topic-label");
+  var isPhone = function () { return window.matchMedia && window.matchMedia("(max-width: 640px)").matches; };
+  if (topicWrap && isPhone()) { topicWrap.removeAttribute("open"); }   // 폰에선 기본 접힘
+  bindFilterGroup("topic-filters", function (v) {
+    activeTopic = v;
+    if (topicLabel) { topicLabel.textContent = (v && v !== "all") ? "🏷 주제: " + v : "🏷 주제 필터"; }
+    if (topicWrap && isPhone()) { topicWrap.removeAttribute("open"); }  // 고르면 접어서 목록이 보이게
+  });
 
   apply();
 })();
@@ -646,6 +665,14 @@ def render_site(issues: list[dict], summaries: dict[str, dict] | None = None) ->
     if not main_html:
         main_html = '<p class="empty">아직 수집된 논문이 없습니다.</p>'
 
+    topic_filters = _render_topic_filters(issues)
+    topic_section = (
+        '<details class="topic-wrap" id="topic-wrap" open>'
+        '<summary><span id="topic-label">🏷 주제 필터</span></summary>'
+        f'<div class="wrap topic-row">{topic_filters}</div>'
+        '</details>'
+    ) if topic_filters else ""
+
     return f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -699,7 +726,7 @@ def render_site(issues: list[dict], summaries: dict[str, dict] | None = None) ->
     <div class="filters" id="journal-filters">{_render_filters(issues)}</div>
     <span id="count">논문 {total}편</span>
   </div>
-  <div class="wrap topic-row">{_render_topic_filters(issues)}</div>
+{topic_section}
 </div>
 
 <main class="wrap">
