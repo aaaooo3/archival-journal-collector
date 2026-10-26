@@ -650,8 +650,17 @@ def render_site(issues: list[dict], summaries: dict[str, dict] | None = None) ->
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>기록학 학회지 아카이브</title>
+<meta name="description" content="기록학 학회지 논문 목록·초록·요약 모음">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2f6f4f">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="기록학 아카이브">
 <style>{_CSS}</style>
 </head>
 <body>
