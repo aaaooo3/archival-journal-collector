@@ -35,16 +35,28 @@ from cluster import _FOREIGN, _is_front_matter, _model_installed
 KW_MODEL = "qwen2.5:7b"
 MAX_KW = 5
 
-_SYSTEM = ("당신은 기록학·아카이브 분야 학술 논문의 핵심 주제어(키워드)를 뽑는 도우미입니다. "
-           "한국어로만, 설명 없이 키워드만 쉼표로 답하세요.")
+_SYSTEM = ("당신은 기록학·아카이브 분야 학술 논문의 '주제어'(무엇을 다루는 논문인지)를 뽑는 "
+           "도우미입니다. 한국어로만, 설명 없이 키워드만 쉼표로 답하세요.")
 _PROMPT = (
-    "다음 논문의 핵심 주제어를 한국어로 {n}개 이내로 뽑으세요.\n"
-    "규칙: 논문의 구체적인 대상·방법·영역을 드러내는 명사(구)로 쓰세요. "
-    "'기록관리','아카이브','기록학','연구','관리 방안'처럼 분야 전체를 뜻하는 포괄적 단어는 "
-    "피하세요. 원문이 영어여도 한국어 주제어로 쓰세요.\n"
-    "쉼표로 구분해 키워드만 출력(설명·번호·문장 금지):\n\n"
+    "다음 논문의 '주제어'를 한국어로 {n}개 이내로 뽑으세요.\n"
+    "주제어 = 논문이 '무엇을 다루는가'(대상·현상·영역·개념).\n"
+    "다음은 뽑지 마세요:\n"
+    "① 분석·조사 '방법/기법'(예: IPA 분석, 텍스트마이닝, 설문조사, 사례연구, 내용분석, "
+    "델파이, 심층면담) — 이건 주제가 아니라 방법입니다.\n"
+    "② '기록관리·아카이브·기록학·연구·방안'처럼 분야 전체를 뜻하는 포괄어.\n"
+    "예) 제목이 '텍스트마이닝을 통한 구술사 연구 동향 분석'이면 → 구술사, 연구 동향 (O) / "
+    "텍스트마이닝, 동향 분석 (X)\n"
+    "원문이 영어여도 한국어 주제어로 쓰세요. 쉼표로 구분해 키워드만 출력(설명·번호·문장 금지):\n\n"
     "제목: {title}\n초록: {abstract}"
 )
+
+# 주제가 아니라 '방법'인 단어들 — 키워드로 나와도 버린다.
+_METHOD_WORDS = {
+    "분석", "내용분석", "사례연구", "설문조사", "설문", "면담", "심층면담", "인터뷰",
+    "텍스트마이닝", "토픽모델링", "델파이", "델파이기법", "ipa", "ipa분석", "통계분석",
+    "빈도분석", "요인분석", "회귀분석", "네트워크분석", "메타분석", "실증분석", "비교분석",
+    "문헌연구", "문헌고찰", "방법론", "연구방법",
+}
 
 
 def _clean_keywords(raw: str, max_kw: int) -> list[str]:
@@ -60,6 +72,9 @@ def _clean_keywords(raw: str, max_kw: int) -> list[str]:
             continue
         if _FOREIGN.search(p):          # 일본어 가나·중국어 한자 섞이면 버림
             continue
+        norm = p.lower().replace(" ", "")
+        if norm in _METHOD_WORDS or p.endswith(("분석", "기법")) or norm.endswith("방법론"):
+            continue                    # 분석 방법·기법은 주제가 아니라 제외
         if p in ("기록관리", "아카이브", "기록학", "연구"):  # 너무 포괄적인 건 제외
             continue
         if p not in out:
@@ -67,6 +82,12 @@ def _clean_keywords(raw: str, max_kw: int) -> list[str]:
         if len(out) >= max_kw:
             break
     return out
+
+
+# 프롬프트·정리 규칙이 바뀌면 캐시가 자동으로 무효화되도록 서명을 만든다.
+_SIG = hashlib.sha1(
+    (_SYSTEM + _PROMPT + "|".join(sorted(_METHOD_WORDS))).encode("utf-8")
+).hexdigest()[:8]
 
 
 def extract_keywords(host: str, model: str, title: str, abstract: str,
@@ -127,7 +148,7 @@ def main(argv=None) -> int:
             text = (title + " " + abstract).strip()
             if not text:
                 continue
-            key = f"{args.model}:{args.max_keywords}:" + hashlib.sha1(text.encode("utf-8")).hexdigest()
+            key = f"{args.model}:{args.max_keywords}:{_SIG}:" + hashlib.sha1(text.encode("utf-8")).hexdigest()
             if key in cache:
                 kws = cache[key]
                 reused += 1
