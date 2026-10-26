@@ -366,6 +366,7 @@ _CSS = """
   .topic-row { padding: 0; }
   .topic-row .filters { padding: 8px 0 2px; }
   .filters.topics .filter.active { background: #3b46c4; border-color: #3b46c4; }
+  .filters.topics .cnt { opacity: .55; font-size: .82em; }
   .topic-wrap { border-top: 1px solid var(--line); }
   .topic-wrap > summary {
     cursor: pointer; list-style: none; max-width: 920px; margin: 0 auto;
@@ -696,19 +697,36 @@ def _render_filters(issues: list[dict]) -> str:
     return "".join(buttons)
 
 
-def _render_topic_filters(issues: list[dict]) -> str:
-    """Topic filter row — empty string until articles have been clustered (cluster.py)."""
-    topics: list[str] = []
+def _render_topic_filters(issues: list[dict], min_count: int = 2, max_topics: int = 30) -> str:
+    """Topic filter row, built from the keywords papers actually carry.
+
+    Per-paper keywords (keywords.py) can produce many distinct values, so the
+    filter shows the *shared* ones: keywords used by at least ``min_count``
+    papers, most common first, capped at ``max_topics``. Each paper still shows
+    all its own keywords as tags. Empty until papers have topics.
+    """
+    from collections import Counter
+    freq: Counter = Counter()
     for iss in issues:
         for art in iss.get("articles", []):
+            seen = set()
             for t in (art.get("topics") or ([art["topic"]] if art.get("topic") else [])):
-                if t and t not in topics:
-                    topics.append(t)
-    if not topics:
+                if t and t != "기타" and t not in seen:
+                    freq[t] += 1
+                    seen.add(t)
+    if not freq:
         return ""
+    items = [(t, c) for t, c in freq.items() if c >= min_count]
+    if not items:                       # every keyword unique — show the top ones anyway
+        items = list(freq.items())
+    items.sort(key=lambda x: (-x[1], x[0]))
+    items = items[:max_topics]
     buttons = ['<button class="filter active" type="button" data-topic="all">전체 주제</button>']
-    for t in sorted(topics):
-        buttons.append(f'<button class="filter" type="button" data-topic="{_attr(t)}">🏷 {_esc(t)}</button>')
+    for t, c in items:
+        buttons.append(
+            f'<button class="filter" type="button" data-topic="{_attr(t)}">🏷 {_esc(t)} '
+            f'<span class="cnt">{c}</span></button>'
+        )
     return f'<div class="filters topics" id="topic-filters">{"".join(buttons)}</div>'
 
 
