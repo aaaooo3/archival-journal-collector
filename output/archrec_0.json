@@ -17,12 +17,26 @@
       "url": "https://doi.org/10.1080/23257962.2026.2675937",
       "title_ko": "인공지능 대비 아카이브 준비: 접근성과 발견성을 강화하는 방법",
       "abstract_ko": "인공지능(AI)과 머신러닝은 아카이브 분야에 큰 잠재력을 제공합니다: 대규모에서 민감한 내용을 식별하는 데 도움을 줄 수 있으며, 설명적 메타데이터의 생성 및 향상을 지원하고, 새로운 접근 방식과 해석을 가능하게 합니다. 그러나 AI는 특히 수집품이 부족하거나 불완전하게 기록되어 있고, 오래된 또는 해로운 용어를 사용하여 기록되었을 때, 아카이브 설명, 편향, 그리고 권력에 대한 장기적인 도전 사항들을 더욱 악화시킬 위험도 있습니다.\n\n이 논문은 다음과 같은 질문을 제기합니다: 아카이브는 AI가 정보 접근성과 발견성을 높이는 방식으로 준비될 수 있도록 어떻게 해야 할까요? 이러한 과정에서 아카이브 원칙과 윤리적 의무를 지키면서요?\n\n컴퓨터 과학자와 문화유산 분야의 디지털 인문학자가 공동 저술한 이 논문은 AI 데이터 준비에 대한 교차 학문 리뷰와 실용적인 가이드라인을 제공합니다. 데이터 기록, 데이터 준비, 수집품-데이터, 그리고 아카이브 이론 등 다양한 연구를 바탕으로, 우리는 증거력, 평가, 진위성, 신뢰성 등의 개념들이 기록과 아카이브에서 AI 응용 프로그램을 형성해야 한다고 주장합니다.\n\n우리는 임무 특화형 AI 시스템과 생성형 AI를 구분하고, AI가 아카이스트 대신에 작업을 대체하지 않고도 도움을 줄 수 있는 흐름을 제안합니다. 이러한 흐름에는 설명, 용어 매핑, 민감성 검토 등이 포함됩니다. 우리는 데이터 준비는 데이터 관리의 윤리적이고 개입적인 접근 방식이라고 주장합니다.",
-      "topic": "인공지능",
+      "topic": "archival description",
       "topics": [
-        "인공지능",
-        "접근성",
-        "발견성",
-        "윤리"
+        "archival description",
+        "discoverability",
+        "archival access",
+        "generative AI",
+        "archival theory",
+        "data documentation",
+        "data readiness",
+        "collections as data"
+      ],
+      "keywords": [
+        "archival description",
+        "discoverability",
+        "archival access",
+        "generative AI",
+        "archival theory",
+        "data documentation",
+        "data readiness",
+        "collections as data"
       ]
     },
     {
@@ -36,13 +50,26 @@
       "url": "https://doi.org/10.1080/23257962.2026.2652086",
       "title_ko": "연구 기록의 소홀한 보관 현황: 기억에서 멀어진 연구 데이터",
       "abstract_ko": "연구 자료와 기록의 효과적인 보관은 현대 과학 발전에 필수적입니다. 이전 연구는 데이터 관리의 부족한 부분을 강조하고 개선된 정책이 필요하다고 제안하지만, 많은 경우 정보자유법(Freedom of Information, FOI) 법률의 역할을 무시합니다. 정보자유법은 많은 국가에서 적절한 기록 관리를 요구하기 때문입니다. 이 연구는 정보자유법이 연구 데이터 관리에 미치는 영향을 조사하고, 공립 대학에 대한 법적 의무에도 불구하고 스웨덴에서 연구 자료가 드물게 보관되는 이유를 분석합니다. 15명의 반조직화된 인터뷰를 통해 연구자와 대학 아카이버들과의 인터뷰를 바탕으로, 연구는 인프라 이론을 활용하여 공식적인 아카이빙 실현 과정에서 직면한 도전 사항을 분석합니다. 결과는 법적 의무에도 불구하고 연구 자료가 부족한 인프라, 부족한 자원, 모순된 법률 프레임워크, 그리고 문화적 저항 때문에 드물게 보관되고 있음을 나타냅니다. 낡은 IT 시스템, 표준화 부재, 그리고 불명확한 역할이 효율적인 아카이빙을 더욱 어렵게 만듭니다. 아카이버들은 조화된 규제, 표준화된 메타데이터 관행, 학문적 요구에 맞춘 기술 솔루션을 제안합니다. 이 연구는 법률과 정책만으로는 충분하지 않음을 강조하며, 성공적인 실현은 아카이빙의 가치에 대한 공유 이해, 실제적인 아카이빙 가능성, 그리고 기관의 헌신이 필요하다고 합니다. 이러한 통찰력은 정책 입안자, 대학, 인프라 제공업체들이 연구 워크플로우에 아카이빙을 통합하는 전략을 개발하는데 도움을 줍니다. 이를 통해 장기적인 데이터 보존과 접근성을 확보할 수 있습니다.",
-      "topic": "정보자유법",
+      "topic": "access to information law",
       "topics": [
-        "정보자유법",
-        "연구데이터",
-        "아카이버",
-        "인프라",
-        "문화적저항"
+        "access to information law",
+        "records management",
+        "research data management",
+        "university archivists",
+        "metadata standardization",
+        "archival value",
+        "institutional commitment",
+        "Sweden"
+      ],
+      "keywords": [
+        "access to information law",
+        "records management",
+        "research data management",
+        "university archivists",
+        "metadata standardization",
+        "archival value",
+        "institutional commitment",
+        "Sweden"
       ]
     },
     {
@@ -72,13 +99,26 @@
       "url": "https://doi.org/10.1080/23257962.2026.2652085",
       "title_ko": "대규모 단층 영상 데이터의 자동 정리 및 박물관 아카이빙을 위한 과학 연구 시스템",
       "abstract_ko": "토모그래피는 객체의 세차원 구조를 평행한 두 차원 단면으로 나누어 이미지로 만드는 기술입니다. 이 기술은 다양한 과학 연구 분야에 활용되지만, 과학적 반복성을 위해 토모그래피 데이터셋을 보존하는 것은 많은 물리적 및 경제적인 도전을 초래합니다. 기본 토모그래피 데이터와 관련된 메타데이터를 관리하기 위한 전통적인 방법은 표준화되지 않았으며, 사용자 친화적인 소프트웨어가 부족하여 장시간의 작업 인력을 필요로 합니다. 토모그래피 데이터셋은 종종 1,000개 이상의 파일을 초과하며, 이러한 큰 데이터셋 크기는 오픈 온라인 데이터 저장소의 용량을 초과하고, 이 데이터를 로컬에 보관하려면 많은 디스크 저장 공간이 필요합니다. 여기에서 우리는 대규모 토모그래피 데이터의 관리를 위한 새로운 비용 효율적인 소프트웨어와 하드웨어를 소개합니다. 우리의 사용자 친화적인 소프트웨어는 RAW 토모그래피 데이터를 처리하고, 플립북 스타일의 애니메이션을 생성하며, 메타데이터 표를 출력합니다. 컴퓨터 클러스터는 효율적인 실행을 보장합니다. 데이터는 강력한 장기 보관을 위해 자기 테이프에 저장됩니다. 이 포괄적이고 오픈 소스 방법은 박물관에서 쉽게 도입할 수 있으며, 특히 자연사 과학 분야에서 새로운 종의 설립과 같은 과학적 정직성을 지원합니다.",
-      "topic": "대규모 데이터",
+      "topic": "metadata generation",
       "topics": [
-        "대규모 데이터",
-        "토모그래피",
-        "메타데이터",
-        "애니메이션",
-        "박물관 아카이빙"
+        "metadata generation",
+        "open source software",
+        "tape storage",
+        "long-term data preservation",
+        "3D model",
+        "museum specimens",
+        "natural history",
+        "open data repositories"
+      ],
+      "keywords": [
+        "metadata generation",
+        "open source software",
+        "tape storage",
+        "long-term data preservation",
+        "3D model",
+        "museum specimens",
+        "natural history",
+        "open data repositories"
       ]
     },
     {
@@ -99,12 +139,26 @@
       "url": "https://doi.org/10.1080/23257962.2026.2652089",
       "title_ko": "아카이브 기관을 위한 범주형 기후 위험 평가 척도 개발: 프로텍트-글램 프로젝트의 GIS 기반 탐색 연구",
       "abstract_ko": "문화유산 기관들은 기후 변화와 관련된 심각하고 증가하는 위협을 맞이하고 있습니다. 이 논문은 Providing Risk of the Environment’s Changing Climate Threats for Galleries, Libraries, Archives and Museums (PROTECCT-GLAM) 프로젝트에서 수행한 탐색 연구를 소개합니다. 이 연구는 미국 골프 코스트 지역을 중심으로 진행되었으며, 지리 정보 시스템 분석을 활용하여 두 가지 기후 변수인 플래시 폭풍 경고와 열대 저류성 바람 발생에 근거하여 카운티 단위의 아카이브 기관 위험성을 평가하였습니다. 역사적 데이터를 바탕으로, 이 연구는 새로운 A-F 등급 척도를 개발하여 위험을 분류하였습니다. 탐색 연구는 다양한 재해 기후 데이터를 통합하고 복잡한 기후 정보를 직관적이고 실행 가능한 위험 평가 도구로 변환하는 방법론적인 프레임워크의 유효성을 성공적으로 검증하였습니다. 루이지애나와 미시시피 주 내의 GLAM들은 다른 연구 지역의 주들과 비교하여 이러한 변수들로부터 가장 큰 위험을 맞이하고 있습니다.",
-      "topic": "기후위험",
+      "topic": "climate risk assessment",
       "topics": [
-        "기후위험",
-        "지리정보시스템",
-        "위험평가",
-        "척도"
+        "climate risk assessment",
+        "archives",
+        "cultural heritage institutions",
+        "flash flood warning",
+        "tropical cyclone winds",
+        "Gulf Coast",
+        "Louisiana",
+        "Mississippi"
+      ],
+      "keywords": [
+        "climate risk assessment",
+        "archives",
+        "cultural heritage institutions",
+        "flash flood warning",
+        "tropical cyclone winds",
+        "Gulf Coast",
+        "Louisiana",
+        "Mississippi"
       ]
     },
     {
@@ -121,12 +175,26 @@
       "url": "https://doi.org/10.1080/23257962.2026.2652087",
       "title_ko": "중국 주요 지역의 기후 변화 적응 정책 문서 평가: 아카이브 기관들의 행동과 보고서 분석",
       "abstract_ko": "이 연구는 중국 중앙정부 부서에서 선택된 주요 분야에 대한 기후 변화 적응을 위한 총 2,318건의 정책 문서를 수집하였다. 이 정책들은 네 단계로 나뉘어졌다. 그 후, LDA를 사용하여 정책 주제를 탐색하였으며, 이를 바탕으로 정책 주제 확산을 나타내는 Sankey 다이어그램을 작성하였다. 연구 결과에 따르면 정책의 전반적인 발전 경로는 분산에서 통합, 지역에서 글로벌, 초기 탐구에서 집중된 돌파구를 거치며 변화하고 있다. 정책 제안의 변화는 각 단계별로 정책 주제의 초점이 다르다는 점에 있다: 정책 내용의 포괄성이 강화되었으며 법과 규칙은 계속 깊어지고 완비되었다; 정책 제안의 불변 요소는 기후 변화로 인해 크게 영향을 받는 전국적인 지역 우선순위를 설정하는 것이 정책 수립 과정에서 가장 중요하다는 점이다; 정책 내용은 재난 예방 및 대응 관련 작업에 항상 중요한 가치를 두고 있으며, 마지막으로 관련 정책과 행동은 국제 기후 변화 대응 정책의 목표, 원칙, 제도적 배치와 항상 일치하고 있다.",
-      "topic": "기후변화",
+      "topic": "climate change adaptation",
       "topics": [
-        "기후변화",
-        "정책문서",
-        "주제확산",
-        "전략변화"
+        "climate change adaptation",
+        "policy documents",
+        "policy evolution",
+        "policy diffusion",
+        "policy themes",
+        "climate governance",
+        "China",
+        "archives"
+      ],
+      "keywords": [
+        "climate change adaptation",
+        "policy documents",
+        "policy evolution",
+        "policy diffusion",
+        "policy themes",
+        "climate governance",
+        "China",
+        "archives"
       ]
     },
     {
@@ -140,12 +208,24 @@
       "url": "https://doi.org/10.1080/23257962.2026.2642611",
       "title_ko": "제르마인 그리어, 유명세의 페미니즘과 아카이브",
       "abstract_ko": "사회 운동의 발생 과정을 다루면서 학자이자 정치인인 마이클 피. 포가티는 '방향성'을 기본 단계로 지목했습니다. 포가티는 그의 논문에서 어떤 운동도 성공하려면 반드시 방향성을 거쳐야 한다고 관찰했습니다.",
-      "topic": "유명세",
+      "topic": "Germaine Greer",
       "topics": [
-        "유명세",
-        "페미니즘",
-        "사회 운동",
-        "방향성"
+        "Germaine Greer",
+        "celebrity feminism",
+        "feminist archives",
+        "feminist movements",
+        "orientation",
+        "feminist activism",
+        "women's history"
+      ],
+      "keywords": [
+        "Germaine Greer",
+        "celebrity feminism",
+        "feminist archives",
+        "feminist movements",
+        "orientation",
+        "feminist activism",
+        "women's history"
       ]
     },
     {
@@ -159,10 +239,16 @@
       "url": "https://doi.org/10.1080/23257962.2026.2613980",
       "title_ko": "아카이브와 감정: 과거부터 미래까지의 국제 대화",
       "abstract_ko": "2016년 Archival Science 학술지에서는 '감정과 아카이브, 아카이브와 그 감정'이라는 주제로 특별호를 발행했습니다. 이 호에 실린 논문들은 당시로서는 점점 멈춰있던 것처럼 보였지만, 거의 10년 전의 내용을 반영하고 있습니다.",
-      "topic": "감정",
+      "topic": "affect",
       "topics": [
-        "감정",
-        "국제 대화"
+        "affect",
+        "archival science",
+        "archival theory"
+      ],
+      "keywords": [
+        "affect",
+        "archival science",
+        "archival theory"
       ]
     }
   ],

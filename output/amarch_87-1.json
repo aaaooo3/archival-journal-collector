@@ -15,13 +15,16 @@
       "abstract": "ABSTRACT As archivists are increasingly called upon to measure and demonstrate our value, it is vital to consider not only what we are measuring and why, but also what is beyond measure (what can't be captured by data and metrics) and how we communicate value beyond what can necessarily be measured. In exploring these questions, the author offers some provisional ideas for reframing the discourse and practice around archival metrics and assessment, and for opening space to “take our own measure” more fully and demonstrate the true value of archives. Looking beyond metrics per se, the author first traces a broader notion of archival engagement as an outcome-oriented and people-centered conceptual frame for contemplating and assessing archival value(s) beyond measure, and then considers the role of storytelling in communicating value and ways for framing our stories in terms of archival engagement to convey meaning and impact.",
       "url": "https://doi.org/10.17723/2327-9702-87.1.208",
       "title_ko": "우리 자신을 재단하다: 기록 활용과 이야기 나눔",
-      "topic": "기록 활용",
+      "topic": "storytelling",
       "topics": [
-        "기록 활용",
-        "이야기 나눔",
-        "가치 평가",
-        "메트릭스",
-        "스토리텔링"
+        "storytelling",
+        "archival value",
+        "impact communication"
+      ],
+      "keywords": [
+        "storytelling",
+        "archival value",
+        "impact communication"
       ]
     },
     {
@@ -34,12 +37,26 @@
       "abstract": "&amp;lt;P&amp;gt;&amp;lt;EM&amp;gt;The Materiality of the Archive&amp;lt;/EM&amp;gt; is the first volume to bring together a range of methodological approaches to the materiality of archives, as a framework for their engagement, analysis and interpretation.&amp;lt;/P&amp;gt;&amp;lt;P&amp;gt;Focusing on the archives of creative practices, the book reaches between and across existing bodies of knowledge in this field, including material culture, art history and literary studies, unified by an interest in archives as material deposits and aggregations, in both analogue and digital forms, as well as the material encounter. Connecting a breadth of disciplinary interests in the archive with expanding discourses in materiality, contributors address the potential of a material engagement to animate archival content. Analysing the systems, processes and actions that constitute the shapes, forms and structures in which individual archival objects accumulate, and the underpinnings which may hold them in place as an archival body, the book considers ways in which the inexorable move to the digital affects traditional theories of the physical archival object. It also considers how stewardship practices such as description and metadata creation can accommodate these changes.&amp;lt;/P&amp;gt;&amp;lt;P&amp;gt;&amp;lt;EM&amp;gt;The Materiality of the Archive&amp;lt;/EM&amp;gt; unifies theory and practice and brings together professional and academic perspectives. The book is essential reading for academics, researchers and postgraduate students working in the fields of archive studies, museology, art history and material culture.&amp;lt;/P&amp;gt;",
       "url": "https://doi.org/10.17723/2327-9702-87.1.245",
       "title_ko": "아카이브의 물질성: 문맥 속 창작 활동",
-      "topic": "창작 활동",
+      "topic": "materiality of archives",
       "topics": [
-        "창작 활동",
-        "물질성",
-        "분석",
-        "해석"
+        "materiality of archives",
+        "material culture",
+        "digital archives",
+        "archival objects",
+        "archival description",
+        "metadata generation",
+        "museology",
+        "art history"
+      ],
+      "keywords": [
+        "materiality of archives",
+        "material culture",
+        "digital archives",
+        "archival objects",
+        "archival description",
+        "metadata generation",
+        "museology",
+        "art history"
       ]
     },
     {
@@ -51,11 +68,24 @@
       "doi": "10.17723/2327-9702-87.1.240",
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-87.1.240",
-      "topic": "비주얼 문화",
+      "topic": "queer visual culture",
       "topics": [
-        "비주얼 문화",
-        "Queer",
-        "Feminist"
+        "queer visual culture",
+        "1980s",
+        "archives",
+        "LGBT history",
+        "queer archives",
+        "feminist archives",
+        "visual culture"
+      ],
+      "keywords": [
+        "queer visual culture",
+        "1980s",
+        "archives",
+        "LGBT history",
+        "queer archives",
+        "feminist archives",
+        "visual culture"
       ]
     },
     {
@@ -69,12 +99,18 @@
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-87.1.225",
       "title_ko": "다학제적 접근을 활용한 아카이브 연구",
-      "topic": "다학제",
+      "topic": "interdisciplinary approach",
       "topics": [
-        "다학제",
-        "접근법",
-        "연구방법",
-        "학제간"
+        "interdisciplinary approach",
+        "archives",
+        "archival studies",
+        "interdisciplinary research"
+      ],
+      "keywords": [
+        "interdisciplinary approach",
+        "archives",
+        "archival studies",
+        "interdisciplinary research"
       ]
     },
     {
@@ -87,12 +123,26 @@
       "abstract": "ABSTRACT Congressional papers constitute some of the most unique archival collections to find their way into American repositories. Often voluminous, complex, and appended by donor stipulations and financial considerations, they have been the subject of decades’ worth of archival conferences, scholarship, legislation, and practical manuals. These discussions have long upheld the belief that congressional papers retain inherent research and historic value, largely due to their documentation of legislative processes and topical subject areas. This article interrogates the origins of that presumptive value, positing that archivists have customarily drawn on traditional narratives of American identity and democratic governance to justify and inform the acquisition, appraisal, processing, and deployment of congressional collections. The article first reviews the robust history of the congressional papers community, surveying the evolution of rhetoric around archivists’ assignation of inherent value to congressional papers and critically examining the ways in which that value is shaped by American practices of myth-making. Drawing from memory studies and concepts of the mythic imagination, the article then problematizes the passivity of American democracy in congressional archival praxis, taking into account burgeoning national reckonings and re-reckonings with the nature of American government itself. Implicating archival praxis in the perpetuation of narratives that do not reflect or represent the current state of the nation, the article then suggests modes of alternative intervention for archivists working with congressional papers, calling for a critically contextual reimagining of the field.",
       "url": "https://doi.org/10.17723/2327-9702-87.1.49",
       "title_ko": "국회 문서에서 전설과 기억을 탐사하기",
-      "topic": "기억",
+      "topic": "congressional papers",
       "topics": [
-        "기억",
-        "전설",
-        "문서",
-        "민주주의"
+        "congressional papers",
+        "archival value",
+        "myth-making",
+        "memory studies",
+        "mythic imagination",
+        "American identity",
+        "democratic governance",
+        "archival appraisal"
+      ],
+      "keywords": [
+        "congressional papers",
+        "archival value",
+        "myth-making",
+        "memory studies",
+        "mythic imagination",
+        "American identity",
+        "democratic governance",
+        "archival appraisal"
       ]
     },
     {
@@ -105,13 +155,22 @@
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-87.1.253",
       "title_ko": "문화 보존: 유산과 지역사회 그리고 기록과 기억의 형성",
-      "topic": "문화",
+      "topic": "cultural heritage",
       "topics": [
-        "문화",
-        "유산",
-        "지역사회",
-        "기록",
-        "기억"
+        "cultural heritage",
+        "community",
+        "records",
+        "memory",
+        "archival theory",
+        "collective memory"
+      ],
+      "keywords": [
+        "cultural heritage",
+        "community",
+        "records",
+        "memory",
+        "archival theory",
+        "collective memory"
       ]
     },
     {
@@ -127,13 +186,20 @@
       "abstract": "ABSTRACT Within the archival discourse, there has been minimal research or dialogue about the processes and experiences for academic archivists associated with earning promotion and tenure. Recent reviews of the literature suggest that this topic remains largely unexplored in archivists’ professional and scholarly conversations, despite its pivotal influence on job security, advancement, and identity for those working in academia. This article intends to explain and demystify the procedures and best practices for navigating promotion and tenure by providing guidance and insight for archivists throughout their careers. Furthermore, the authors aim to expose the culture of silence surrounding the promotion and tenure process for archivists while also underscoring the power dynamics involved in evaluation activities. This research explores how these actions have impacted historically underserved and marginalized groups and encourages our archives community to counter these forces through professional awareness and by embracing and applying diversity, equity, inclusion, belonging, and accessibility principles. The authors advocate for a framework that solidifies, clarifies, and encourages increased transparency in the promotion and tenure process and offer profession-wide recommendations to help make this change. Finally, this article serves as a call to action for rethinking our professional identity by championing our collective contributions to the higher education landscape and distinguishing the specialized expertise of archivists from that of our librarian colleagues in the academy.",
       "url": "https://doi.org/10.17723/2327-9702-87.1.155",
       "title_ko": "우리 기록물 정체성 재평가: 학술 기록물 관리자의 승진과 테너 논란 해소 및 대화 변화를 위한 노력",
-      "topic": "학술기록물",
+      "topic": "tenure and promotion",
       "topics": [
-        "학술기록물",
-        "승진",
-        "테너",
-        "문화의식",
-        "평가활동"
+        "tenure and promotion",
+        "university archives",
+        "job security",
+        "professional identity",
+        "higher education"
+      ],
+      "keywords": [
+        "tenure and promotion",
+        "university archives",
+        "job security",
+        "professional identity",
+        "higher education"
       ]
     },
     {
@@ -146,12 +212,16 @@
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-87.1.234",
       "title_ko": "모로코의 다른 아카이브: 국가 폭력 이후 역사와 시민권",
-      "topic": "모로코",
+      "topic": "state violence",
       "topics": [
-        "모로코",
-        "국가폭력",
-        "시민권",
-        "역사"
+        "state violence",
+        "citizenship",
+        "archival history"
+      ],
+      "keywords": [
+        "state violence",
+        "citizenship",
+        "archival history"
       ]
     },
     {
@@ -164,13 +234,20 @@
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-87.1.229",
       "title_ko": "개인정보 카테고리의 맥락적 차이를 반영한 정보 접근권의 예외 규정",
-      "topic": "개인정보",
+      "topic": "right of access to information",
       "topics": [
-        "개인정보",
-        "카테고리",
-        "접근권",
-        "예외",
-        "규정"
+        "right of access to information",
+        "personal data",
+        "archival sources",
+        "contextual dimensions",
+        "privacy"
+      ],
+      "keywords": [
+        "right of access to information",
+        "personal data",
+        "archival sources",
+        "contextual dimensions",
+        "privacy"
       ]
     },
     {
@@ -183,13 +260,18 @@
       "abstract": "ABSTRACT The concept of records is foundational to archival studies, yet empirical research on how members and volunteers of community and grassroots archives conceptualize records remains limited. To understand how members and volunteers of community archives conceptualize records, this study asks how members and volunteers of the Black Bottom Archives (BBA), the Detroit Sound Conservancy (DSC), the Faulkner Morgan Archive (FMA), the Hula Preservation Society (HPS), and The History Project (THP) conceptualize records and how these conceptualizations inform their programs and practices. Based on ten semistructured interviews with five archives in the United States, this research reveals that members and volunteers view records as multifaceted and contingent on ongoing negotiation, borrowing, and intervention for larger goals rather than strictly being tied to abstract, institutional, or professional notions of records. Such a view also points to a recursive and generative relationship between records, programs, and practices and keeping track of power and legitimacy.",
       "url": "https://doi.org/10.17723/2327-9702-87.1.19",
       "title_ko": "공동체 아카이브가 자신을 설명하는 기록 개념화",
-      "topic": "공동체 아카이브",
+      "topic": "records",
       "topics": [
-        "공동체 아카이브",
-        "기록 개념화",
-        "멤버십",
-        "프로그램",
-        "권력"
+        "records",
+        "community archives",
+        "grassroots archives",
+        "archival work"
+      ],
+      "keywords": [
+        "records",
+        "community archives",
+        "grassroots archives",
+        "archival work"
       ]
     },
     {
@@ -214,12 +296,26 @@
       "abstract": "ABSTRACT This article reports the findings of the 2021 New England Archivists Contingent Employment Study, which comprised a survey with eighty-three valid responses, fifteen interviews, and analysis of 250 job postings. The study found that although contingent employment often provides useful professional experience and mentorship, it can negatively impact archival workers due to low pay, inadequate benefits, and short term lengths. Additionally, many experience low morale and isolation due to their contingent status, and the inherent instability of contingent employment causes some to feel that they have little control over their careers and personal lives. Cross-tabulation analysis revealed that new professionals have more contingent positions than their mid-career and late-career counterparts, suggesting that contingent jobs and the challenges of protracted contingent employment have become more prominent over time. Participants were concerned that relying on contingent employment negatively affected their employers, particularly in terms of morale, high rates of staff turnover, institutional memory, and unstable funding. The study also documented perceived effects on the broader archival field, including causing burnout and attrition of archival workers; hampering efforts to recruit and retain a diverse profession; devaluing archival education and labor; perpetuating the reliance on unsustainable funding models; and preventing the development of robust, innovative, and inclusive professional communities. Using the study data and other research in the professional literature, the authors argue that there is an urgent need to address the issues raised in the study by improving working conditions for contingent workers and broadly reassessing the profession's relationship with contingent labor.",
       "url": "https://doi.org/10.17723/2327-9702-87.1.131",
       "title_ko": "임시직 근무의 영향: 근로자, 문화유산 기관 및 아카이브 전문가에게 미치는 효과",
-      "topic": "임시직",
+      "topic": "contingent employment",
       "topics": [
-        "임시직",
-        "근로자",
-        "문화유산",
-        "직무효과"
+        "contingent employment",
+        "archival profession",
+        "archivists",
+        "cultural heritage institutions",
+        "job advertisements",
+        "burnout",
+        "employee turnover",
+        "institutional memory"
+      ],
+      "keywords": [
+        "contingent employment",
+        "archival profession",
+        "archivists",
+        "cultural heritage institutions",
+        "job advertisements",
+        "burnout",
+        "employee turnover",
+        "institutional memory"
       ]
     },
     {
@@ -232,12 +328,18 @@
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-87.1.9",
       "title_ko": "위험한 시대의 연인들: 아카이브와 아카이스트, 그리고 커뮤니티",
-      "topic": "아카이스트",
+      "topic": "archives",
       "topics": [
-        "아카이스트",
-        "커뮤니티",
-        "위험",
-        "연인들"
+        "archives",
+        "archivists",
+        "community",
+        "community archives"
+      ],
+      "keywords": [
+        "archives",
+        "archivists",
+        "community",
+        "community archives"
       ]
     },
     {
@@ -250,10 +352,20 @@
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-87.1.236",
       "title_ko": "민간 전쟁의 기록과 그 이후: 아카이브를 통해 본 역사의 연속성",
-      "topic": "민간전쟁",
+      "topic": "American Civil War",
       "topics": [
-        "민간전쟁",
-        "역사연속성"
+        "American Civil War",
+        "war records",
+        "archives",
+        "war memory",
+        "historical memory"
+      ],
+      "keywords": [
+        "American Civil War",
+        "war records",
+        "archives",
+        "war memory",
+        "historical memory"
       ]
     },
     {
@@ -266,10 +378,18 @@
       "abstract": "",
       "url": "https://doi.org/10.17723/2327-9702-87.1.249",
       "title_ko": "아카이브 가치의 재창조",
-      "topic": "가치",
+      "topic": "archival value",
       "topics": [
-        "가치",
-        "재창조"
+        "archival value",
+        "archival theory",
+        "archival work",
+        "value of archives"
+      ],
+      "keywords": [
+        "archival value",
+        "archival theory",
+        "archival work",
+        "value of archives"
       ]
     },
     {
@@ -282,12 +402,26 @@
       "abstract": "The mix of articles in this issue cuts a broad swath through several topics current in our literature, and trying to decide how to bring it all together in an editor's column was giving me fits. An issue that moves from community archives to contingent workers, to promotion and tenure, to congressional collections, to access systems, to engagement—well, it's not easy for me to wrap my editorial head around, let alone for you to thread your way through as a reader. It's a great problem to have, but I needed to make sense of it. Terry Baxter's 2023 SAA Presidential Address, which describes radical empathy and love as transformational to our work, struck a chord with me. Baxter uses poetry, essay, and art to refocus our approach to archival practice. His concepts piqued my interest and inspired me as I worked with him through the editorial process.And then, I finished reading Stephen King's On Writing: A Memoir of the Craft. First of all, it's a great, no-nonsense book for anyone who wants to write—and not just for those who want to write horror fiction (though I know you're out there too)! I don't love horror as a genre, but I do have tremendous respect for Stephen King as a writer. I've read some of his essays and a terrific collection of his short stories, and I wanted to hear what he had to say about the craft of writing.Now, why am I bothering you with my latest attempt at diminishing the size of my TBR pile? And how does this relate to Baxter's Presidential Address? I've been turning this over since reading both, and I believe we can take away a good measure for our journal. As Baxter asks us to consider the transformational power of love and community in our work, I take a page from Stephen King's words about writing. I believe that if we keep asking ourselves why we're interested in writing about archives and what it is we're interested in writing about, we come up with some very good answers about what finds its way into our professional literature, and why we should read this literature in the first place.On Writing surprised me, and I found myself thinking not only about writing and the archival literature writ large, but also about the editorial work that I and the Editorial Board do. I was galvanized, for example, when King wrote: “I have never hesitated to ask myself, either before starting the second draft of a book or while stuck for an idea in the first draft, just what it is I'm writing about, why I'm spending my time when I could be playing my guitar or riding my motorcycle, what got my nose down to the grindstone in the first place and then kept it there.”1Another statement that King makes plays directly into this question of why we give our time and effort over to writing: “In the end, [writing is] about enriching the lives of those who will read your work, and enriching your own life, as well. It's about getting up, getting well, and getting over.”2 This speaks directly to Baxter's rallying cry for a transformation of our work. What is more, I don't know a better description of what we do as a community of editors and authors. I have been writing about the idea of our literature as an expression of community for a couple of years now. King reminds me that in creating this literature, we enrich the lives of our readers—and enrich our profession at the same time.Our literature, then, is framed by two questions: What are we writing about, and why are we writing it? Delving further, what draws us to give our voices to these topics—to do research studies, case studies, and project reports? What brought Sony Prosper to write his exceptional Pease Award Essay on community archives? Though it was (by definition) written during an educational program, what got his nose down to the grindstone on this particular topic? What does Natalie Bond want us to take away from her consideration of congressional papers? How is the research at the heart of Stephanie Bredbenner, Alison Fulmer, Rose Oliveira-Abbey, and Meghan Rinn's article on contingent employment and Elizabeth Scott, Heidi Moyer, Rebecca Hankins, and Rachel Walton's consideration of tenure for archivists poised to help us move the profession forward? The sheer breadth of the topics in this issue shows us that we are a curious bunch, and we're not content with the status quo. So much the better. As Baxter's address reminds us, you can't transform a community by waiting for things to happen; you have to work at it, collectively and individually.We'll get back to this question of what we're writing… In fact, the question of why we're writing it might be easier to deal with. I would dare to say that King's final observation is apt—that American Archivist authors write to enrich the lives of those of us who read their work, and to enrich their own lives as well. Again, this reflects community, as I've so frequently heard in my conversations with authors. Not content with the status quo, authors ask, “Would the journal be interested in an article about X, Y, or Z?” Yes, is my typical response. Individual interests and ideas are the sparks for enrichment.And the content of the journal does just that—the community of authors in this issue (in all issues) of American Archivist enriches us. They provide new information, they make observations, they point out new ways of seeing, and they help us discover ways forward with problems. They create our theory and our practice, and present that to a community of archivists, scholars, students, and interested observers. The journal also enriches the lives of the authors. These articles represent months or even years of work—intensive research, study, and commitment that is personally and professionally satisfying. We write to move ourselves and the profession forward.So, if we're a community of colleagues enriching ourselves and others, what is it that we're interested in writing about? This is where we start to really see the measure of archival literature. Looking at that “what” over time, we have a window into how archives behave in society, and how archivists step up to that challenge. I'm constantly asking authors to consider what has come before—go to the back issues of American Archivist and you'll see that many of the topics that are on the top of our minds today are represented, in earlier (and different) iterations. We've moved from a conversation about how or why we create EAD finding aids, to observations about how EAD functions as a professional standard.3 Some searching through the back issues of the journal will reveal that we've been discussing employment issues for archivists since the 1940s. Congressional papers were mentioned as sources in the 1940s, and 1978 saw a serious consideration of such collections in several articles. In 1994's special issue, 2020 Vision, Margaret Hedstrom introduced a discussion of archival identity and trends at the turn of the century.4This is not to say that we rehash the same topics over and over again—not by a long shot. Rather, as A. O. Scott recently opined in The New York Times Book Review, our literature is formed by—and benefits from—reimaginations and appropriations from authors past.5 Our “what” is our rear-view mirror, as well as our projector. Our (re)consideration of topics gives us a new take on our theory and practice. It is important—imperative—to explore those roots, to see where we have come from, because this understanding allows us not only to change, but to understand why change is critical. In the interest of change, we can't ignore what's past— it's important to continue to engage with the full run of the archival literature in the first place. Understanding what it is we're writing about allows us to form our community.American Archivist is our professional canon, but it is one that we continue to change over time. Terry Baxter presents a radical re-vision of our professional responsibilities and relationships in his deep consideration of community archives, but even this is a change that has happened over time. We see aspects of “community archives” or “communal archives” in the journal as early as 1940. The context has changed, the vision has changed, and ultimately our imperative has changed. This has not been done by some outside force on the profession. We have brought about that change—in both the literature and in our practice. And we have done that because of those of you who have written about community and archives—you who have decided that that topic is worth your time and energy. The same is true of all the topics in this journal.This brings you three challenges:Our profession, like writing, is about getting up, getting well, and getting over. Step up to the plate, help make a difference, and move us forward—in love, in community, and in solidarity. Thanks to all of you who write, read, and engage with American Archivist.",
       "url": "https://doi.org/10.17723/2327-9702-87.1.5",
       "title_ko": "스티븐 킹과 '미국 아카이브'의 의미와 목적",
-      "topic": "스티븐킹",
+      "topic": "Stephen King",
       "topics": [
-        "스티븐킹",
-        "문학",
-        "기록",
-        "쓰기"
+        "Stephen King",
+        "archival literature",
+        "archival writing",
+        "editorial process",
+        "archival scholarship",
+        "community archives",
+        "radical empathy",
+        "contingent workers"
+      ],
+      "keywords": [
+        "Stephen King",
+        "archival literature",
+        "archival writing",
+        "editorial process",
+        "archival scholarship",
+        "community archives",
+        "radical empathy",
+        "contingent workers"
       ]
     },
     {
@@ -300,13 +434,12 @@
       "abstract": "ABSTRACT Oral history release forms are critical for documenting narrator intentions around access to and use of interviews, a key component of ethically managing this document type. Unfortunately, repositories are full of interviews with missing or problematic releases. To explain this phenomenon, the author reviews historical archival and oral history literature to trace the development of release form conventions and the historical trends in practice that explain the current state of documentation in archives. Important trends in this trajectory include professionalization of oral history, decades of inconsistent application of best practices, siloed discourses of archivists and oral historians, institutional review boards, and changing access expectations in the age of the Internet. The author also assesses current positive professional trends to prevent future release form problems and analyzes release form scenarios that may remain stubbornly at the discretion of archivists’ professional judgment or values.",
       "url": "https://doi.org/10.17723/2327-9702-87.1.70",
       "title_ko": "형식, 형성, 그리고 개혁",
-      "topic": "oral history",
+      "topic": "research ethics committees",
       "topics": [
-        "oral history",
-        "release forms",
-        "archival practice",
-        "ethical management",
-        "documentation"
+        "research ethics committees"
+      ],
+      "keywords": [
+        "research ethics committees"
       ]
     },
     {
@@ -324,13 +457,18 @@
       "abstract": "ABSTRACT This article argues that archival access systems require a new archival ecosystem (physical infrastructure, access tools, e.g., catalogs, findings aids, indexes, rules policies procedures, and institutional supports) and a broader conceptual framing. Based on the findings from sixteen interviews with archivists, this article proposes a multifaceted, relationship-based access framework. The framework focuses on supporting users studying difficult histories or members of oppressed communities in a physical archives but also highlights elements that all users might appreciate.",
       "url": "https://doi.org/10.17723/2327-9702-87.1.107",
       "title_ko": "관계 중심의 기록참조 서비스 재정의",
-      "topic": "기록참조 서비스",
+      "topic": "finding aids",
       "topics": [
-        "기록참조 서비스",
-        "접근 시스템",
-        "관계 중심",
-        "액세스 프레임워크",
-        "억압된 커뮤니티"
+        "finding aids",
+        "indexes",
+        "difficult history",
+        "user support"
+      ],
+      "keywords": [
+        "finding aids",
+        "indexes",
+        "difficult history",
+        "user support"
       ]
     }
   ],

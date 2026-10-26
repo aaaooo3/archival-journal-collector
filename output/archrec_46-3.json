@@ -16,12 +16,26 @@
       "abstract": "This article examines the conservation methodology applied to the SNIA Viscosa archive, an extensive and diverse archival collection originating from the 20th-century SNIA Viscosa textile company and housed at the Archivio di Stato di Rieti. The archive comprises technical drawings on tracing paper, cyanotypes, administrative documents, photographic prints, and glass plate negatives. The conservation treatment sought to address the unique challenges posed by these varied materials, balancing cost-effectiveness with constraints on budget, space, and time. The paper details the conservation strategies employed for this archive according to material typology (documents, drawings, and photographs). Collaborative contributions from students and professionals enriched the process, with high school students digitizing historical images and conservation students from Tor Vergata University undertaking specialized treatments for tracing paper drawings. Specifically, the article describes the disinfection and rehousing of mould-affected administrative documents; the cataloguing, cleaning, and rehousing of photographic materials; and the identification and application of suitable materials for the conservation of technical drawings on tracing paper. The article concludes by reflecting on the collaborative approach and the rationale for the chosen methods, highlighting their significance for the preservation of large-scale archival collections.",
       "url": "https://doi.org/10.1080/23257962.2025.2600283",
       "title_ko": "대규모 산업 기업 아카이브: SNIA Viscosa 수집 프로젝트의 생각, 연구, 선택 및 활동에 대한 고찰 - 특히 종이 도면 추적을 중심으로",
-      "topic": "기록보존",
+      "topic": "archival conservation",
       "topics": [
-        "기록보존",
-        "도면",
-        "학생참여",
-        "카탈로그링"
+        "archival conservation",
+        "technical drawing",
+        "cyanotype",
+        "glass negatives",
+        "photographic prints",
+        "disinfection",
+        "rehousing",
+        "archival description"
+      ],
+      "keywords": [
+        "archival conservation",
+        "technical drawing",
+        "cyanotype",
+        "glass negatives",
+        "photographic prints",
+        "disinfection",
+        "rehousing",
+        "archival description"
       ]
     },
     {
@@ -34,12 +48,16 @@
       "doi": "10.1080/23257962.2025.2600282",
       "abstract": "Welcome to this special preservation and conservation edition of the Archives and Records Association Journal.It has been some time since a special issue has been dedicated to the essential task of...",
       "url": "https://doi.org/10.1080/23257962.2025.2600282",
-      "topic": "보존",
+      "topic": "records preservation",
       "topics": [
-        "보존",
-        "보전",
-        "기록",
-        "방안"
+        "records preservation",
+        "preservation",
+        "archival sources"
+      ],
+      "keywords": [
+        "records preservation",
+        "preservation",
+        "archival sources"
       ]
     },
     {
@@ -51,12 +69,18 @@
       "doi": "10.1080/23257962.2025.2600287",
       "abstract": "The decades spanning a conservator’s career, from student to senior, will encapsulate a plethora of experiences within different institutions and practices, and oftentimes conservators will amass p...",
       "url": "https://doi.org/10.1080/23257962.2025.2600287",
-      "topic": "보존자",
+      "topic": "solution preparation",
       "topics": [
-        "보존자",
-        "조리책",
-        "솔루션",
-        "보존profession"
+        "solution preparation",
+        "conservation solutions",
+        "archival conservation",
+        "archival sources"
+      ],
+      "keywords": [
+        "solution preparation",
+        "conservation solutions",
+        "archival conservation",
+        "archival sources"
       ]
     },
     {
@@ -69,13 +93,20 @@
       "abstract": "Paper, Paper, Paper is designed as a compact guide for readers who wish to learn about how paper is made, from manufacturing to processing. Its focus is the raw material of paper and how properties...",
       "url": "https://doi.org/10.1080/23257962.2025.2600286",
       "title_ko": "종이의 세계",
-      "topic": "종이",
+      "topic": "paper",
       "topics": [
-        "종이",
-        "제조",
-        "처리",
-        "재료",
-        "특성"
+        "paper",
+        "papermaking",
+        "papermaking raw materials",
+        "paper properties",
+        "paper processing"
+      ],
+      "keywords": [
+        "paper",
+        "papermaking",
+        "papermaking raw materials",
+        "paper properties",
+        "paper processing"
       ]
     },
     {
@@ -90,12 +121,20 @@
       "abstract": "The Oxford Conservation Consortium (OCC) provides library and archive conservation and collection care services to 17 University of Oxford Colleges. This paper compares three large-scale projects undertaken by the OCC to conserve and rehouse College archival collections, detailing the lessons learned from each and how these shaped decision-making throughout. The first, and largest, of the three projects focuses on the conservation and rehousing of the St John’s Estates collection, primarily paper and parchment documents dating from the twelfth to the twentieth century housed in poor quality acidic envelopes. The second presents the Queen’s Deeds project which involved the cleaning, repair, and rehousing of approximately 2500 medieval parchment deeds, many with pendant seals. The final project discussed is the ongoing rehousing of Lincoln Archive’s Estates and Livings collection, comprising a range of material and formats. Each project presented challenges such as managing storage limitations, working to tight budgets, maintaining consistency of approach, item tracking, and surveying large and diverse collections. Effective planning and management has been key to success, ensuring that the approach remains streamlined and economical while adapting to changing circumstances and priorities. The key lessons learned are shared for the advisement of others embarking on similar large-scale rehousing projects.",
       "url": "https://doi.org/10.1080/23257962.2025.2600280",
       "title_ko": "대중의 교훈: 옥스퍼드 대학 세 기관 아카이브 보존 및 재보관 프로젝트 비교 연구",
-      "topic": "보존",
+      "topic": "archival conservation",
       "topics": [
-        "보존",
-        "재보관",
-        "결정론",
-        "예산"
+        "archival conservation",
+        "rehousing",
+        "parchment documents",
+        "collection care",
+        "lessons learned"
+      ],
+      "keywords": [
+        "archival conservation",
+        "rehousing",
+        "parchment documents",
+        "collection care",
+        "lessons learned"
       ]
     },
     {
@@ -113,13 +152,18 @@
       "abstract": "This paper describes the successful completion of a large-scale collection move completed internally and collaboratively between Durham University and Durham Cathedral. It details risks and challenges, both those generally applicable to all archive collection moves and those specific to this project. Preservation was identified as the overriding priority and permeated every aspect of planning. Methods were developed for rigorously testing packaging options for shock absorption, in preparation for the expected handling and transport turbulence, and mitigations were put in place for factors beyond human control such as local weather conditions. The project capitalized on opportunities presented during the course of the move, completing a detailed stock check and making vast improvements to the existing packaging of many thousands of vulnerable items. Interdisciplinary authorship reflects the collaboration that was key to creatively overcoming challenges, leading to improvements in project efficiency and innovative use of economically and environmentally sustainable packaging approaches.",
       "url": "https://doi.org/10.1080/23257962.2025.2600278",
       "title_ko": "던칼브 대성당 중세 문서 아카이브의 안전한 이동",
-      "topic": "중세 문서 아카이브",
+      "topic": "medieval archives",
       "topics": [
-        "중세 문서 아카이브",
-        "안전한 이동",
-        "패키징 방법",
-        "보존",
-        "협력"
+        "medieval archives",
+        "archival preservation",
+        "risk mitigation",
+        "sustainable packaging"
+      ],
+      "keywords": [
+        "medieval archives",
+        "archival preservation",
+        "risk mitigation",
+        "sustainable packaging"
       ]
     },
     {
@@ -132,13 +176,24 @@
       "abstract": "The Register of Archbishop John Swayne, Primate of All-Ireland (1418–1439), is a rare amalgamation of contemporary documents transcribed when Swayne was at the Papal Curia in Rome and the administrative record of his time as Archbishop. Following the fire which destroyed the Public Record Office of Ireland (PROI) in 1922, original medieval records within Ireland are particularly scarce, enhancing this register’s historical significance. Unfortunately, by 1630, the register had sustained significant water damage causing the paper to soften and deteriorate. The friable edges made the original manuscript inaccessible. The successful partnership of the Virtual Record Treasury of Ireland (VRTI) and the Public Record Office of Northern Ireland (PRONI) has provided the opportunity to repair the register for the first time since it was bound in the early seventeenth century. Conservators at PRONI were able to design a treatment for the register which would consolidate the weakened paper folios, whilst retaining the characteristic idiosyncratic nature of its production and evidence of its use over the last 600 years. Support from the VRTI team and integration of a digital version of the manuscript into the Treasury has maximized accessibility by linking the records with a translated summary and contextual interpretation.",
       "url": "https://doi.org/10.1080/23257962.2025.2600284",
       "title_ko": "다매디아 교구장 존 스웨인의 등록부 접근을 위한 다학제 협력과 보존, 디지털 진보",
-      "topic": "등록부",
+      "topic": "medieval manuscripts",
       "topics": [
-        "등록부",
-        "협력",
-        "보존",
-        "디지털화",
-        "접근"
+        "medieval manuscripts",
+        "manuscript conservation",
+        "water damage",
+        "paper degradation",
+        "online access to archives",
+        "archival accessibility",
+        "Roman Curia"
+      ],
+      "keywords": [
+        "medieval manuscripts",
+        "manuscript conservation",
+        "water damage",
+        "paper degradation",
+        "online access to archives",
+        "archival accessibility",
+        "Roman Curia"
       ]
     },
     {
@@ -151,11 +206,12 @@
       "abstract": "This book provides one of the first comprehensive studies dedicated to the art and science of ‘Letterlocking.’ Letterlocking is the method of folding and securing a flat sheet of writing substrate ...",
       "url": "https://doi.org/10.1080/23257962.2025.2600281",
       "title_ko": "서신의 숨겨진 역사: 봉인된 편지 이야기",
-      "topic": "서신",
+      "topic": "historical documents",
       "topics": [
-        "서신",
-        "봉인",
-        "역사"
+        "historical documents"
+      ],
+      "keywords": [
+        "historical documents"
       ]
     },
     {
@@ -168,13 +224,16 @@
       "abstract": "A recent instalment of the Routledge series in Conservation and Museology, Abigail Bainbridge’s edited collection provides an international reference work for heritage professionals. The global ran...",
       "url": "https://doi.org/10.1080/23257962.2025.2600285",
       "title_ko": "책 보존",
-      "topic": "책",
+      "topic": "book conservation",
       "topics": [
-        "책",
-        "보존",
-        "헤리티지",
-        "전문가",
-        "컨시버전"
+        "book conservation",
+        "cultural heritage preservation",
+        "museology"
+      ],
+      "keywords": [
+        "book conservation",
+        "cultural heritage preservation",
+        "museology"
       ]
     }
   ],
