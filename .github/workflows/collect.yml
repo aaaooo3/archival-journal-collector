@@ -4,8 +4,8 @@ name: collect-journals
 # issue digests + updated state.json back to the repository.
 on:
   schedule:
-    - cron: "0 0 * * *"   # daily at 00:00 UTC (09:00 KST). Adjust as needed.
-  workflow_dispatch: {}    # allow manual runs from the Actions tab
+    - cron: "0 0 * * 1"   # weekly, Monday 00:00 UTC (09:00 KST Mon). 분기 간행물이라 주 1회로 충분.
+  workflow_dispatch: {}    # allow manual runs from the Actions tab (폰에서도 수동 실행 가능)
 
 permissions:
   contents: write          # needed to push generated output + state.json
