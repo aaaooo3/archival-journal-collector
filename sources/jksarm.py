@@ -24,7 +24,7 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
-from .base import Article, ExtractionError, Issue, clean_text, fetch_html
+from .base import Article, ExtractionError, Issue, clean_text, extract_keywords, fetch_html
 
 KEY = "jksarm"
 NAME = "한국기록관리학회지"
@@ -221,6 +221,7 @@ def _parse_article(item, logger: logging.Logger) -> Article | None:
         doi=doi,
         abstract=abstract,
         url=link,
+        keywords=extract_keywords(item),
     )
 
 

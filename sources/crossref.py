@@ -20,7 +20,7 @@ import logging
 import re
 import time
 
-from .base import Article, ExtractionError, Issue, clean_text
+from .base import Article, ExtractionError, Issue, clean_keywords, clean_text
 
 API = "https://api.crossref.org"
 REQUEST_DELAY_SECONDS = 1.0
@@ -77,6 +77,7 @@ def _article_from_item(item: dict) -> Article | None:
         if name:
             authors.append(name)
     doi = item.get("DOI", "")
+    subjects = [s for s in (item.get("subject") or []) if isinstance(s, str) and s.strip()]
     return Article(
         title=clean_text(title),
         authors=authors,
@@ -84,6 +85,7 @@ def _article_from_item(item: dict) -> Article | None:
         doi=doi,
         abstract=_strip_jats(item.get("abstract", "")),
         url=item.get("URL", "") or (f"https://doi.org/{doi}" if doi else ""),
+        keywords=clean_keywords(subjects),
     )
 
 
