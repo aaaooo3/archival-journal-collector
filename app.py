@@ -15,7 +15,9 @@ Ollama 생성형 요약을 쓰려면 먼저 `ollama serve` 가 떠 있어야 합
 from __future__ import annotations
 
 import logging
+import os
 import subprocess
+import tempfile
 from types import SimpleNamespace
 
 from flask import Flask, jsonify, request, send_file
@@ -84,8 +86,13 @@ _PAGE = """<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
      el.innerHTML=`<div class="meta"><p class="t">${row.n}. ${escapeHtml(row.title)}</p>
        <p class="s">${escapeHtml(row.journal_name)} · ${escapeHtml(row.issue_label)} · ${escapeHtml(row.authors)}</p></div>
        <span class="badge ${row.summarized?'done':''}">${row.summarized?'요약됨':'미요약'}</span>
-       <button class="btn" data-n="${row.n}">${row.summarized?'다시 요약':'요약'}</button>`;
-     el.querySelector("button").onclick=()=>summarize(row.n, el.querySelector("button"));
+       <button class="btn sum" data-n="${row.n}">${row.summarized?'다시 요약':'요약'}</button>
+       <button class="btn sec pdf" title="내 PDF 파일로 요약 (페이월 해외 논문 등)">📎 PDF로 요약</button>
+       <input type="file" accept="application/pdf,.pdf" style="display:none">`;
+     const sumBtn=el.querySelector("button.sum"), pdfBtn=el.querySelector("button.pdf"), file=el.querySelector("input[type=file]");
+     sumBtn.onclick=()=>summarize(row.n, sumBtn);
+     pdfBtn.onclick=()=>file.click();
+     file.onchange=()=>{ if(file.files[0]) summarizePdf(row.n, file.files[0], pdfBtn); };
      list.appendChild(el);
    });
  }
@@ -96,6 +103,18 @@ _PAGE = """<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
    try{
      const r=await fetch("/api/summarize",{method:"POST",headers:{"Content-Type":"application/json"},
        body:JSON.stringify({num:n,engine,model,force:true})});
+     const d=await r.json();
+     setLog((d.ok?"✅ ":"⚠️ ")+d.message);
+   }catch(e){ setLog("⚠️ 오류: "+e); }
+   btn.disabled=false; load();
+ }
+ async function summarizePdf(n, file, btn){
+   const engine=document.getElementById("engine").value, model=document.getElementById("model").value;
+   btn.disabled=true; setLog(`#${n} PDF로 요약 중… (${file.name}, 생성형은 1~3분 걸릴 수 있어요)`);
+   try{
+     const fd=new FormData();
+     fd.append("num",n); fd.append("engine",engine); fd.append("model",model); fd.append("pdf",file);
+     const r=await fetch("/api/summarize_pdf",{method:"POST",body:fd});
      const d=await r.json();
      setLog((d.ok?"✅ ":"⚠️ ")+d.message);
    }catch(e){ setLog("⚠️ 오류: "+e); }
@@ -128,35 +147,66 @@ def api_list():
     return jsonify(out)
 
 
-@app.post("/api/summarize")
-def api_summarize():
-    data = request.get_json(force=True)
+def _run_summary(num, engine, model, local_pdf=None):
+    """Shared summary runner for both endpoints. Returns a (json, status) tuple."""
     rows = _rows()
-    try:
-        num = int(data.get("num"))
-    except (TypeError, ValueError):
-        return jsonify(ok=False, message="잘못된 번호"), 400
-    if not (1 <= num <= len(rows)):
+    if not (isinstance(num, int) and 1 <= num <= len(rows)):
         return jsonify(ok=False, message=f"번호 범위(1~{len(rows)}) 밖"), 400
     row = rows[num - 1]
 
-    engine = data.get("engine", "ollama")
-    model = data.get("model") or S.DEFAULT_OLLAMA_MODEL
+    model = model or S.DEFAULT_OLLAMA_MODEL
     if engine == "ollama" and not S.ollama_available(S.DEFAULT_OLLAMA_HOST, logger):
         return jsonify(ok=False, message="Ollama 서버가 꺼져 있어요. 터미널에서 'ollama serve' 실행 후 다시 시도하세요."), 400
 
     opts = SimpleNamespace(engine=engine, model=model,
                            ollama_host=S.DEFAULT_OLLAMA_HOST, sentences=S.DEFAULT_SENTENCES)
-    summary = S.summarize_row(make_session(), row, opts, logger)
+    problems: list[str] = []
+    summary = S.summarize_row(make_session(), row, opts, logger, problems, local_pdf=local_pdf)
     if not summary:
-        return jsonify(ok=False, message="요약 실패 (PDF 접근 불가 또는 추출 실패)"), 500
+        reason = problems[-1] if problems else "PDF 접근 불가 또는 추출 실패"
+        return jsonify(ok=False, message=f"요약 실패 — {reason}"), 500
     S.save_summary(summary, row, logger)
     B.build_site(B.OUTPUT_DIR, B.SITE_DIR, logger)
 
     method = summary.get("method", "")
     nsec = len(summary.get("sections", []))
     kind = "생성형" if method.startswith("ollama") else "추출"
-    return jsonify(ok=True, message=f"'{row['title'][:30]}' {kind} 요약 완료 ({nsec}개 장). [게시]로 공개하세요.")
+    src = "PDF 파일로 " if local_pdf else ""
+    return jsonify(ok=True, message=f"'{row['title'][:30]}' {src}{kind} 요약 완료 ({nsec}개 장). [게시]로 공개하세요."), 200
+
+
+@app.post("/api/summarize")
+def api_summarize():
+    data = request.get_json(force=True)
+    try:
+        num = int(data.get("num"))
+    except (TypeError, ValueError):
+        return jsonify(ok=False, message="잘못된 번호"), 400
+    return _run_summary(num, data.get("engine", "ollama"), data.get("model"))
+
+
+@app.post("/api/summarize_pdf")
+def api_summarize_pdf():
+    try:
+        num = int(request.form.get("num"))
+    except (TypeError, ValueError):
+        return jsonify(ok=False, message="잘못된 번호"), 400
+    up = request.files.get("pdf")
+    if up is None or not up.filename:
+        return jsonify(ok=False, message="PDF 파일이 첨부되지 않았어요."), 400
+
+    # Save the upload to a temp file, summarise from it, then delete it.
+    fd, tmp = tempfile.mkstemp(suffix=".pdf")
+    os.close(fd)
+    try:
+        up.save(tmp)
+        return _run_summary(num, request.form.get("engine", "ollama"),
+                            request.form.get("model"), local_pdf=tmp)
+    finally:
+        try:
+            os.remove(tmp)
+        except OSError:
+            pass
 
 
 @app.post("/api/publish")

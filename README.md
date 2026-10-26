@@ -101,6 +101,14 @@ python3 watcher.py --once --journal kjas   # 한 곳만
 
 번호는 `python3 summarize.py --list`로 확인합니다. 여러 편은 `--num 2 5 7`.
 
+**내가 가진 PDF로 요약** — 페이월 해외 논문처럼 본문 다운로드가 막힌 경우, 소장한 PDF
+파일을 직접 줘서 요약할 수 있습니다(무료·로컬, 영어 논문도 가능):
+```bash
+python3 summarize.py --num 1 --pdf ~/Downloads/paper.pdf                 # 추출
+python3 summarize.py --num 1 --pdf ~/Downloads/paper.pdf --engine ollama # 생성형
+```
+번호(`--num`)는 그 PDF가 목록의 어느 논문인지 지정하는 용도이며 한 편만 씁니다.
+
 **생성형(Ollama) 준비** — 한 번만:
 ```bash
 ollama serve                 # 서버 실행(맥 앱 설치 시 자동으로 떠 있음)
@@ -115,6 +123,8 @@ python3 app.py               # → http://localhost:8000
 ```
 브라우저에서 논문 목록의 **[요약]** 버튼 클릭 → 그 자리에서 요약, **[게시]** 버튼으로
 GitHub에 push. 콘솔은 *내 PC에서 켜둔 동안만* 동작합니다(요약은 로컬에서 처리).
+페이월 해외 논문 등 본문 다운로드가 막힌 경우, 각 줄의 **[📎 PDF로 요약]** 버튼으로
+소장한 PDF 파일을 골라 그 자리에서 요약할 수 있습니다(터미널 `--pdf`와 동일).
 
 ### 4. 결과 보기
 - **내 Mac에서**: `open site/index.html` (또는 Finder에서 더블클릭) → 페이지로 뜸.

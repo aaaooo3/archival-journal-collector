@@ -247,6 +247,15 @@ def _pub_month(issue: dict) -> int:
     return 6
 
 
+def _pub_date_label(issue: dict) -> str:
+    """발간일 라벨: 'YYYY년 M월'(월 추정 가능 시) 또는 'YYYY년'. 없으면 빈 문자열."""
+    year = _pub_year(issue)
+    if not year:
+        return ""
+    month = _pub_month(issue)
+    return f"{year}년 {month}월" if month else f"{year}년"
+
+
 def _pub_sort_key(issue: dict) -> tuple:
     # (year, month, then issue recency as a tiebreak) — all ascending; the
     # caller sorts reverse=True for newest first.
@@ -277,6 +286,32 @@ _CSS = """
   .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
   header h1 { margin: 0 0 6px; font-size: 1.5rem; }
   header p { margin: 0; opacity: .9; font-size: .9rem; }
+  header .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  .console-btn {
+    display: inline-block; background: #fff; color: var(--accent);
+    font-weight: 600; font-size: .9rem; text-decoration: none;
+    padding: 8px 14px; border-radius: 8px; white-space: nowrap;
+  }
+  .console-btn:hover { opacity: .9; }
+  .console-wrap { display: flex; gap: 6px; align-items: center; }
+  .help-btn {
+    background: rgba(255,255,255,.2); color: #fff; border: 1px solid rgba(255,255,255,.6);
+    width: 30px; height: 30px; border-radius: 50%; font-size: .95rem; font-weight: 700;
+    cursor: pointer; line-height: 1; flex: 0 0 auto;
+  }
+  .help-btn:hover { background: rgba(255,255,255,.35); }
+  .console-hint { margin: 8px 0 0; opacity: .85; font-size: .78rem; display: none; }
+  .console-help {
+    display: none; margin: 12px 0 0; background: rgba(0,0,0,.18); border-radius: 10px;
+    padding: 12px 16px; font-size: .82rem; line-height: 1.5;
+  }
+  .console-help h3 { margin: 0 0 6px; font-size: .9rem; }
+  .console-help ol { margin: 0; padding-left: 1.2em; }
+  .console-help code {
+    background: rgba(0,0,0,.3); padding: 1px 6px; border-radius: 4px;
+    font-family: ui-monospace, monospace; font-size: .82rem;
+  }
+  .console-help .note { margin: 8px 0 0; opacity: .85; }
   .controls {
     position: sticky; top: 0; z-index: 5; background: var(--bg);
     border-bottom: 1px solid var(--line); padding: 14px 0;
@@ -309,6 +344,7 @@ _CSS = """
     font-size: 1.15rem; margin: 0 0 4px; padding-bottom: 8px;
     border-bottom: 2px solid var(--accent-soft);
   }
+  .issue h2 .pubdate { color: var(--muted); font-weight: 400; font-size: .9rem; }
   .issue .meta { color: var(--muted); font-size: .82rem; margin: 0 0 14px; }
   .issue .meta a { color: var(--accent); }
   .card {
@@ -460,9 +496,13 @@ def _render_summary(summary: dict) -> str:
         body = "".join(blocks)
         label = "📝 장별 요약 (생성형 · 로컬 LLM)" if generative else "📝 장별 요약 (원문 핵심 문장 발췌)"
     else:
-        items = "".join(f"<li>{_esc(s)}</li>" for s in summary.get("summary", []))
-        body = f"<ul>{items}</ul>" if items else ""
-        label = "📝 요약 (원문 핵심 문장 발췌)"
+        flat = summary.get("summary", [])
+        if isinstance(flat, str):                        # generative whole-doc summary (a paragraph)
+            body = f"<p>{_esc(flat)}</p>" if flat.strip() else ""
+        else:                                            # extractive: list of key sentences
+            items = "".join(f"<li>{_esc(s)}</li>" for s in flat)
+            body = f"<ul>{items}</ul>" if items else ""
+        label = "📝 요약 (생성형 · 로컬 LLM)" if generative else "📝 요약 (원문 핵심 문장 발췌)"
     if not body:
         return ""
     note = (
@@ -558,12 +598,12 @@ def _render_issue(issue: dict, summaries: dict[str, dict]) -> str:
         f' · <a href="{_attr(issue["source_url"])}" target="_blank" rel="noopener">출처</a>'
         if issue.get("source_url") else ""
     )
-    year = _pub_year(issue)
-    year_txt = f"{year}년 · " if year else ""
+    date_label = _pub_date_label(issue)
+    date_txt = f' <span class="pubdate">({_esc(date_label)})</span>' if date_label else ""
     return (
         f'<section class="issue" data-journal="{_attr(issue.get("journal_key", ""))}">'
-        f'<h2>{_esc(issue.get("journal_name", ""))} — {_esc(issue.get("issue_label", ""))}</h2>'
-        f'<p class="meta">{year_txt}논문 {len(issue.get("articles", []))}편 · '
+        f'<h2>{_esc(issue.get("journal_name", ""))} — {_esc(issue.get("issue_label", ""))}{date_txt}</h2>'
+        f'<p class="meta">논문 {len(issue.get("articles", []))}편 · '
         f'수집일 {_esc(issue.get("collected", ""))}{src}</p>'
         f"{cards}</section>"
     )
@@ -610,15 +650,44 @@ def render_site(issues: list[dict], summaries: dict[str, dict] | None = None) ->
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>기록학 학회지 아카이브</title>
+<meta name="description" content="기록학 학회지 논문 목록·초록·요약 모음">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2f6f4f">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="기록학 아카이브">
 <style>{_CSS}</style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <h1>기록학 학회지 아카이브</h1>
-    <p>한국기록관리학회지 · 기록학연구 — 새 호가 나오면 자동 수집한 목차·초록 모음 (AI 요약 없음)</p>
+    <div class="top">
+      <div>
+        <h1>기록학 학회지 아카이브</h1>
+        <p>한국기록관리학회지 · 기록학연구 — 새 호가 나오면 자동 수집한 목차·초록 모음 (AI 요약 없음)</p>
+      </div>
+      <div class="console-wrap">
+        <a class="console-btn" id="console-btn" href="http://localhost:8000" target="_blank" rel="noopener" onclick="document.getElementById('console-hint').style.display='block'">📝 요약 콘솔 열기</a>
+        <button class="help-btn" type="button" title="콘솔 켜는 법" aria-label="콘솔 켜는 법" onclick="var h=document.getElementById('console-help');h.style.display=h.style.display==='block'?'none':'block'">?</button>
+      </div>
+    </div>
+    <p class="console-hint" id="console-hint">콘솔이 안 열리면 내 Mac 터미널에서 <code>python3 app.py</code> 를 먼저 실행하세요(이 버튼은 내 PC에서만 동작).</p>
+    <div class="console-help" id="console-help">
+      <h3>요약 콘솔(로컬호스트) 켜는 법 — 내 Mac에서만</h3>
+      <ol>
+        <li>터미널을 열고 프로젝트 폴더로: <code>cd ~/archival-journal-collector</code></li>
+        <li>파이썬 환경 켜기: <code>source .venv/bin/activate</code></li>
+        <li>(생성형 요약 쓸 때만) 모델 서버 켜기: <code>ollama serve</code></li>
+        <li>콘솔 실행: <code>python3 app.py</code></li>
+        <li>이제 위 <b>📝 요약 콘솔 열기</b> 버튼을 누르면 <code>http://localhost:8000</code> 이 열립니다.</li>
+      </ol>
+      <p class="note">콘솔은 내 PC에서 켜둔 동안만 동작합니다. 폰·다른 PC에서는 열리지 않아요. 끌 때는 터미널에서 <code>Ctrl+C</code>.</p>
+    </div>
   </div>
 </header>
 

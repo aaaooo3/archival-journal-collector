@@ -14,7 +14,11 @@
       "doi": "10.7202/1114841ar",
       "abstract": "Decolonial Archival Futures. Krista McCracken and Skylee-Storm Hogan-Stacey. Chicago: ALA Neal-Schuman, 2023. 112 pp. 9780838937150. Un article de la revue Archivaria (Numéro 98, fall 2024, p. 6-222) diffusée par la plateforme Érudit.",
       "url": "https://doi.org/10.7202/1114841ar",
-      "title_ko": "탈식민주의 아카이브의 미래"
+      "title_ko": "탈식민주의 아카이브의 미래",
+      "topic": "디지털 아카이브 교육",
+      "topics": [
+        "디지털 아카이브 교육"
+      ]
     },
     {
       "title": "Archiving Caribbean Identity: Records, Community, and Memory. John A. Aarons, Jeannette A. Bastian, and Stanley H. Griffin, eds. Abingdon, UK: Routledge, 2022. 264 pp. 9780367615116",
@@ -25,7 +29,12 @@
       "doi": "10.7202/1114843ar",
       "abstract": "Archiving Caribbean Identity: Records, Community, and Memory. John A. Aarons, Jeannette A. Bastian, and Stanley H. Griffin, eds. Abingdon, UK: Routledge, 2022. 264 pp. 9780367615116. Un article de la revue Archivaria (Numéro 98, fall 2024, p. 6-222) diffusée par la plateforme Érudit.",
       "url": "https://doi.org/10.7202/1114843ar",
-      "title_ko": "카리브 항쟁의 정체성: 기록, 공동체, 그리고 기억"
+      "title_ko": "카리브 항쟁의 정체성: 기록, 공동체, 그리고 기억",
+      "topic": "디지털 아카이브 교육",
+      "topics": [
+        "디지털 아카이브 교육",
+        "중동·북아프리카 아카이브 연구"
+      ]
     },
     {
       "title": "Creating a Community Cloud",
@@ -38,7 +47,12 @@
       "doi": "10.7202/1114836ar",
       "abstract": "Developing and sustaining digital infrastructure is challenging for small community archives. The promise of open-source technologies can seem elusive for those faced with the steep development costs of implementing and configuring new systems and migrating data from legacy systems. When community archives co-operate by forming consortia, the costs and challenges of development, implementation, and migration can be mitigated and shared. We offer a case study of the development of an open-source Access to Memory (AtoM) database among a consortium of Mennonite archives.",
       "url": "https://doi.org/10.7202/1114836ar",
-      "title_ko": "공동체 클라우드 구축하기"
+      "title_ko": "공동체 클라우드 구축하기",
+      "topic": "온라인 전시회 관리",
+      "topics": [
+        "온라인 전시회 관리",
+        "공동체 아카이브"
+      ]
     },
     {
       "title": "Leveraging Technology to Facilitate Access",
@@ -50,7 +64,13 @@
       "doi": "10.7202/1114837ar",
       "abstract": "In recent years, the increasing volume of born-digital materials (i.e., those created digitally rather than digitized from analog originals) deposited in archives has fostered the development of new software-based tools and workflows for processing archivists. Archivists seeking practical guidance for preserving digital materials have a wealth of resources at their disposal, including many community-owned tools, workflows, and tutorials. This case study examines how archival standards and technological advances have influenced the semiautomated description of born-digital audio records through the lens of a recent project at the Clara Thomas Archives and Special Collections (CTASC) at York University Libraries (YUL). The Mariposa Folk Foundation Fonds, containing a large and growing collection of born-digital audio recordings, served as an opportunity to design and test a new software-aided descriptive workflow. The project leverages the programmable nature of born-digital materials in an attempt to streamline the time-consuming process for creating the item-level descriptions typically associated with sound recordings and born-digital records while also improving the discoverability of this material in the unmediated environment of online finding aids. This case study demonstrates how technology has influenced descriptive practices, with the advent of online finding aids providing increased access to archival descriptions, online databases permitting keyword searching, and tools to script metadata extracted from born-digital records enabling robust archival descriptions.",
       "url": "https://doi.org/10.7202/1114837ar",
-      "title_ko": "기술을 활용한 접근성 증진"
+      "title_ko": "기술을 활용한 접근성 증진",
+      "topic": "온라인 전시회 관리",
+      "topics": [
+        "온라인 전시회 관리",
+        "공동체 아카이브",
+        "아카이브 · 원문"
+      ]
     },
     {
       "title": "Resurrecting the Black Body: Race and the Digital Afterlife. Tonia Sutherland. Oakland, CA: University of California Press, 2023. 232 pp. 9780520383876",
@@ -61,7 +81,11 @@
       "doi": "10.7202/1114842ar",
       "abstract": "Resurrecting the Black Body: Race and the Digital Afterlife. Tonia Sutherland. Oakland, CA: University of California Press, 2023. 232 pp. 9780520383876. Un article de la revue Archivaria (Numéro 98, fall 2024, p. 6-222) diffusée par la plateforme Érudit.",
       "url": "https://doi.org/10.7202/1114842ar",
-      "title_ko": "흑인 몸의 디지털 부활: 인종과 디지털 이후 세상"
+      "title_ko": "흑인 몸의 디지털 부활: 인종과 디지털 이후 세상",
+      "topic": "디지털 아카이브 교육",
+      "topics": [
+        "디지털 아카이브 교육"
+      ]
     },
     {
       "title": "“There’s Just No Real Way to Win”",
@@ -75,7 +99,12 @@
       "doi": "10.7202/1114838ar",
       "abstract": "Centring around first person accounts, this article shows how some disabled archivists have experienced many different ableist expectations and assumptions in their work: through requirements in job descriptions, performance, and productivity and attitudes around comportment, accommodations, and disability. Drawing on a wide array of literature on disability, affect, and the archival profession while using data collected through interviews with disabled archivists, this article highlights some affective dimensions of archival labour. Interviewees’ past experiences led to an acute awareness of how they might or might not be perceived as “professional.” And managing this awareness and their concerns led to a variety of strategies: participants described overperforming, denying their own needs, and “pushing through” as well as expending significant amounts of time, energy, and work in anticipating, navigating, and managing others’ feelings and ableist attitudes. Together, these findings outline some of the ways disabled people experience the archival profession, perform labour that might be less legible and under-recognized, and feel about their place in the profession. Moreover, such labour illustrates a double bind for disabled archivists – what we might call a paradox of archival ableism. As they navigate others’ assumptions about disability – discriminatory opinions about capabilities, harmful behaviour, and ableist expectations – they simultaneously have to overperform, advocate for their own worthiness for accommodations, and balance the ways these efforts might counteract, contradict, or work against each other. In other words, the paradox of archival ableism is how ableism produces a double bind of having to prove that one is both capable of work and also deserving of the very accommodations needed to do the work and how these efforts often work against each other.",
       "url": "https://doi.org/10.7202/1114838ar",
-      "title_ko": "진정한 승리는 없다"
+      "title_ko": "진정한 승리는 없다",
+      "topic": "아카이브 직무 연구",
+      "topics": [
+        "아카이브 직무 연구",
+        "공동체 아카이브"
+      ]
     },
     {
       "title": "Age of Influence: Youth &amp; Nazi Propaganda. Vancouver Holocaust Education Centre, Vancouver, British Columbia. Open from March 15, 2023. Curated by Tessa Coutu and Franziska Schurr, Exhibition developed by Lise Kirchner",
@@ -86,7 +115,11 @@
       "doi": "10.7202/1114845ar",
       "abstract": "Age of Influence: Youth & Nazi Propaganda. Vancouver Holocaust Education Centre, Vancouver, British Columbia. Open from March 15, 2023. Curated by Tessa Coutu and Franziska Schurr, Exhibition developed by Lise Kirchner. Un article de la revue Archivaria (Numéro 98, fall 2024, p. 6-222) diffusée par la plateforme Érudit.",
       "url": "https://doi.org/10.7202/1114845ar",
-      "title_ko": "나치 선전과 젊은이의 영향력: 밴쿠버홀로코스트교육센터 전시회"
+      "title_ko": "나치 선전과 젊은이의 영향력: 밴쿠버홀로코스트교육센터 전시회",
+      "topic": "유령 사진 아카이브 큐레이션",
+      "topics": [
+        "유령 사진 아카이브 큐레이션"
+      ]
     },
     {
       "title": "“It’s Not the Materials Themselves, It’s the Attitude of the Donors”",
@@ -99,7 +132,13 @@
       "doi": "10.7202/1114839ar",
       "abstract": "This article reports on findings from semi-structured interviews with 25 archivists and curators who work with LGBTQIA+-related collections and materials about the HIV/AIDS epidemic. Specifically, it reports on how these practitioners define and engage with ethical practices, access-based obligations, and community relations in creating and sustaining their archives. The article focuses on how participants, including practitioners from various community and institutional archives of varying size and scope across the United States, understood community accountability within their work. This emphasis on community accountability necessitated that practitioners reframe archival ethics, reconsider subjective and embodied collection and curation work, and prioritize community well-being over quantitative collection building. In response to these findings, the article identifies theoretical and practical implications for queer archives related to methods of archival production, approaches to community outreach and engagement, and the intersecting impact of these implications and approaches on questions of archival sustainability for queer and other historically marginalized histories.",
       "url": "https://doi.org/10.7202/1114839ar",
-      "title_ko": "기부자의 태도가 중요하다, 기증 물품 자체보다"
+      "title_ko": "기부자의 태도가 중요하다, 기증 물품 자체보다",
+      "topic": "공동체 아카이브",
+      "topics": [
+        "공동체 아카이브",
+        "온라인 전시회 관리",
+        "아카이브 직무 연구"
+      ]
     },
     {
       "title": "Archival Historiographies: The Impact of Twentieth-Century Legacy Data on Archaeological Investigations. Olympia Bobou, Amy C. Miranda, and Rubina Raja, eds. Turnhout, Belgium: Brepols, 2022. xii, 180 pp. 9782503600185",
@@ -110,7 +149,11 @@
       "doi": "10.7202/1114844ar",
       "abstract": "Archival Historiographies: The Impact of Twentieth-Century Legacy Data on Archaeological Investigations. Olympia Bobou, Amy C. Miranda, and Rubina Raja, eds. Turnhout, Belgium: Brepols, 2022. xii, 180 pp. 9782503600185. Un article de la revue Archivaria (Numéro 98, fall 2024, p. 6-222) diffusée par la plateforme Érudit.",
       "url": "https://doi.org/10.7202/1114844ar",
-      "title_ko": "20세기 유산 자료의 고고학 연구에 미친 영향: 아카이브 역사학"
+      "title_ko": "20세기 유산 자료의 고고학 연구에 미친 영향: 아카이브 역사학",
+      "topic": "디지털 아카이브 교육",
+      "topics": [
+        "디지털 아카이브 교육"
+      ]
     },
     {
       "title": "Archives by Artists. Archives of Ontario, Toronto, Ontario. December 19, 2023 – October 4, 2024. Curated by DisplayCult (Jennifer Fisher and Jim Drobnick)",
@@ -121,7 +164,11 @@
       "doi": "10.7202/1114846ar",
       "abstract": "Archives by Artists. Archives of Ontario, Toronto, Ontario. December 19, 2023 – October 4, 2024. Curated by DisplayCult (Jennifer Fisher and Jim Drobnick). Un article de la revue Archivaria (Numéro 98, fall 2024, p. 6-222) diffusée par la plateforme Érudit.",
       "url": "https://doi.org/10.7202/1114846ar",
-      "title_ko": "토론토 온타리오 주립문서관의 '아티스트의 기록: 디스플레이컬트 전시' (2023년 12월 19일 ~ 2024년 10월 4일)"
+      "title_ko": "토론토 온타리오 주립문서관의 '아티스트의 기록: 디스플레이컬트 전시' (2023년 12월 19일 ~ 2024년 10월 4일)",
+      "topic": "유령 사진 아카이브 큐레이션",
+      "topics": [
+        "유령 사진 아카이브 큐레이션"
+      ]
     },
     {
       "title": "Waiting for RiC",
@@ -132,7 +179,11 @@
       "doi": "10.7202/1114840ar",
       "abstract": "",
       "url": "https://doi.org/10.7202/1114840ar",
-      "title_ko": "RiC를 기다리며"
+      "title_ko": "RiC를 기다리며",
+      "topic": "기타",
+      "topics": [
+        "기타"
+      ]
     },
     {
       "title": "Finding Traces of Cows in the Archives and Telling Stories Differently",
@@ -143,7 +194,13 @@
       "doi": "10.7202/1114835ar",
       "abstract": "Archives are more-than-human spaces, and scholars are increasingly exploring how traditional archival material can be used to understand the historical lives of animals. There are traces of animals in any archives because humans do not exist in isolation and have historically been ecologically and socially entangled with other species. There is, however, a great deal of scope to develop innovative methods for telling animals’ histories in ways that treat them as subjects, not objects. Using my PhD research into the historical problematization of cows in Kingston, Ontario, between 1838 and 1938, this article charts some of the methods I developed to better position historical animals as experiential subjects in analyses of the past. More specifically, I focus on how I found traces of cows in the Queen’s University Archives by looking at a range of municipal records, including city assessments and health documents. I also explain how I conducted a multispecies discourse analysis of those traces by using contemporary knowledge about the psychology and physiology of cows, employing map-making techniques, and crafting speculative vignettes. I conclude that tracing animals in municipal records, being sensitive to contemporary knowledge about them, and making use of creative methodological tools to visibilize their spatial and social worlds is both academically interesting and politically significant. These methods challenge the anthropomorphism typical of historical and urban analyses, consequently creating openings for different ways of telling stories.",
       "url": "https://doi.org/10.7202/1114835ar",
-      "title_ko": "소의 발자취를 찾아 아카이브에서 새로운 이야기를 쓰다"
+      "title_ko": "소의 발자취를 찾아 아카이브에서 새로운 이야기를 쓰다",
+      "topic": "중동·북아프리카 아카이브 연구",
+      "topics": [
+        "중동·북아프리카 아카이브 연구",
+        "공동체 아카이브",
+        "아카이브 · 원문"
+      ]
     }
   ],
   "published": "2024",

@@ -43,9 +43,12 @@ _LABEL_SYSTEM = ("당신은 기록학·아카이브 분야 논문 묶음에 '구
 _LABEL_PROMPT = (
     "다음은 한 군집에 속한 학술 논문 제목들입니다. 이 묶음을 다른 묶음과 구별되게 하는 "
     "'구체적인' 공통 소주제를 한국어 2~6단어 라벨로 지으세요.\n"
-    "주의: '기록관리', '아카이브', '기록학', '연구', '관리 방안'처럼 분야 전체를 뜻하는 "
+    "주의 1: '기록관리', '아카이브', '기록학', '연구', '관리 방안'처럼 분야 전체를 뜻하는 "
     "포괄적 단어만으로 답하지 마세요. 논문들의 실제 대상·방법·영역(예: 전자기록 평가, "
     "구술사 수집, 공동체 아카이브, 디지털 보존, 기록물 분류체계 등)을 드러내세요.\n"
+    "주의 2: 영어 개념어는 소리나는 대로 음역하지 말고 한국어 학술용어로 옮기세요 "
+    "(authenticity→진본성, provenance→출처/맥락, appraisal→평가, "
+    "description→기술, accessibility→접근성, curation→큐레이션).\n"
     "라벨만 출력(따옴표·설명·문장 금지):\n\n{titles}"
 )
 
@@ -81,11 +84,31 @@ def _dot(a: list[float], b: list[float]) -> float:
     return sum(x * y for x, y in zip(a, b))
 
 
-def kmeans(vectors: list[list[float]], k: int, iters: int = 40, seed: int = 0):
-    """반환: (각 점의 군집번호, 군집 중심 벡터들)."""
+def _kpp_init(vectors, k, rng):
+    """k-means++ 초기 중심: 서로 멀리 떨어지게 골라 쏠림(거대 잡탕 군집) 완화."""
     n = len(vectors)
-    random.seed(seed)
-    centroids = [vectors[i][:] for i in random.sample(range(n), k)]
+    centroids = [vectors[rng.randrange(n)][:]]
+    d2 = [(1 - _dot(vectors[i], centroids[0])) ** 2 for i in range(n)]
+    for _ in range(k - 1):
+        total = sum(d2) or 1.0
+        r = rng.random() * total
+        acc = 0.0
+        pick = 0
+        for i in range(n):
+            acc += d2[i]
+            if acc >= r:
+                pick = i
+                break
+        centroids.append(vectors[pick][:])
+        for i in range(n):
+            nd = (1 - _dot(vectors[i], centroids[-1])) ** 2
+            if nd < d2[i]:
+                d2[i] = nd
+    return centroids
+
+
+def _kmeans_once(vectors, k, centroids, iters):
+    n = len(vectors)
     assign = [0] * n
     for _ in range(iters):
         changed = False
@@ -101,7 +124,19 @@ def kmeans(vectors: list[list[float]], k: int, iters: int = 40, seed: int = 0):
                 centroids[c] = _normalize([sum(m[d] for m in members) / len(members) for d in range(dim)])
         if not changed:
             break
-    return assign, centroids
+    inertia = sum(1 - _dot(vectors[i], centroids[assign[i]]) for i in range(n))
+    return assign, centroids, inertia
+
+
+def kmeans(vectors: list[list[float]], k: int, iters: int = 40, restarts: int = 5):
+    """k-means++ 초기화 + 여러 번 재시도 중 가장 응집도 높은(낮은 inertia) 결과 선택."""
+    best = None
+    for s in range(restarts):
+        rng = random.Random(s)
+        a, c, inertia = _kmeans_once(vectors, k, _kpp_init(vectors, k, rng), iters)
+        if best is None or inertia < best[2]:
+            best = (a, c, inertia)
+    return best[0], best[1]
 
 
 def _topics_for(vec, centroids, labels: dict[int, str], ratio: float, max_topics: int) -> list[str]:
@@ -122,6 +157,22 @@ def _topics_for(vec, centroids, labels: dict[int, str], ratio: float, max_topics
 
 
 # --- data ------------------------------------------------------------------
+
+# 논문이 아닌 항목(표지·서문·목차·정오표 등) — 주제 군집에서 제외.
+_FRONT = re.compile(
+    r"^\s*(front\s*matter|back\s*matter|editor['’]?s?\b|editorial\b|masthead|"
+    r"index|errata|corrigend|table of contents|contents|cover|in memoriam|"
+    r"서문|편집자|머리말|발간사|목차|정오표|판권)", re.IGNORECASE)
+# 한국어 라벨에 나오면 안 되는 외국 문자(중국어 한자·일본어 가나 등).
+_FOREIGN = re.compile(r"[぀-ヿ㐀-鿿]")
+
+
+def _is_front_matter(art: dict) -> bool:
+    title = (art.get("title_ko") or art.get("title", "")).strip()
+    if _FRONT.match(title):
+        return True
+    # 초록 없고 제목도 매우 짧으면 비논문일 가능성(예: "Raise Your Voice")
+    return len(title) < 8 and not (art.get("abstract") or art.get("abstract_ko"))
 
 
 def _article_text(art: dict) -> str:
@@ -146,6 +197,8 @@ def _llm_label(host: str, model: str, titles: list[str], logger: logging.Logger)
     except Exception:  # noqa: BLE001
         return ""
     out = re.sub(r'^["\'\s]+|["\'\s]+$', "", out.splitlines()[0] if out else "")
+    if _FOREIGN.search(out):       # 외국 문자 섞이면 라벨로 안 씀(키워드로 대체됨)
+        return ""
     return out[:40]
 
 
@@ -158,6 +211,9 @@ def main(argv=None) -> int:
     p.add_argument("--multi-ratio", type=float, default=0.90,
                    help="보조 주제 추가 기준(주 주제 유사도 대비 비율; 낮출수록 한 논문에 주제가 더 많이 붙음). 1.0이면 단일 주제")
     p.add_argument("--max-topics", type=int, default=3, help="논문당 최대 주제 수 (기본 3)")
+    p.add_argument("--min-sim", type=float, default=None,
+                   help="주제로 인정할 최소 유사도(0~1). 안 주면 자동(평균-표준편차). "
+                        "어느 주제와도 이보다 멀면 '기타(미분류)'로 둠 — 초록 없는 약한 논문 오분류 방지")
     args = p.parse_args(argv)
     logger = setup_logging("cluster", logfile=False, simple=True)
 
@@ -173,13 +229,21 @@ def main(argv=None) -> int:
     texts: list[str] = []
     titles: list[str] = []
     files = {f: json.loads(open(f, encoding="utf-8").read()) for f in sorted(glob.glob(str(OUTPUT_DIR / "*.json")))}
+    skipped = 0
     for path, data in files.items():
         for idx, art in enumerate(data.get("articles", [])):
+            if _is_front_matter(art):           # 표지·서문 등은 주제에서 제외(기존 주제도 제거)
+                art.pop("topic", None)
+                art.pop("topics", None)
+                skipped += 1
+                continue
             txt = _article_text(art)
             if txt:
                 refs.append((path, idx))
                 texts.append(txt)
                 titles.append(art.get("title_ko") or art.get("title", ""))
+    if skipped:
+        logger.info("비논문(서문·표지 등) %d편 제외", skipped)
     if len(texts) < 4:
         logger.error("군집화할 논문이 너무 적습니다 (%d편).", len(texts))
         return 1
@@ -234,17 +298,36 @@ def main(argv=None) -> int:
         logger.info("  [주제] %s  (%d편)", labels[c], len(c_titles))
 
     # 5) 각 논문에 주제(들) 저장 — 여러 군집에 가까우면 보조 주제도 함께. 사이트 재생성.
-    multi = 0
+    #    어느 주제와도 충분히 가깝지 않은(외톨이) 논문은 '기타'로 — 초록 없는 약한
+    #    논문을 특정 주제로 오분류하는 것 방지.
+    primary_sims = [max((_dot(vectors[i], centroids[c]) for c in labels), default=0.0)
+                    for i in range(len(refs))]
+    if args.min_sim is not None:
+        floor = args.min_sim
+    elif primary_sims:
+        mean = sum(primary_sims) / len(primary_sims)
+        std = (sum((s - mean) ** 2 for s in primary_sims) / len(primary_sims)) ** 0.5
+        floor = mean - std
+    else:
+        floor = 0.0
+    multi = outliers = 0
     for ref_i, (path, idx) in enumerate(refs):
+        art = files[path]["articles"][idx]
+        if primary_sims[ref_i] < floor:
+            art["topic"] = "기타"
+            art["topics"] = ["기타"]
+            outliers += 1
+            continue
         tops = _topics_for(vectors[ref_i], centroids, labels, args.multi_ratio, args.max_topics) or ["기타"]
         if len(tops) > 1:
             multi += 1
-        art = files[path]["articles"][idx]
         art["topic"] = tops[0]      # 주 주제(하위호환)
         art["topics"] = tops        # 전체 주제 목록
     for path, data in files.items():
         open(path, "w", encoding="utf-8").write(json.dumps(data, ensure_ascii=False, indent=2) + "\n")
 
+    if outliers:
+        logger.info("어느 주제와도 가깝지 않아 '기타'로 둔 논문 %d편 (대개 초록 없는 해외 논문)", outliers)
     logger.info("주제 %d개로 묶음 완료. (여러 주제 배정 %d편)", len(labels), multi)
     build_site.build_site(OUTPUT_DIR, SITE_DIR, logger)
     logger.info("사이트 재생성 완료. (git add -A && git commit && git push 로 저장)")

@@ -27,6 +27,7 @@ import logging
 import os
 import re
 import time
+from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
@@ -46,11 +47,12 @@ _OLLAMA_SYSTEM = (
     "당신은 한국어 학술 요약 도우미입니다. 어떤 경우에도 반드시 한국어(한글)로만 "
     "답하세요. 영어·중국어 등 다른 언어로는 절대 쓰지 마세요."
 )
-_OLLAMA_PROMPT = """다음은 한국어 학술 논문의 한 장(章)입니다. 이 장의 핵심 내용을 \
-**한국어**로 3~4문장 충실하게 요약하세요.
+_OLLAMA_PROMPT = """다음은 학술 논문의 한 장(章)입니다(원문은 한국어일 수도, 영어일 수도 \
+있습니다). 이 장의 핵심 내용을 **한국어**로 3~4문장 충실하게 요약하세요.
 
 규칙:
 - 반드시 한국어(한글)로만 작성합니다. 영어·중국어 등 다른 언어 사용 금지.
+- **원문이 영어여도 한국어로 번역하여 요약**합니다(영어 문장을 그대로 옮기지 않습니다).
 - 아래 제공된 내용에만 근거하고, 없는 내용을 지어내지 않습니다.
 - 머리말이나 목록 기호 없이 요약문만 출력합니다.
 
@@ -171,32 +173,94 @@ def summarize_sections_ollama(text: str, host: str, model: str, logger: logging.
     return sections or None
 
 
-def summarize_row(session, row: dict, opts: argparse.Namespace, logger: logging.Logger) -> dict | None:
-    """Download, extract and summarise one article. Returns a summary dict or None."""
+_OLLAMA_FLAT_PROMPT = """다음은 학술 논문 본문입니다(원문은 한국어일 수도, 영어일 수도 \
+있습니다). 논문 전체의 핵심을 **한국어**로 6~10문장으로 충실히 요약하세요. 연구 목적·방법·\
+주요 결과·결론이 드러나게 하세요.
+
+규칙:
+- 반드시 한국어(한글)로만 작성합니다. 영어·중국어 등 다른 언어 사용 금지.
+- **원문이 영어여도 한국어로 번역하여 요약**합니다(영어 문장을 그대로 옮기지 않습니다).
+- 아래 제공된 내용에만 근거하고, 없는 내용을 지어내지 않습니다.
+- 머리말이나 목록 기호 없이 요약문만 출력합니다.
+
+[내용]
+{body}"""
+
+
+def summarize_flat_ollama(text: str, host: str, model: str, logger: logging.Logger) -> str | None:
+    """Whole-document generative Korean summary (when no chapters are detected)."""
+    from summarizer import clean_text
+
+    body = clean_text(text)[:8000]
+    if len(body.strip()) < 200:
+        return None
+    try:
+        out = ollama_generate(host, model, _OLLAMA_FLAT_PROMPT.format(body=body),
+                              system=_OLLAMA_SYSTEM, num_predict=600)
+    except requests.RequestException as exc:
+        logger.error("  Ollama 전체 요약 실패: %s", exc)
+        return None
+    return out or None
+
+
+def summarize_row(session, row: dict, opts: argparse.Namespace, logger: logging.Logger,
+                  problems: list | None = None, local_pdf: str | None = None) -> dict | None:
+    """Download, extract and summarise one article. Returns a summary dict or None.
+
+    On failure, appends a human-readable Korean reason to ``problems`` (if given)
+    so callers (web console) can show *why* it failed, not just "실패".
+
+    ``local_pdf`` — path to a PDF the user already has (e.g. an institutional
+    download of a paywalled foreign paper). When given, the file is used instead
+    of downloading, so any PDF can be summarised offline.
+    """
     from summarizer import summarize, summarize_by_section
+
+    def _fail(reason: str):
+        if problems is not None:
+            problems.append(reason)
+        return None
 
     per_section = opts.sentences
     title = row["title"][:50]
+    foreign = row.get("journal_key", "") in ("amarch", "archivaria", "archrec")
     logger.info("summarising %r (%s)", title, row.get("doi") or "no-doi")
-    try:
-        pdf_url = resolve_pdf_url(session, row, logger)
-    except ExtractionError as exc:
-        logger.error("  could not resolve PDF url: %s", exc)
-        return None
-    if not pdf_url:
-        logger.error("  no PDF url found — skipping")
-        return None
 
-    try:
-        data = download_pdf(session, pdf_url, logger)
-    except ExtractionError as exc:
-        logger.error("  %s", exc)
-        return None
+    if local_pdf:                                   # 사용자가 건넨 로컬 PDF 사용
+        path = Path(local_pdf).expanduser()
+        if not path.is_file():
+            return _fail(f"파일을 찾을 수 없어요: {path}")
+        try:
+            data = path.read_bytes()
+        except OSError as exc:
+            return _fail(f"파일을 읽지 못했어요: {exc}")
+        if data[:5] != b"%PDF-":
+            return _fail("PDF 파일이 아닌 것 같아요 (확장자·내용을 확인하세요).")
+        pdf_url = path.as_uri()
+    else:
+        try:
+            pdf_url = resolve_pdf_url(session, row, logger)
+        except ExtractionError as exc:
+            logger.error("  could not resolve PDF url: %s", exc)
+            return _fail("PDF 주소를 찾지 못했어요. 논문 공개 페이지 구조가 바뀌었을 수 있어요.")
+        if not pdf_url:
+            logger.error("  no PDF url found — skipping")
+            return _fail("공개 PDF 링크가 없어요" + (
+                " — 해외 유료 저널이라 본문이 막혀 있습니다. PDF가 있으면 --pdf 로 직접 요약하세요."
+                if foreign else " — 이 논문은 공개 PDF가 제공되지 않습니다."))
+
+        try:
+            data = download_pdf(session, pdf_url, logger)
+        except ExtractionError as exc:
+            logger.error("  %s", exc)
+            return _fail("PDF를 내려받지 못했어요" + (
+                " — 해외 유료 저널의 접근 차단(페이월)일 가능성이 큽니다. PDF가 있으면 --pdf 로 직접 요약하세요."
+                if foreign else " — 접근 차단 또는 일시적 네트워크 문제예요. 잠시 후 다시 시도해 보세요."))
 
     text = extract_pdf_text(data)
     if len(text.strip()) < 300:
         logger.error("  extracted text too short (%d chars) — skipping", len(text.strip()))
-        return None
+        return _fail("PDF에서 본문을 충분히 추출하지 못했어요 (스캔본·이미지 PDF일 수 있어요).")
 
     result = {
         "doi": row.get("doi", ""),
@@ -218,6 +282,13 @@ def summarize_row(session, row: dict, opts: argparse.Namespace, logger: logging.
             logger.info("  → %d개 장 생성 요약 (모델 %s, 원문 %d자)", len(gen), opts.model, len(text))
             result["method"] = f"ollama-{opts.model}"
             result["sections"] = gen
+            return result
+        # 장 구조가 없으면(해외 논문에 흔함) 통째로 한국어 생성 요약 — 추출(영어)로 떨어지기 전에.
+        flat_gen = summarize_flat_ollama(text, opts.ollama_host, opts.model, logger)
+        if flat_gen:
+            logger.info("  → 장 미검출, 전체 생성 요약 (모델 %s, 원문 %d자)", opts.model, len(text))
+            result["method"] = f"ollama-{opts.model}-flat"
+            result["summary"] = flat_gen
             return result
         logger.warning("  Ollama 요약 실패/장 미검출 — 추출 요약으로 대체합니다")
 
@@ -267,6 +338,9 @@ def parse_args(argv=None) -> argparse.Namespace:
     p.add_argument("--sentences", type=int, default=DEFAULT_SENTENCES,
                    help=f"[extractive] 장별 최대 문장 수 (default {DEFAULT_SENTENCES}; 장이 길수록 이 한도까지 늘어남)")
     p.add_argument("--force", action="store_true", help="re-summarise even if a summary already exists")
+    p.add_argument("--pdf", default=None,
+                   help="내가 가진 PDF 파일 경로로 요약(다운로드 대신). 페이월 해외 논문 등에 사용. "
+                        "논문 하나(--num N 또는 DOI)만 함께 지정하세요.")
     return p.parse_args(argv)
 
 
@@ -310,6 +384,10 @@ def main(argv=None) -> int:
         logger.error("선택된 논문이 없습니다. --list 로 번호를 확인하세요.")
         return 1
 
+    if args.pdf and len(selected) != 1:
+        logger.error("--pdf 는 논문 하나에만 씁니다. --num 으로 한 편만 지정하세요 (예: --num 1 --pdf 파일.pdf).")
+        return 1
+
     if args.engine == "ollama" and not ollama_available(args.ollama_host, logger):
         logger.error(
             "Ollama 서버에 연결할 수 없습니다 (%s).\n"
@@ -325,13 +403,16 @@ def main(argv=None) -> int:
     done = 0
     for row in selected:
         out_path = SUMMARY_DIR / f"{_safe_name(row['doi'], row)}.json"
-        if out_path.exists() and not args.force:
+        if out_path.exists() and not args.force and not args.pdf:
             logger.info("이미 요약됨, 건너뜀: %s (--force 로 재생성)", row["title"][:40])
             continue
-        summary = summarize_row(session, row, args, logger)
+        problems: list[str] = []
+        summary = summarize_row(session, row, args, logger, problems, local_pdf=args.pdf)
         if summary:
             save_summary(summary, row, logger)
             done += 1
+        elif problems:
+            logger.error("  실패: %s", problems[-1])
 
     logger.info("요약 완료: %d편", done)
     if done:

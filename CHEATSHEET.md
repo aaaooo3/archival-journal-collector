@@ -59,6 +59,15 @@ python3 app.py                          # 버튼 콘솔 (브라우저 localhost:
 - 여러 편: `--num 2 5 7`
 - 생성형은 `ollama serve` 가 떠 있어야 함(아래 8번).
 
+**내가 가진 PDF로 요약** (페이월 해외 논문 등 — 본문이 막혀 다운로드가 안 될 때):
+```
+python3 summarize.py --num 1 --pdf ~/Downloads/논문.pdf                 # 추출(무료·즉시)
+python3 summarize.py --num 1 --pdf ~/Downloads/논문.pdf --engine ollama # 생성형(Ollama)
+```
+- 목록 번호(`--num`)는 **그 PDF가 어느 논문인지** 알려주는 용도(한 편만 지정).
+- 소장한 PDF를 직접 읽어 요약하므로 다운로드 차단·페이월과 무관합니다.
+- 영어 논문도 요약됩니다(국문/영문 자동 판별).
+
 ## 5) 해외 논문 한국어 번역
 
 ```
