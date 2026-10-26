@@ -376,6 +376,12 @@ _CSS = """
   .topic-wrap > summary #topic-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .topic-wrap > summary::after { content: "▾"; margin-left: auto; color: var(--muted); transition: transform .2s; }
   .topic-wrap[open] > summary::after { transform: rotate(180deg); }
+  .load-more-wrap { text-align: center; padding: 4px 0 50px; }
+  #load-more {
+    background: var(--card); color: var(--accent); border: 1px solid var(--accent);
+    border-radius: 999px; padding: 10px 26px; font-size: .9rem; font-weight: 600; cursor: pointer;
+  }
+  #load-more:hover { background: var(--accent-soft); }
   .summary {
     background: var(--accent-soft); border: 1px solid #cfe3d8; border-radius: 8px;
     padding: 8px 12px; margin: 0 0 10px;
@@ -409,6 +415,9 @@ _JS = """
   var activeJournal = "all";
   var activeTopic = "all";
   var query = "";
+  var PAGE_SIZE = 30;
+  var limit = PAGE_SIZE;
+  var loadMore = document.getElementById("load-more");
 
   // Clamp long abstracts and add a 더 보기/접기 toggle (only when JS runs).
   [].slice.call(document.querySelectorAll(".abstract")).forEach(function (p) {
@@ -427,30 +436,41 @@ _JS = """
   });
 
   function apply() {
-    var shown = 0;
+    var shown = 0, matched = 0;
     sections.forEach(function (sec) {
       if (activeJournal !== "all" && sec.getAttribute("data-journal") !== activeJournal) {
         sec.style.display = "none";
         return;
       }
       var cards = sec.querySelectorAll(".card");
-      var visible = 0;
+      var secVisible = 0;
       for (var i = 0; i < cards.length; i++) {
         var matchTopic = activeTopic === "all" ||
           (cards[i].getAttribute("data-topic") || "").split("|").indexOf(activeTopic) !== -1;
         var matchSearch = !query || (cards[i].getAttribute("data-text") || "").indexOf(query) !== -1;
-        var ok = matchTopic && matchSearch;
-        cards[i].style.display = ok ? "" : "none";
-        if (ok) visible++;
+        if (matchTopic && matchSearch) {
+          matched++;
+          if (shown < limit) { cards[i].style.display = ""; shown++; secVisible++; }
+          else { cards[i].style.display = "none"; }
+        } else {
+          cards[i].style.display = "none";
+        }
       }
-      sec.style.display = visible ? "" : "none";
-      shown += visible;
+      sec.style.display = secVisible ? "" : "none";
     });
-    countEl.textContent = shown ? ("논문 " + shown + "편") : "";
-    if (emptyEl) emptyEl.style.display = shown ? "none" : "";
+    countEl.textContent = matched
+      ? ("논문 " + matched + "편" + (shown < matched ? " (" + shown + "편 표시 중)" : ""))
+      : "";
+    if (emptyEl) emptyEl.style.display = matched ? "none" : "";
+    if (loadMore) {
+      loadMore.style.display = (shown < matched) ? "" : "none";
+      loadMore.textContent = "더 보기 (남은 " + (matched - shown) + "편)";
+    }
   }
 
-  function runSearch() { query = searchEl.value.trim().toLowerCase(); apply(); }
+  function resetAndApply() { limit = PAGE_SIZE; apply(); }
+
+  function runSearch() { query = searchEl.value.trim().toLowerCase(); resetAndApply(); }
   searchEl.addEventListener("input", runSearch);
   searchEl.addEventListener("keydown", function (e) { if (e.key === "Enter") runSearch(); });
   document.getElementById("search-btn").addEventListener("click", runSearch);
@@ -467,7 +487,7 @@ _JS = """
         b.classList.add("active");
         var v = b.getAttribute("data-journal");
         setter(v !== null ? v : b.getAttribute("data-topic"));
-        apply();
+        resetAndApply();
       });
     });
   }
@@ -482,6 +502,10 @@ _JS = """
     if (topicLabel) { topicLabel.textContent = (v && v !== "all") ? "🏷 주제: " + v : "🏷 주제 필터"; }
     if (topicWrap && isPhone()) { topicWrap.removeAttribute("open"); }  // 고르면 접어서 목록이 보이게
   });
+
+  if (loadMore) {
+    loadMore.addEventListener("click", function () { limit += PAGE_SIZE; apply(); });
+  }
 
   apply();
 })();
@@ -733,6 +757,9 @@ def render_site(issues: list[dict], summaries: dict[str, dict] | None = None) ->
 {main_html}
 <p class="empty" id="empty" style="display:none">조건에 맞는 논문이 없습니다.</p>
 </main>
+<div class="wrap load-more-wrap">
+  <button id="load-more" type="button" style="display:none">더 보기</button>
+</div>
 
 <footer>마지막 생성: {date.today().isoformat()} · 정적 페이지 (서버 불필요)</footer>
 
