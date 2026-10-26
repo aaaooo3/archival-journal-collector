@@ -18,10 +18,12 @@ CSS selectors as module-level constants and exposes:
 from __future__ import annotations
 
 import logging
+import re
 import time
 from dataclasses import dataclass, field
 
 import requests
+from bs4 import BeautifulSoup
 
 # --- Polite-client configuration -------------------------------------------
 
@@ -60,6 +62,7 @@ class Article:
     doi: str = ""
     abstract: str = ""
     url: str = ""  # full-text / detail link
+    keywords: list[str] = field(default_factory=list)  # author-provided keywords
 
 
 @dataclass
@@ -126,3 +129,70 @@ def clean_text(value: str | None) -> str:
     if not value:
         return ""
     return " ".join(value.split()).strip()
+
+
+# --- author keyword extraction (shared by parsers and fetch_keywords.py) -----
+
+_KW_META = re.compile(r"^(citation_keywords?|keywords|dc\.subject)$", re.IGNORECASE)
+_KW_SPLIT = re.compile(r"\s*[;,·|/、]\s*|\s{2,}")
+_KW_INLINE = re.compile(r"(?:키\s*워\s*드|주\s*제\s*어|key\s*words?)\s*[:：]\s*(.+)$", re.IGNORECASE | re.DOTALL)
+_KW_LABEL_ONLY = re.compile(r"^\s*(?:키\s*워\s*드|주\s*제\s*어|key\s*words?)\s*[:：]?\s*$", re.IGNORECASE)
+_KW_HINT = re.compile(r"키\s*워\s*드|주\s*제\s*어|key\s*words?", re.IGNORECASE)
+_KW_MAX = 8
+
+
+def clean_keywords(items: list[str]) -> list[str]:
+    """Normalise a list of raw keyword strings (dedupe, trim, cap)."""
+    out: list[str] = []
+    for raw in items:
+        w = re.sub(r"\s+", " ", (raw or "")).strip().strip(".,;·")
+        if not w or len(w) > 40:
+            continue
+        if w.lower() in ("keywords", "key words", "키워드", "주제어"):
+            continue
+        if w not in out:
+            out.append(w)
+        if len(out) >= _KW_MAX:
+            break
+    return out
+
+
+def extract_keywords(soup: BeautifulSoup) -> list[str]:
+    """Author keywords from an article page: meta tags first, then a DOM label."""
+    found: list[str] = []
+    for m in soup.find_all("meta", attrs={"name": _KW_META}):
+        content = (m.get("content") or "").strip()
+        if content:
+            found.extend(_KW_SPLIT.split(content))
+    found = clean_keywords(found)
+    if found:
+        return found
+
+    for node in soup.find_all(string=_KW_HINT):
+        container = node.find_parent()
+        if not container:
+            continue
+        ctext = container.get_text(" ", strip=True)
+        candidates = [ctext]
+        if len(ctext) < 25 and container.parent:      # label in a small <strong>/<span>
+            candidates.append(container.parent.get_text(" ", strip=True))
+        for full in candidates:
+            m = _KW_INLINE.search(full)
+            if m:
+                got = clean_keywords(_KW_SPLIT.split(m.group(1)[:200]))
+                if got:
+                    return got
+        if _KW_LABEL_ONLY.match(ctext):
+            nxt = container.find_next_sibling() or (container.parent.find_next_sibling()
+                                                    if container.parent else None)
+            if nxt:
+                got = clean_keywords(_KW_SPLIT.split(nxt.get_text(" ", strip=True)))
+                if got:
+                    return got
+    return []
+
+
+def keywords_from_html(html: str) -> list[str]:
+    """Convenience wrapper: parse HTML and extract author keywords."""
+    return extract_keywords(BeautifulSoup(html, "lxml"))
+

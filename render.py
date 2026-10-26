@@ -67,6 +67,12 @@ def issue_to_dict(issue: Issue) -> dict:
     data = asdict(issue)
     data["collected"] = date.today().isoformat()
     data.pop("sort_key", None)  # tuple; ordering is re-derived from issue_id
+    # Author keywords (if the source provided them) double as the site's topics.
+    for art in data.get("articles", []):
+        kw = art.get("keywords")
+        if kw:
+            art["topics"] = kw
+            art["topic"] = kw[0]
     return data
 
 

@@ -23,76 +23,15 @@ import glob
 import json
 import logging
 import os
-import re
 
 import requests
-from bs4 import BeautifulSoup
 
 import build_site
-from sources.base import ExtractionError, fetch_html, make_session
+from sources.base import ExtractionError, clean_keywords, fetch_html, keywords_from_html, make_session
 from tooling import OUTPUT_DIR, SITE_DIR, setup_logging
 from cluster import _is_front_matter
 
 OPENALEX = "https://api.openalex.org"
-MAX_KW = 8
-_META_NAMES = re.compile(r"^(citation_keywords?|keywords|dc\.subject)$", re.IGNORECASE)
-_SPLIT = re.compile(r"\s*[;,·|/、]\s*|\s{2,}")
-
-
-def _clean(items: list[str]) -> list[str]:
-    out: list[str] = []
-    for raw in items:
-        w = re.sub(r"\s+", " ", (raw or "")).strip().strip(".,;·")
-        if not w or len(w) > 30:
-            continue
-        if w.lower() in ("keywords", "key words", "키워드", "주제어"):
-            continue
-        if w not in out:
-            out.append(w)
-        if len(out) >= MAX_KW:
-            break
-    return out
-
-
-def keywords_from_html(html: str) -> list[str]:
-    """Extract author keywords from an article page (meta tags, then a DOM label)."""
-    soup = BeautifulSoup(html, "lxml")
-    found: list[str] = []
-    for m in soup.find_all("meta", attrs={"name": _META_NAMES}):
-        content = (m.get("content") or "").strip()
-        if content:
-            found.extend(_SPLIT.split(content))
-    found = _clean(found)
-    if found:
-        return found
-
-    # Fallback: a "키워드/주제어/Keywords" label; keywords inline after it, or in
-    # the next sibling block.
-    inline = re.compile(r"(?:키\s*워\s*드|주\s*제\s*어|key\s*words?)\s*[:：]\s*(.+)$", re.IGNORECASE | re.DOTALL)
-    label_only = re.compile(r"^\s*(?:키\s*워\s*드|주\s*제\s*어|key\s*words?)\s*[:：]?\s*$", re.IGNORECASE)
-    hint = re.compile(r"키\s*워\s*드|주\s*제\s*어|key\s*words?", re.IGNORECASE)
-    for node in soup.find_all(string=hint):
-        container = node.find_parent()
-        if not container:
-            continue
-        ctext = container.get_text(" ", strip=True)
-        candidates = [ctext]
-        if len(ctext) < 25 and container.parent:      # label sits in a small <strong>/<span>
-            candidates.append(container.parent.get_text(" ", strip=True))
-        for full in candidates:
-            m = inline.search(full)
-            if m:
-                got = _clean(_SPLIT.split(m.group(1)[:200]))
-                if got:
-                    return got
-        if label_only.match(ctext):
-            nxt = container.find_next_sibling() or (container.parent.find_next_sibling()
-                                                    if container.parent else None)
-            if nxt:
-                got = _clean(_SPLIT.split(nxt.get_text(" ", strip=True)))
-                if got:
-                    return got
-    return []
 
 
 def openalex_keywords(session: requests.Session, doi: str, logger: logging.Logger) -> list[str]:
@@ -114,7 +53,7 @@ def openalex_keywords(session: requests.Session, doi: str, logger: logging.Logge
     if not kws:   # fall back to higher-level concepts with decent confidence
         kws = [c.get("display_name", "") for c in (data.get("concepts") or [])
                if c.get("level", 0) >= 1 and (c.get("score") or 0) >= 0.3]
-    return _clean(kws)
+    return clean_keywords(kws)
 
 
 def main(argv=None) -> int:
