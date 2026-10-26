@@ -27,6 +27,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true          # Pages가 꺼져 있으면 자동으로 켠다(설정 수동 변경 불필요)
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
