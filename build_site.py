@@ -376,12 +376,16 @@ _CSS = """
   .topic-wrap > summary #topic-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .topic-wrap > summary::after { content: "▾"; margin-left: auto; color: var(--muted); transition: transform .2s; }
   .topic-wrap[open] > summary::after { transform: rotate(180deg); }
-  .load-more-wrap { text-align: center; padding: 4px 0 50px; }
-  #load-more {
-    background: var(--card); color: var(--accent); border: 1px solid var(--accent);
-    border-radius: 999px; padding: 10px 26px; font-size: .9rem; font-weight: 600; cursor: pointer;
+  .pager-wrap { padding: 4px 0 50px; }
+  .pager { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .pg {
+    min-width: 38px; padding: 8px 11px; border: 1px solid var(--line); background: var(--card);
+    color: var(--ink); border-radius: 8px; font-size: .88rem; cursor: pointer;
   }
-  #load-more:hover { background: var(--accent-soft); }
+  .pg.nav { font-weight: 600; }
+  .pg.num.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
+  .pg:disabled { opacity: .4; cursor: default; }
+  .pg.gap { border: none; background: none; cursor: default; min-width: 18px; padding: 8px 2px; color: var(--muted); }
   .summary {
     background: var(--accent-soft); border: 1px solid #cfe3d8; border-radius: 8px;
     padding: 8px 12px; margin: 0 0 10px;
@@ -416,8 +420,8 @@ _JS = """
   var activeTopic = "all";
   var query = "";
   var PAGE_SIZE = 30;
-  var limit = PAGE_SIZE;
-  var loadMore = document.getElementById("load-more");
+  var page = 1;
+  var pager = document.getElementById("pager");
 
   // Clamp long abstracts and add a 더 보기/접기 toggle (only when JS runs).
   [].slice.call(document.querySelectorAll(".abstract")).forEach(function (p) {
@@ -436,39 +440,70 @@ _JS = """
   });
 
   function apply() {
-    var shown = 0, matched = 0;
+    // 필터에 맞는 카드들을 문서 순서대로 모으고, 현재 페이지 구간만 보여준다.
+    var matching = [];
     sections.forEach(function (sec) {
-      if (activeJournal !== "all" && sec.getAttribute("data-journal") !== activeJournal) {
-        sec.style.display = "none";
-        return;
-      }
+      var jOk = (activeJournal === "all" || sec.getAttribute("data-journal") === activeJournal);
       var cards = sec.querySelectorAll(".card");
-      var secVisible = 0;
       for (var i = 0; i < cards.length; i++) {
+        cards[i].style.display = "none";
         var matchTopic = activeTopic === "all" ||
           (cards[i].getAttribute("data-topic") || "").split("|").indexOf(activeTopic) !== -1;
         var matchSearch = !query || (cards[i].getAttribute("data-text") || "").indexOf(query) !== -1;
-        if (matchTopic && matchSearch) {
-          matched++;
-          if (shown < limit) { cards[i].style.display = ""; shown++; secVisible++; }
-          else { cards[i].style.display = "none"; }
-        } else {
-          cards[i].style.display = "none";
-        }
+        if (jOk && matchTopic && matchSearch) matching.push(cards[i]);
       }
-      sec.style.display = secVisible ? "" : "none";
+      sec.style.display = "none";
     });
+    var matched = matching.length;
+    var totalPages = Math.max(1, Math.ceil(matched / PAGE_SIZE));
+    if (page > totalPages) page = totalPages;
+    var start = (page - 1) * PAGE_SIZE;
+    for (var k = start; k < start + PAGE_SIZE && k < matched; k++) {
+      matching[k].style.display = "";
+      var sec = matching[k].closest(".issue");
+      if (sec) sec.style.display = "";
+    }
     countEl.textContent = matched
-      ? ("논문 " + matched + "편" + (shown < matched ? " (" + shown + "편 표시 중)" : ""))
+      ? ("논문 " + matched + "편" + (totalPages > 1 ? " · " + page + "/" + totalPages + "쪽" : ""))
       : "";
     if (emptyEl) emptyEl.style.display = matched ? "none" : "";
-    if (loadMore) {
-      loadMore.style.display = (shown < matched) ? "" : "none";
-      loadMore.textContent = "더 보기 (남은 " + (matched - shown) + "편)";
-    }
+    renderPager(totalPages);
   }
 
-  function resetAndApply() { limit = PAGE_SIZE; apply(); }
+  function pageList(total, cur) {
+    var out = [], lo = Math.max(2, cur - 1), hi = Math.min(total - 1, cur + 1);
+    out.push(1);
+    if (lo > 2) out.push("…");
+    for (var i = lo; i <= hi; i++) out.push(i);
+    if (hi < total - 1) out.push("…");
+    if (total > 1) out.push(total);
+    return out;
+  }
+
+  function renderPager(totalPages) {
+    if (!pager) return;
+    if (totalPages <= 1) { pager.innerHTML = ""; pager.style.display = "none"; return; }
+    pager.style.display = "";
+    var html = '<button class="pg nav" data-pg="' + (page - 1) + '"' + (page <= 1 ? " disabled" : "") + ">‹ 이전</button>";
+    pageList(totalPages, page).forEach(function (n) {
+      if (n === "…") html += '<span class="pg gap">…</span>';
+      else html += '<button class="pg num' + (n === page ? " active" : "") + '" data-pg="' + n + '">' + n + "</button>";
+    });
+    html += '<button class="pg nav" data-pg="' + (page + 1) + '"' + (page >= totalPages ? " disabled" : "") + ">다음 ›</button>";
+    pager.innerHTML = html;
+    [].slice.call(pager.querySelectorAll("button.pg[data-pg]")).forEach(function (b) {
+      if (b.disabled) return;
+      b.addEventListener("click", function () {
+        var n = parseInt(b.getAttribute("data-pg"), 10);
+        if (n >= 1 && n <= totalPages && n !== page) {
+          page = n; apply();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    });
+  }
+
+  function resetAndApply() { page = 1; apply(); }
 
   function runSearch() { query = searchEl.value.trim().toLowerCase(); resetAndApply(); }
   searchEl.addEventListener("input", runSearch);
@@ -502,10 +537,6 @@ _JS = """
     if (topicLabel) { topicLabel.textContent = (v && v !== "all") ? "🏷 주제: " + v : "🏷 주제 필터"; }
     if (topicWrap && isPhone()) { topicWrap.removeAttribute("open"); }  // 고르면 접어서 목록이 보이게
   });
-
-  if (loadMore) {
-    loadMore.addEventListener("click", function () { limit += PAGE_SIZE; apply(); });
-  }
 
   apply();
 })();
@@ -757,8 +788,8 @@ def render_site(issues: list[dict], summaries: dict[str, dict] | None = None) ->
 {main_html}
 <p class="empty" id="empty" style="display:none">조건에 맞는 논문이 없습니다.</p>
 </main>
-<div class="wrap load-more-wrap">
-  <button id="load-more" type="button" style="display:none">더 보기</button>
+<div class="wrap pager-wrap">
+  <nav id="pager" class="pager" style="display:none"></nav>
 </div>
 
 <footer>마지막 생성: {date.today().isoformat()} · 정적 페이지 (서버 불필요)</footer>
