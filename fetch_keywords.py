@@ -32,6 +32,8 @@ from tooling import OUTPUT_DIR, SITE_DIR, setup_logging
 from cluster import _is_front_matter
 
 OPENALEX = "https://api.openalex.org"
+# 페이지에서 키워드를 긁을 국내 저널(접근 가능). 해외는 페이월이라 OpenAlex로만.
+_HTML_JOURNALS = {"jksarm", "kjas"}
 
 
 def openalex_keywords(session: requests.Session, doi: str, logger: logging.Logger) -> list[str]:
@@ -89,7 +91,11 @@ def main(argv=None) -> int:
 
             kws: list[str] = []
             url = art.get("url", "")
-            if url and not url.lower().endswith(".pdf"):
+            # 국내 저널만 페이지에서 긁는다. 해외(doi.org→출판사)는 페이월 403이라
+            # 재시도만 낭비 → 바로 OpenAlex로.
+            page_ok = (jk in _HTML_JOURNALS and url and not url.lower().endswith(".pdf")
+                       and "doi.org" not in url.lower())
+            if page_ok:
                 try:
                     kws = keywords_from_html(fetch_html(session, url, logger))
                 except ExtractionError as exc:
