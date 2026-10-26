@@ -14,9 +14,9 @@
       "doi": "10.1080/23257962.2026.2613981",
       "abstract": "In March 2025, the Methodist Church of Great Britain launched the Methodist Archivists’ Handbook at a well-attended event at Manchester Central Library that brought together representatives from ac...",
       "url": "https://doi.org/10.1080/23257962.2026.2613981",
-      "topic": "기타",
+      "topic": "중동·북아프리카 아카이브",
       "topics": [
-        "기타"
+        "중동·북아프리카 아카이브"
       ]
     },
     {
@@ -30,9 +30,11 @@
       "doi": "10.1080/23257962.2025.2571113",
       "abstract": "This paper investigates how archival protection and recovery can be strengthened in the face of natural disasters, based on the case of Rio Grande do Sul, Brazil, in 2024. The main objective is to propose a model of coordination and collaboration to improve the safety and recovery of archives in natural disasters. The analysis of the dataset from the Public Archives of Rio Grande do Sul (APERS) and the Integrated Disaster Information System (S2iD) revealed inconsistencies in disaster monitoring policies, particularly regarding data collection requirements. While municipal governments are mandated to report to the S2iD platform, APERS does not have similar data collection obligations, as the S2iD primarily supports resource allocation. The coordination model proposed includes standardized procedures, system integration, mandatory reporting of archival damage, training, use of technology, and continuous monitoring. We argue that efficient archival protection and recovery from natural disasters requires a coordinated approach with standardized procedures, integrated systems, mandatory reporting, and advanced technologies. Future strategies should prioritize integrating standardized models, improved data collection, emerging technologies, such as AI, and enhanced training programmes for archival professionals.",
       "url": "https://doi.org/10.1080/23257962.2025.2571113",
-      "topic": "기타",
+      "topic": "전자기록 관리",
       "topics": [
-        "기타"
+        "전자기록 관리",
+        "온라인 아카이브 관리 방법론",
+        "중심 · 방안"
       ]
     },
     {
@@ -45,11 +47,11 @@
       "abstract": "Uncovering women’s history is often difficult, as these are frequently undocumented, deliberately denigrated, and subsumed under dominant androcentric stories. Elizabeth Shepherd’s Pioneering Women...",
       "url": "https://doi.org/10.1080/23257962.2026.2613977",
       "title_ko": "영국 초기 20세기의 선구적인 여성 기록관리자들",
-      "topic": "중동·북아프리카 아카이브 연구",
+      "topic": "개인 반대기록 활성화 사례 연구",
       "topics": [
-        "중동·북아프리카 아카이브 연구",
-        "공동체 아카이브",
-        "아카이브 · 원문"
+        "개인 반대기록 활성화 사례 연구",
+        "중동·북아프리카 아카이브",
+        "온라인 아카이브 관리 방법론"
       ]
     },
     {
@@ -82,11 +84,9 @@
       "abstract": "This study explores the application of Artificial Intelligence (AI)-driven technologies to improve the accessibility and usability of historical audio archives through the integration of Automatic Speech Recognition (ASR) and Natural Language Processing (NLP) techniques. A dataset of 14 historical and oral history recordings, sourced from the Library of Congress and the Smithsonian Institution, was used to evaluate three ASR models: Whisper larger-v3, OWSM v3.1, and MMS-1b-all. Comparative analysis based on Word Error Rate (WER) revealed that Whisper larger-v3 consistently achieved the lowest error rates, while the open-source OWSM v3.1 demonstrated competitive performance, positioning it as a viable transparent alternative. The multilingual MMS-1b-all exhibited higher WERs, highlighting the trade-off between language coverage and domain-specific optimization. Downstream Named Entity Recognition (NER) and automated text summarization were conducted on the transcribed outputs, with human evaluations confirming high levels of informativeness, fluency, and faithfulness. This integrated approach underscores the potential of AI technologies to automate metadata generation, enhance the accessibility of archival content, and support more efficient archival workflows. Furthermore, the study addresses ethical considerations and proposes strategies for future integration of AI-generated metadata into existing cataloguing systems, offering valuable insights for archivists and information professionals engaged in digital preservation and heritage management.",
       "url": "https://doi.org/10.1080/23257962.2025.2560908",
       "title_ko": "인공지능을 활용한 오디오 아카이브의 변화: 음성 인식에서 자연어 처리 기반 요약 및 메타데이터 생성까지",
-      "topic": "온라인 전시회 관리",
+      "topic": "기타",
       "topics": [
-        "온라인 전시회 관리",
-        "국가기록원 서비스 개선방안",
-        "아카이브 · 원문"
+        "기타"
       ]
     },
     {
@@ -100,11 +100,11 @@
       "abstract": "How can archives and universities work together to build research skills and confidence among the public? This article examines one model based on a collaboration between The London Archives and the London School of Economics. The project used public involvement in an academic project to scaffold participants’ acquisition of research skills and independence, focusing on learning through research. This exploited the open-ended process of enquiry that characterizes much historical research as a mechanism to foster creative research work by novice historians. It did so within a framework that ensured their contributions had wider value. The project also developed an effective way to engage directly with potentially challenging material, exploring strategies for managing trauma-informed archival practice.",
       "url": "https://doi.org/10.1080/23257962.2025.2582139",
       "title_ko": "학계와 아카이브의 협력 사례: 여성 연구원의 발굴과 복원",
-      "topic": "아카이브 · 원문",
+      "topic": "온라인 아카이브 관리 방법론",
       "topics": [
-        "아카이브 · 원문",
-        "온라인 전시회 관리",
-        "공동체 아카이브"
+        "온라인 아카이브 관리 방법론",
+        "개인 반대기록 활성화 사례 연구",
+        "전자기록 관리"
       ]
     },
     {
@@ -121,9 +121,9 @@
       "abstract": "Ensuring the secure processing of patient health records – maintained across various healthcare organizations throughout a patient’s lifetime – is a growing challenge, especially given the increasing volume of data and the rise in cyber-attacks targeting healthcare systems. These records contain critical information such as diagnoses and medications, which must be protected as they are shared across interconnected clinical systems. This paper aims to design and implement a secure, decentralized system for managing Electronic Health Records (EHRs) using blockchain technology and smart contracts. The objective is to improve the privacy, integrity, and accessibility of medical data while enabling patients to control access to their records. The proposed system was developed using a private blockchain integrated with a cloud database and was evaluated through functional testing, system architecture modelling, and algorithmic simulations. Key components include smart contracts for access management, cryptographic hashing for data integrity, and role-based access control for ensuring appropriate data permissions. The results demonstrate that the system achieves the desired levels of security, transparency, and traceability, while maintaining scalability and usability in real-world healthcare settings. This study confirms the practical feasibility of blockchain-based EHR systems and their potential to transform healthcare data management.",
       "url": "https://doi.org/10.1080/23257962.2025.2560897",
       "title_ko": "전자 건강기록의 안전하고 효율적인 관리를 위한 블록체인 기반 시스템 개선 방안",
-      "topic": "디지털 기록 보존",
+      "topic": "전자기록 관리",
       "topics": [
-        "디지털 기록 보존"
+        "전자기록 관리"
       ]
     },
     {
@@ -152,11 +152,11 @@
       "abstract": "Digital Humanities (DH) projects often involve archival records and the input of archivists. Though more closely linked to published works and libraries, digital scholarly editing encompasses a ran...",
       "url": "https://doi.org/10.1080/23257962.2025.2560901",
       "title_ko": "디지털 학술 편집의 미래 방향",
-      "topic": "온라인 전시회 관리",
+      "topic": "온라인 아카이브 관리 방법론",
       "topics": [
-        "온라인 전시회 관리",
-        "아카이브 · 원문",
-        "디지털 아카이브 교육"
+        "온라인 아카이브 관리 방법론",
+        "중동·북아프리카 아카이브",
+        "개인 반대기록 활성화 사례 연구"
       ]
     }
   ],
