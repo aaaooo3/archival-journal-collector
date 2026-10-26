@@ -111,21 +111,28 @@ python3 fix_kjas_titles.py
 
 ## 10) 주제어(키워드) 달기 — 논문별 태그·필터
 
-**추천: 논문별 주제어 뽑기** (각 논문을 LLM이 읽고 그 논문만의 키워드 3~5개):
+**가장 좋은 방법: 저자 키워드 가져오기** (논문에 실제로 달린 키워드, Ollama 불필요):
+```
+python3 fetch_keywords.py
+```
+- 각 논문 페이지의 `citation_keywords` 메타·"키워드/주제어" 섹션을 읽어 저장. 해외는 OpenAlex(무료)로 보강.
+- 끝에 학회지별 **찾음/못찾음** 개수를 보여줌. 네트워크 필요(인터넷), LLM은 안 씀.
+
+**못 찾은 논문만 LLM으로 메꾸기** (저자 키워드 없는 것):
 ```
 ollama serve
 python3 keywords.py
 ```
-- 각 논문에 **구체적인 주제어(🏷)** 가 붙고, 사이트 위쪽에 **주제 필터**(자주 나오는 키워드)가 생김.
-- 멱등적(캐시). 한 학회지만: `--journal kjas`, 다시 뽑기: `--force`, 개수: `--max-keywords 4`
+- 각 논문을 로컬 LLM이 읽고 키워드를 뽑음. 이미 저자 키워드가 있으면 건너뜀.
+
+→ 추천 순서: **`fetch_keywords.py` 먼저 → `keywords.py` 로 빈 것 채우기 → push.**
 
 **대안: 비슷한 주제로 묶기**(군집 — 포괄적 라벨):
 ```
 ollama serve
-ollama pull bge-m3                 # 다국어 임베딩 모델(무료), 처음 한 번
+ollama pull bge-m3
 python3 cluster.py --topics 15
 ```
-- 논문을 묶어 묶음에 이름 하나를 붙임. 라벨이 포괄적이라 보통 `keywords.py`가 더 나음.
 
 ---
 

@@ -143,6 +143,9 @@ def main(argv=None) -> int:
                 skipped += 1
                 processed.add(path)
                 continue
+            if art.get("keywords") and not args.force:
+                reused += 1          # 저자 키워드(fetch_keywords.py)가 있으면 건드리지 않음
+                continue
             title = art.get("title_ko") or art.get("title", "")
             abstract = art.get("abstract_ko") or art.get("abstract", "")
             text = (title + " " + abstract).strip()
